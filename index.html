@@ -141,7 +141,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* Flashcards estilo Anki */
+        /* Flashcards */
         .flashcard {
             perspective: 1000px;
             height: 180px;
@@ -250,19 +250,45 @@
         .summary-card h4 { font-size: 14px; margin-bottom: 4px; }
         .summary-card p { font-size: 13px; color: #4A4A4A; line-height: 1.4; }
 
-        /* Temario */
-        .topic-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #EFEFF4;
-            font-size: 13px;
+        /* Temario Avanzado */
+        .topic-card {
+            background: #FAFAFA;
+            border: 1px solid #E5E5EA;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
         }
 
-        .topic-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+        .topic-header {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .topic-checklist {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            background: #FFFFFF;
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #EFEFF4;
+        }
+
+        .check-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            gap: 4px;
+        }
+
+        .check-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
             accent-color: var(--primary-color);
             cursor: pointer;
         }
@@ -274,7 +300,7 @@
         <h1>YuliNotas ENARM</h1>
         <div class="stats-bar">
             <span>Preguntas: <strong id="stat-questions">0</strong></span>
-            <span>Temas Vistos: <strong id="stat-topics">0</strong></span>
+            <span>Avance General: <strong id="stat-progress">0%</strong></span>
         </div>
     </header>
 
@@ -441,15 +467,26 @@
         let currentTab = 'flashcards';
         let currentCardIndex = 0;
 
-        // Estado persistente
         let answeredQuestions = parseInt(localStorage.getItem('yn_questions') || '0');
-        let completedTopics = JSON.parse(localStorage.getItem('yn_completed_topics') || '{}');
+        let topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
 
         function updateStatsDisplay() {
             document.getElementById('stat-questions').textContent = answeredQuestions;
-            let totalTopics = Object.keys(completedTopics).filter(k => completedTopics[k]).length;
-            document.getElementById('stat-topics').textContent = totalTopics;
+            
+            // Cálculo de avance general
+            let totalPossibleChecks = 0;
+            Object.keys(data).forEach(s => {
+                totalPossibleChecks += data[s].temario.length * 5;
+            });
+
+            let completedChecks = 0;
+            Object.keys(topicChecklist).forEach(k => {
+                if (topicChecklist[k]) completedChecks++;
+            });
+
+            let percentage = totalPossibleChecks > 0 ? Math.round((completedChecks / totalPossibleChecks) * 100) : 0;
+            document.getElementById('stat-progress').textContent = percentage + '%';
         }
 
         function selectSubject(subjectKey) {
@@ -517,13 +554,26 @@
                     </div>
                 `).join('');
             } else if (currentTab === 'temario') {
+                const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
+                const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
+
                 area.innerHTML = subjectData.temario.map((t, idx) => {
-                    const key = `${currentSubject}_${idx}`;
-                    const isChecked = completedTopics[key] ? 'checked' : '';
+                    const topicKey = `${currentSubject}_${idx}`;
                     return `
-                        <div class="topic-item">
-                            <span>${t}</span>
-                            <input type="checkbox" ${isChecked} onchange="toggleTopic('${key}')">
+                        <div class="topic-card">
+                            <div class="topic-header">${t}</div>
+                            <div class="topic-checklist">
+                                ${resources.map((res, rIdx) => {
+                                    const checkKey = `${topicKey}_${res}`;
+                                    const isChecked = topicChecklist[checkKey] ? 'checked' : '';
+                                    return `
+                                        <div class="check-item">
+                                            <span>${labels[rIdx]}</span>
+                                            <input type="checkbox" ${isChecked} onchange="toggleCheck('${checkKey}')">
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -543,9 +593,9 @@
             updateStatsDisplay();
         }
 
-        function toggleTopic(key) {
-            completedTopics[key] = !completedTopics[key];
-            localStorage.setItem('yn_completed_topics', JSON.stringify(completedTopics));
+        function toggleCheck(checkKey) {
+            topicChecklist[checkKey] = !topicChecklist[checkKey];
+            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
             updateStatsDisplay();
         }
 
@@ -562,11 +612,8 @@
             renderContent();
         }
 
-        // Render inicial
         updateStatsDisplay();
         selectSubject('gineco');
     </script>
 </body>
 </html>
-
-        
