@@ -7,13 +7,8 @@
     <title>YuliNotas ENARM</title>
     <style>
         :root {
-            --bg-olive: #556B2F;
-            --color-gineco: #D81B60;
-            --color-obste: #8E24AA;
-            --color-interna: #00695C;
-            --color-cirugia: #1565C0;
-            --color-pedia: #E53935;
-            --bg-app: #F8F9FA;
+            --bg-current: #F3E5F5;
+            --primary-color: #8E24AA;
             --card-bg: #FFFFFF;
             --text-dark: #1C1C1E;
             --text-muted: #6C757D;
@@ -28,27 +23,38 @@
         }
 
         body {
-            background-color: var(--bg-app);
+            background-color: var(--bg-current);
             color: var(--text-dark);
             padding-bottom: 40px;
+            transition: background-color 0.4s ease;
         }
 
-        /* Encabezado Verde Oliva */
         .app-header {
-            background-color: var(--bg-olive);
-            color: #FFFFFF;
-            padding: 24px 16px 20px;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            color: var(--text-dark);
+            padding: 16px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
         .app-header h1 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 8px 12px;
+            margin-top: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .container {
@@ -57,36 +63,31 @@
             padding: 16px;
         }
 
-        /* Selector de Materias */
         .section-title {
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-muted);
             margin: 12px 0 8px 4px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .subjects-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-bottom: 20px;
         }
 
         .subject-btn {
             border: none;
-            border-radius: 16px;
-            padding: 18px 12px;
+            border-radius: 12px;
+            padding: 14px 10px;
             color: #FFFFFF;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             transition: transform 0.15s ease, opacity 0.15s ease;
         }
 
@@ -95,26 +96,24 @@
         }
 
         .subject-btn.active {
-            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
             outline: 3px solid #1C1C1E;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .btn-gineco { background-color: var(--color-gineco); }
-        .btn-obste { background-color: var(--color-obste); }
-        .btn-interna { background-color: var(--color-interna); }
-        .btn-cirugia { background-color: var(--color-cirugia); }
-        .btn-pedia { background-color: var(--color-pedia); }
+        .btn-gineco { background-color: #D81B60; }
+        .btn-obste { background-color: #8E24AA; }
+        .btn-interna { background-color: #00695C; }
+        .btn-cirugia { background-color: #1565C0; }
+        .btn-pedia { background-color: #E53935; }
 
-        /* Panel de Contenido */
         .content-panel {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             min-height: 380px;
         }
 
-        /* Pestañas (Flashcards, Preguntas, Resúmenes) */
         .tabs-nav {
             display: flex;
             background-color: #EFEFF4;
@@ -128,7 +127,7 @@
             padding: 10px 0;
             border: none;
             background: transparent;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
             border-radius: 9px;
@@ -142,11 +141,11 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* Flashcard Componente */
+        /* Flashcards estilo Anki */
         .flashcard {
             perspective: 1000px;
-            height: 200px;
-            margin-bottom: 16px;
+            height: 180px;
+            margin-bottom: 12px;
             cursor: pointer;
         }
 
@@ -174,10 +173,10 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             line-height: 1.4;
-            border: 2px solid #F0F0F0;
+            border: 1px solid #E5E5EA;
         }
 
         .flashcard-front {
@@ -186,68 +185,86 @@
         }
 
         .flashcard-back {
-            background-color: var(--bg-olive);
+            background-color: var(--primary-color);
             color: #FFFFFF;
             transform: rotateY(180deg);
         }
 
-        /* Preguntas Opción Múltiple */
+        .anki-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .anki-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+        }
+
+        .anki-hard { background-color: #E53935; }
+        .anki-good { background-color: #FB8C00; }
+        .anki-easy { background-color: #43A047; }
+
+        /* Preguntas */
         .question-card {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .question-text {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             line-height: 1.4;
-            margin-bottom: 8px;
-        }
-
-        .option-btn {
-            padding: 12px 16px;
-            border: 1px solid #E5E5EA;
-            border-radius: 12px;
-            background: #FFFFFF;
-            text-align: left;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .option-btn.correct {
-            background-color: #D4EDDA;
-            border-color: #28A745;
-            color: #155724;
-            font-weight: 600;
-        }
-
-        .option-btn.incorrect {
-            background-color: #F8D7DA;
-            border-color: #DC3545;
-            color: #721C24;
-        }
-
-        /* Resúmenes Guías */
-        .summary-card {
-            background: #FAFAFA;
-            border-left: 4px solid var(--bg-olive);
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 12px;
-        }
-
-        .summary-card h4 {
-            font-size: 15px;
-            color: var(--text-dark);
             margin-bottom: 6px;
         }
 
-        .summary-card p {
+        .option-btn {
+            padding: 12px;
+            border: 1px solid #E5E5EA;
+            border-radius: 10px;
+            background: #FFFFFF;
+            text-align: left;
             font-size: 13px;
-            color: #4A4A4A;
-            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        .option-btn.correct { background-color: #D4EDDA; border-color: #28A745; color: #155724; font-weight: 600; }
+        .option-btn.incorrect { background-color: #F8D7DA; border-color: #DC3545; color: #721C24; }
+
+        /* Resúmenes */
+        .summary-card {
+            background: #FAFAFA;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .summary-card h4 { font-size: 14px; margin-bottom: 4px; }
+        .summary-card p { font-size: 13px; color: #4A4A4A; line-height: 1.4; }
+
+        /* Temario */
+        .topic-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #EFEFF4;
+            font-size: 13px;
+        }
+
+        .topic-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
         }
     </style>
 </head>
@@ -255,52 +272,49 @@
 
     <header class="app-header">
         <h1>YuliNotas ENARM</h1>
+        <div class="stats-bar">
+            <span>Preguntas: <strong id="stat-questions">0</strong></span>
+            <span>Temas Vistos: <strong id="stat-topics">0</strong></span>
+        </div>
     </header>
 
     <div class="container">
-        <div class="section-title">Especialidad</div>
+        <div class="section-title">Materia</div>
         
-        <!-- Botones de Materias (5 Especialidades) -->
         <div class="subjects-grid">
-            <button class="subject-btn btn-gineco active" onclick="selectSubject('gineco')">
-                🌸 Ginecología
-            </button>
-            <button class="subject-btn btn-obste" onclick="selectSubject('obste')">
-                🟣 Obstetricia
-            </button>
-            <button class="subject-btn btn-interna" onclick="selectSubject('interna')">
-                🟢 Medicina Interna
-            </button>
-            <button class="subject-btn btn-cirugia" onclick="selectSubject('cirugia')">
-                🔵 Cirugía General
-            </button>
-            <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">
-                🔴 Pediatría
-            </button>
+            <button class="subject-btn btn-gineco active" onclick="selectSubject('gineco')">Ginecología</button>
+            <button class="subject-btn btn-obste" onclick="selectSubject('obste')">Obstetricia</button>
+            <button class="subject-btn btn-interna" onclick="selectSubject('interna')">Medicina Interna</button>
+            <button class="subject-btn btn-cirugia" onclick="selectSubject('cirugia')">Cirugía General</button>
+            <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- Panel Interactivo de Contenido -->
         <div class="content-panel">
             <div class="tabs-nav">
                 <button class="tab-btn active" onclick="selectTab('flashcards')">Flashcards</button>
                 <button class="tab-btn" onclick="selectTab('preguntas')">Preguntas</button>
                 <button class="tab-btn" onclick="selectTab('resumenes')">Resúmenes</button>
+                <button class="tab-btn" onclick="selectTab('temario')">Temario</button>
             </div>
 
-            <div id="content-area">
-                <!-- Se carga dinámicamente -->
-            </div>
+            <div id="content-area"></div>
         </div>
     </div>
 
     <script>
+        const subjectsConfig = {
+            gineco: { title: "Ginecología", color: "#D81B60", bg: "#FCE4EC" },
+            obste: { title: "Obstetricia", color: "#8E24AA", bg: "#F3E5F5" },
+            interna: { title: "Medicina Interna", color: "#00695C", bg: "#E0F2F1" },
+            cirugia: { title: "Cirugía General", color: "#1565C0", bg: "#E3F2FD" },
+            pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
+        };
+
         const data = {
             gineco: {
-                title: "Ginecología",
-                color: "#D81B60",
                 flashcards: [
-                    { q: "¿Causa más frecuente de sangrado uterino anormal en mujeres en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación)." },
-                    { q: "¿Criterio histológico diagnóstico de Endometriosis?", a: "Presencia de glándulas y estroma endometrial fuera de la cavidad uterina." }
+                    { id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en mujeres en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación)." },
+                    { id: "g2", q: "¿Criterio histológico diagnóstico de Endometriosis?", a: "Presencia de glándulas y estroma endometrial fuera de la cavidad uterina." }
                 ],
                 preguntas: [
                     {
@@ -310,15 +324,21 @@
                     }
                 ],
                 resumenes: [
-                    { title: "Cáncer Cervicouterino (GPC)", text: "El VPH de alto riesgo (16 y 18) es el factor etiológico principal. El tamizaje se inicia a los 25 años con citología cervical." }
+                    { title: "Cáncer Cervicouterino", text: "El VPH de alto riesgo (16 y 18) es el factor etiológico principal. El tamizaje se inicia a los 25 años con citología cervical." }
+                ],
+                temario: [
+                    "Ciclo femenino", "Síndrome de ovario poliquístico (SOP)", "Menopausia y climaterio", "Osteoporosis",
+                    "Amenorrea primaria", "Amenorrea secundaria", "Insuficiencia ovárica primaria (IOP)", "Métodos anticonceptivos",
+                    "Infertilidad y esterilidad", "Cervicovaginitis", "Gardnerella vaginalis / Vaginosis bacteriana", "Tricomoniasis",
+                    "Candidiasis", "Enfermedad pélvica inflamatoria", "Endometriosis", "Miomatosis uterina", "Hiperplasia endometrial",
+                    "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de cérvix", "Patología benigna de mama", "Mastitis",
+                    "Fibroadenoma", "Quiste mamario", "Mastopatía fibroquística", "Papiloma intraductal", "Cáncer de mama", "Violencia contra la mujer"
                 ]
             },
             obste: {
-                title: "Obstetricia",
-                color: "#8E24AA",
                 flashcards: [
-                    { q: "¿Definición de Preeclampsia severa?", a: "PA ≥ 160/110 mmHg o presencia de criterios de severidad (trombocitopenia, alteración hepática, síntoma neurosensorial)." },
-                    { q: "¿Tratamiento de primera línea para Preeclampsia con datos de severidad?", a: "Sulfato de Magnesio (Esquema Zuspan o Sibai) para prevención de eclampsia." }
+                    { id: "o1", q: "¿Definición de Preeclampsia severa?", a: "PA ≥ 160/110 mmHg o presencia de criterios de severidad." },
+                    { id: "o2", q: "¿Tratamiento de primera línea para Preeclampsia con datos de severidad?", a: "Sulfato de Magnesio (Esquema Zuspan o Sibai)." }
                 ],
                 preguntas: [
                     {
@@ -328,15 +348,21 @@
                     }
                 ],
                 resumenes: [
-                    { title: "Hemorragia de la Segunda Mitad", text: "Placenta previa: indolora, sangre rutilante. DPPNI: dolorosa, hipertonía uterina, sangre oscura o franca." }
+                    { title: "Hemorragia de la Segunda Mitad", text: "Placenta previa: indolora, sangre rutilante. DPPNI: dolorosa, hipertonía uterina, sangre oscura." }
+                ],
+                temario: [
+                    "Control prenatal", "Hemorragias del primer trimestre", "Amenaza de aborto", "Aborto", "Embarazo ectópico",
+                    "Enfermedad Trofoblástica Gestacional (ETG)", "Hemorragias del tercer trimestre", "Placenta previa", "Acretismo placentario",
+                    "Abruptio placentae / DPPNI", "Rotura Uterina", "Hemorragia postparto (HPP)", "Atonía uterina", "Vasa previa",
+                    "Parto pretérmino", "Gestación múltiple", "Gestación cronológicamente prolongada", "Metrorragias",
+                    "Ruptura prematura de membranas (RPM)", "Elementos de tocología", "Episiotomía", "Corioamnionitis", "Puerperio",
+                    "Sepsis puerperal", "Prolapso de órganos pélvicos", "Incontinencia urinaria", "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
             interna: {
-                title: "Medicina Interna",
-                color: "#00695C",
                 flashcards: [
-                    { q: "¿Meta de HbA1c en adultos no gestantes según la ADA?", a: "< 7.0% para la mayoría de los pacientes." },
-                    { q: "¿Tratamiento farmacológico de primera línea en Diabetes Mellitus tipo 2?", a: "Metformina (salvo contraindicación por TFG < 30 mL/min)." }
+                    { id: "i1", q: "¿Meta de HbA1c en adultos no gestantes según la ADA?", a: "< 7.0% para la mayoría de los pacientes." },
+                    { id: "i2", q: "¿Tratamiento farmacológico de primera línea en Diabetes Mellitus tipo 2?", a: "Metformina." }
                 ],
                 preguntas: [
                     {
@@ -347,14 +373,23 @@
                 ],
                 resumenes: [
                     { title: "Cetoacidosis Diabética vs EHH", text: "CAD: Glucosa >250, pH <7.30, cetonas positivas. EHH: Glucosa >600, osmolaridad >320, sin cetoacidosis." }
+                ],
+                temario: [
+                    "Insuficiencia cardíaca", "Síndrome coronario agudo", "Arritmias", "Fibrilación auricular", "Valvulopatías",
+                    "Hipertensión arterial sistémica (HAS)", "Enfermedades micóticas", "Acné", "Psoriasis", "Carcinoma basocelular",
+                    "Melanoma maligno", "Enfermedad diarreica aguda en el adulto", "Síndrome de colon irritable", "Enfermedad inflamatoria intestinal",
+                    "Hepatitis aguda", "Hiperprolactinemia", "Enfermedades de glándula suprarrenal", "Enfermedades tiroideas",
+                    "Diabetes mellitus", "Pie diabético", "Cetoacidosis diabética", "Anemia ferropénica", "Leucemias agudas",
+                    "Linfomas", "Insuficiencia renal aguda (IRA)", "Enfermedad renal crónica (ERC)", "Síndrome nefrítico",
+                    "Síndrome nefrótico", "Enfermedad pulmonar obstructiva crónica (EPOC)", "Asma en el adulto", "Artritis reumatoide",
+                    "Lupus eritematoso sistémico", "Demencia tipo Alzheimer", "Enfermedad de Parkinson", "Enfermedad vascular cerebral (EVC)",
+                    "Tuberculosis", "Neumonía adquirida en la comunidad", "VIH/SIDA", "COVID-19"
                 ]
             },
             cirugia: {
-                title: "Cirugía General",
-                color: "#1565C0",
                 flashcards: [
-                    { q: "¿Punto doloroso clásico en Apendicitis Aguda?", a: "Punto de McBurney (unión del tercio externo con los dos tercios internos entre EIAS y ombligo)." },
-                    { q: "¿Estudio de primera elección ante sospecha de Colecistitis Aguda?", a: "Ecografía / Ultrasonido de cuadrante superior derecho (hígado y vías biliares)." }
+                    { id: "c1", q: "¿Punto doloroso clásico en Apendicitis Aguda?", a: "Punto de McBurney." },
+                    { id: "c2", q: "¿Estudio de primera elección ante sospecha de Colecistitis Aguda?", a: "Ecografía de cuadrante superior derecho." }
                 ],
                 preguntas: [
                     {
@@ -365,34 +400,66 @@
                 ],
                 resumenes: [
                     { title: "Escala de Alvarado", text: "Evalúa migración del dolor, anorexia, náusea, dolor en FID, rebote, fiebre, leucocitosis y desviación a la izquierda." }
+                ],
+                temario: [
+                    "Apendicitis aguda", "Abdomen agudo", "Patología biliar", "Colecistitis no complicada", "Colecistitis crónica litiásica",
+                    "Coledocolitiasis", "Colangitis", "Enfermedad diverticular", "Trastornos motores del esófago", "Enfermedad por reflujo gastroesofágico (ERGE)",
+                    "Esófago de Barret", "Cáncer gástrico", "Úlcera péptica", "Obesidad y cirugía bariátrica", "Enfermedad hemorroidal",
+                    "Absceso perianal", "Fístula anal", "Fisura anal", "Hernias inguinales y femorales", "Hernia umbilical", "Hernia ventral",
+                    "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", "Cáncer de colon", "Pancreatitis aguda", "Pancreatitis crónica",
+                    "Quemaduras", "ATLS (Advance Trauma Life Support)", "Trauma de tórax", "Trauma de abdomen", "Traumatismo craneoencefálico (TCE)",
+                    "Infección de sitio quirúrgico (ISQ)", "Otorrinolaringología", "Oftalmología", "Urología", "Traumatología y Ortopedia"
                 ]
             },
             pedia: {
-                title: "Pediatría",
-                color: "#E53935",
                 flashcards: [
-                    { q: "¿Triada clásica de la Invaginación Intestinal?", a: "Dolor abdominal cólico, masa palpable en forma de salchicha y evacuaciones en 'jalea de grosella'." },
-                    { q: "¿Agente etiológico más frecuente de la Laringotraqueobronquitis (Crup)?", a: "Virus Parainfluenza tipo 1." }
+                    { id: "p1", q: "¿Triada clásica de la Invaginación Intestinal?", a: "Dolor abdominal cólico, masa palpable en salchicha y evacuaciones en jalea de grosella." },
+                    { id: "p2", q: "¿Agente etiológico más frecuente de la Laringotraqueobronquitis (Crup)?", a: "Virus Parainfluenza tipo 1." }
                 ],
                 preguntas: [
                     {
-                        q: "Lactante de 18 meses con estridor inspiratorio, tos perruna y disfonía. En Rx AP de cuello se observa 'signo de la torre o del ápice'. ¿Diagnóstico?",
+                        q: "Lactante de 18 meses con estridor inspiratorio, tos perruna y disfonía. En Rx AP de cuello se observa 'signo de la torre'. ¿Diagnóstico?",
                         options: ["Laringotraqueobronquitis (Crup)", "Epiglotitis aguda", "Aspiración de cuerpo extraño", "Traqueítis bacteriana"],
                         correct: 0
                     }
                 ],
                 resumenes: [
-                    { title: "Escala de APGAR", text: "Evalúa Apariencia (color), Pulso (frecuencia cardíaca), Gesticulación (reflejos), Actividad (tono) y Respiración a los 1 min y 5 min." }
+                    { title: "Escala de APGAR", text: "Evalúa Apariencia, Pulso, Gesticulación, Actividad y Respiración a los 1 min y 5 min." }
+                ],
+                temario: [
+                    "Recién nacido sano", "Reanimación neonatal", "Síndrome de dificultad respiratoria (SDR)", "Enfermedad de membrana hialina",
+                    "Taquipnea transitoria del recién nacido", "Síndrome de aspiración meconial (SAM)", "Atresia esofágica", "Enterocolitis necrosante",
+                    "Sepsis neonatal", "Ictericia neonatal", "TORCH", "Control y seguimiento del niño menor de 5 años", "Otitis media aguda",
+                    "Infección de vías respiratorias altas (IVRA)", "Vacunas", "Desnutrición", "Laringotraqueitis aguda (crup)", "Epiglotitis aguda",
+                    "Neumonía bacteriana adquirida en la comunidad", "Bronquiolitis aguda", "Asma", "Invaginación intestinal", "Estenosis hipertrófica del píloro",
+                    "Enfermedades exantemáticas", "Diarrea aguda", "Infecciones del sistema nervioso central", "Crisis febriles", "Lactancia materna", "Cardiopatías congénitas"
                 ]
             }
         };
 
         let currentSubject = 'gineco';
         let currentTab = 'flashcards';
+        let currentCardIndex = 0;
+
+        // Estado persistente
+        let answeredQuestions = parseInt(localStorage.getItem('yn_questions') || '0');
+        let completedTopics = JSON.parse(localStorage.getItem('yn_completed_topics') || '{}');
+        let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
+
+        function updateStatsDisplay() {
+            document.getElementById('stat-questions').textContent = answeredQuestions;
+            let totalTopics = Object.keys(completedTopics).filter(k => completedTopics[k]).length;
+            document.getElementById('stat-topics').textContent = totalTopics;
+        }
 
         function selectSubject(subjectKey) {
             currentSubject = subjectKey;
-            
+            currentCardIndex = 0;
+
+            const config = subjectsConfig[subjectKey];
+            document.documentElement.style.setProperty('--bg-current', config.bg);
+            document.documentElement.style.setProperty('--primary-color', config.color);
+
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.btn-${subjectKey}`).classList.add('active');
 
@@ -401,10 +468,8 @@
 
         function selectTab(tabKey) {
             currentTab = tabKey;
-
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-
             renderContent();
         }
 
@@ -413,7 +478,13 @@
             const subjectData = data[currentSubject];
 
             if (currentTab === 'flashcards') {
-                const card = subjectData.flashcards[0];
+                const card = subjectData.flashcards[currentCardIndex];
+                if (!card) {
+                    area.innerHTML = `<p style="text-align:center; padding: 20px;">No hay tarjetas disponibles.</p>`;
+                    return;
+                }
+                const cardAnki = ankiReviews[card.id] || { interval: 1, nextDate: 'Hoy' };
+
                 area.innerHTML = `
                     <div class="flashcard" onclick="this.classList.toggle('flipped')">
                         <div class="flashcard-inner">
@@ -421,7 +492,12 @@
                             <div class="flashcard-back">${card.a}</div>
                         </div>
                     </div>
-                    <p style="text-align: center; font-size: 12px; color: var(--text-muted);">Toca la tarjeta para voltearla</p>
+                    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Próximo repaso programado: ${cardAnki.nextDate}</p>
+                    <div class="anki-controls">
+                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1)">Difícil (1d)</button>
+                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3)">Bien (3d)</button>
+                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7)">Fácil (7d)</button>
+                    </div>
                 `;
             } else if (currentTab === 'preguntas') {
                 const q = subjectData.preguntas[0];
@@ -435,11 +511,22 @@
                 `;
             } else if (currentTab === 'resumenes') {
                 area.innerHTML = subjectData.resumenes.map(r => `
-                    <div class="summary-card" style="border-left-color: ${subjectData.color};">
+                    <div class="summary-card">
                         <h4>${r.title}</h4>
                         <p>${r.text}</p>
                     </div>
                 `).join('');
+            } else if (currentTab === 'temario') {
+                area.innerHTML = subjectData.temario.map((t, idx) => {
+                    const key = `${currentSubject}_${idx}`;
+                    const isChecked = completedTopics[key] ? 'checked' : '';
+                    return `
+                        <div class="topic-item">
+                            <span>${t}</span>
+                            <input type="checkbox" ${isChecked} onchange="toggleTopic('${key}')">
+                        </div>
+                    `;
+                }).join('');
             }
         }
 
@@ -451,10 +538,35 @@
             } else {
                 btn.classList.add('incorrect');
             }
+            answeredQuestions++;
+            localStorage.setItem('yn_questions', answeredQuestions.toString());
+            updateStatsDisplay();
+        }
+
+        function toggleTopic(key) {
+            completedTopics[key] = !completedTopics[key];
+            localStorage.setItem('yn_completed_topics', JSON.stringify(completedTopics));
+            updateStatsDisplay();
+        }
+
+        function processAnki(cardId, daysToAdd) {
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + daysToAdd);
+            const dateStr = nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+
+            ankiReviews[cardId] = { interval: daysToAdd, nextDate: dateStr };
+            localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
+
+            const subjectCards = data[currentSubject].flashcards;
+            currentCardIndex = (currentCardIndex + 1) % subjectCards.length;
+            renderContent();
         }
 
         // Render inicial
-        renderContent();
+        updateStatsDisplay();
+        selectSubject('gineco');
     </script>
 </body>
 </html>
+
+        
