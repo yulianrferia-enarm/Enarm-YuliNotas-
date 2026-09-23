@@ -546,7 +546,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            touch-action: none; /* Desactiva gestos predeterminados del navegador para controlar el zoom personalizado */
+            touch-action: none;
         }
 
         .image-modal-overlay.active { display: flex; }
@@ -803,6 +803,7 @@
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
+            margin-bottom: 6px;
         }
     </style>
 </head>
@@ -825,12 +826,13 @@
 
     <div class="container">
 
-        <!-- Panel Creador -->
+        <!-- Panel Creador y Carga Masiva -->
         <div id="admin-panel" class="admin-panel">
-            <h3>⚡ Agregar Nuevo Contenido</h3>
+            <h3>⚡ Agregar Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
-                <option value="pregunta">Pregunta Caso Clínico</option>
-                <option value="flashcard">Flashcard</option>
+                <option value="pregunta">Pregunta 1x1</option>
+                <option value="flashcard">Flashcard 1x1</option>
+                <option value="bulk">📂 Importación Masiva (JSON)</option>
             </select>
 
             <select id="admin-subject">
@@ -843,7 +845,7 @@
 
             <div id="admin-fields"></div>
 
-            <button onclick="saveAdminContent()">Guardar Contenido</button>
+            <button id="admin-save-btn" onclick="saveAdminContent()">Guardar Contenido</button>
         </div>
 
         <!-- 1. MATERIAS -->
@@ -856,7 +858,7 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. PESTAÑAS (Madera ubicada después de Infografías) -->
+        <!-- 2. PESTAÑAS -->
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
@@ -874,7 +876,7 @@
         </div>
     </div>
 
-    <!-- Modal Visor Pantalla Completa con Pinch-to-Zoom y Pan (Desplazamiento) -->
+    <!-- Modal Visor Pantalla Completa con Pinch-to-Zoom y Pan -->
     <div id="image-modal" class="image-modal-overlay">
         <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
         <button class="modal-reset-zoom-btn" onclick="resetZoom(event)">↺ Tamaño Normal</button>
@@ -882,9 +884,7 @@
         
         <button class="modal-nav-btn modal-nav-prev" onclick="prevModalItem(event)">◄</button>
         
-        <div class="modal-content-container" id="modal-content-container">
-            <!-- Contenido dinámico con soporte multitáctil -->
-        </div>
+        <div class="modal-content-container" id="modal-content-container"></div>
         
         <button class="modal-nav-btn modal-nav-next" onclick="nextModalItem(event)">►</button>
     </div>
@@ -898,7 +898,6 @@
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
         };
 
-        // TEMARIO LITERAL COMPLETO ORIGINAL TEMA POR TEMA
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
@@ -1069,10 +1068,12 @@
         let currentQuestionIndex = 0;
         let activeCardFilter = 'all';
 
+        // Listas aleatorias cacheadas para la sesión actual de estudio
+        let randomizedQuestions = [];
+        let randomizedFlashcards = [];
+
         let currentModalList = [];
         let currentModalIndex = 0;
-
-        // Variables de Control para Zoom Táctil (Pinch-to-zoom & Pan con dos dedos)
         let scale = 1;
         let pointX = 0;
         let pointY = 0;
@@ -1093,22 +1094,18 @@
             }
         });
 
-        // Configuración de Eventos Touch para Pinch-to-Zoom y Desplazamiento Fluido en Pantalla Completa
         const modalOverlay = document.getElementById('image-modal');
-        
         modalOverlay.addEventListener('touchstart', (e) => {
             const img = document.getElementById('modal-active-img');
             if (!img) return;
 
             if (e.touches.length === 2) {
-                // Dos dedos (índice y medio): Iniciar Pinch Zoom
                 isPanning = false;
                 initialDistance = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
             } else if (e.touches.length === 1 && scale > 1) {
-                // Un dedo para arrastrar (pan) solo si se hizo zoom previamente
                 isPanning = true;
                 startX = e.touches[0].clientX - pointX;
                 startY = e.touches[0].clientY - pointY;
@@ -1127,7 +1124,7 @@
                 );
                 if (initialDistance > 0) {
                     let factor = currentDistance / initialDistance;
-                    scale = Math.min(Math.max(1, scale * factor), 5); // Zoom entre 1x y 5x
+                    scale = Math.min(Math.max(1, scale * factor), 5);
                     initialDistance = currentDistance;
                     updateImageTransform(img);
                 }
@@ -1189,6 +1186,23 @@
             return combined;
         }
 
+        function prepareRandomizedLists() {
+            const data = getData();
+            const subjectData = data[currentSubject] || { flashcards: [], preguntas: [] };
+            
+            // Barajar preguntas de forma aleatoria
+            randomizedQuestions = shuffleArray(subjectData.preguntas || []);
+            currentQuestionIndex = 0;
+
+            // Barajar flashcards según filtro
+            let cards = subjectData.flashcards || [];
+            if (activeCardFilter === 'hard') {
+                cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
+            }
+            randomizedFlashcards = shuffleArray(cards);
+            currentCardIndex = 0;
+        }
+
         function getActiveTopicsForCurrentTab() {
             const data = getData();
             const rawTopics = (data[currentSubject] || {}).temario || ["General"];
@@ -1213,12 +1227,12 @@
             const subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [] };
 
             if (currentTab === 'preguntas') {
-                const total = (subjectData.preguntas || []).length;
+                const total = randomizedQuestions.length;
                 badge.textContent = total > 0 ? `${(currentQuestionIndex % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'madera') {
                 badge.textContent = `${countTopicItems(maderaFiles, currentSubject)} Madera`;
             } else if (currentTab === 'flashcards') {
-                const total = (subjectData.flashcards || []).length;
+                const total = randomizedFlashcards.length;
                 badge.textContent = total > 0 ? `${(currentCardIndex % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'resumenes') {
                 badge.textContent = `${countTopicItems(infographicImages, currentSubject)} Infografías`;
@@ -1247,8 +1261,6 @@
         function selectSubject(subjectKey) {
             currentSubject = subjectKey;
             localStorage.setItem('yn_current_subject', subjectKey);
-            currentCardIndex = 0;
-            currentQuestionIndex = 0;
             
             const config = subjectsConfig[subjectKey];
             if (!isDarkMode) document.documentElement.style.setProperty('--bg-current', config.bg);
@@ -1257,6 +1269,7 @@
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.btn-${subjectKey}`).classList.add('active');
             
+            prepareRandomizedLists();
             renderContent();
         }
 
@@ -1266,12 +1279,16 @@
             
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.btn-tab-${tabKey}`).classList.add('active');
+            
+            if (tabKey === 'preguntas' || tabKey === 'flashcards') {
+                prepareRandomizedLists();
+            }
             renderContent();
         }
 
         function setCardFilter(filter) {
             activeCardFilter = filter;
-            currentCardIndex = 0;
+            prepareRandomizedLists();
             renderContent();
         }
 
@@ -1472,23 +1489,14 @@
         function renderContent() {
             updateCornerBadge();
             const area = document.getElementById('content-area');
-            const data = getData();
-            const subjectData = data[currentSubject];
 
             if (currentTab === 'preguntas') {
-                const questionsList = subjectData.preguntas || [];
-                if (questionsList.length === 0) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas registradas en esta materia.</p>`;
+                if (randomizedQuestions.length === 0) {
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas registradas en esta materia. Usa el botón "+ Creador" para agregarlas.</p>`;
                     return;
                 }
 
-                const sortedQuestions = [...questionsList].sort((a, b) => {
-                    const weightA = (questionSchedule[a.id] || {}).weight || 0;
-                    const weightB = (questionSchedule[b.id] || {}).weight || 0;
-                    return weightB - weightA;
-                });
-
-                const q = sortedQuestions[currentQuestionIndex % sortedQuestions.length];
+                const q = randomizedQuestions[currentQuestionIndex % randomizedQuestions.length];
                 let rawList = q.rawOptions || q.options || [];
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
@@ -1516,10 +1524,7 @@
             } else if (currentTab === 'madera') {
                 area.innerHTML = renderTopicGroupedView('madera');
             } else if (currentTab === 'flashcards') {
-                let cards = subjectData.flashcards || [];
-                if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-
-                if (cards.length === 0) {
+                if (randomizedFlashcards.length === 0) {
                     area.innerHTML = `
                         <div class="flashcard-filter-bar">
                             <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
@@ -1530,7 +1535,7 @@
                     return;
                 }
 
-                const card = cards[currentCardIndex % cards.length];
+                const card = randomizedFlashcards[currentCardIndex % randomizedFlashcards.length];
                 const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
                 const currentDiff = cardDifficulty[card.id] || 'normal';
 
@@ -1562,6 +1567,8 @@
             } else if (currentTab === 'yulinotas') {
                 area.innerHTML = renderTopicGroupedView('pdf');
             } else if (currentTab === 'temario') {
+                const data = getData();
+                const subjectData = data[currentSubject];
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
                 area.innerHTML = subjectData.temario.map((t, idx) => {
@@ -1646,13 +1653,16 @@
         function changeAdminFields() {
             const type = document.getElementById('admin-type').value;
             const container = document.getElementById('admin-fields');
+            const saveBtn = document.getElementById('admin-save-btn');
 
             if (type === 'flashcard') {
+                saveBtn.style.display = 'block';
                 container.innerHTML = `
                     <input type="text" id="af-q" placeholder="Pregunta de la Flashcard">
                     <textarea id="af-a" placeholder="Respuesta clave"></textarea>
                 `;
             } else if (type === 'pregunta') {
+                saveBtn.style.display = 'block';
                 container.innerHTML = `
                     <textarea id="af-q" placeholder="Caso clínico / Pregunta"></textarea>
                     <input type="text" id="af-o0" placeholder="Opción Correcta">
@@ -1662,7 +1672,67 @@
                     <textarea id="af-exp" placeholder="Explicación general"></textarea>
                     <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
                 `;
+            } else if (type === 'bulk') {
+                saveBtn.style.display = 'none';
+                container.innerHTML = `
+                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube un archivo .json con un arreglo de preguntas o flashcards para importarlas masivamente de golpe:</p>
+                    <input type="file" id="bulk-file-input" accept=".json" onchange="processBulkImport(event)">
+                `;
             }
+        }
+
+        function processBulkImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const importedArray = JSON.parse(evt.target.result);
+                    if (!Array.isArray(importedArray)) {
+                        return alert('El archivo JSON debe contener una lista (array) de elementos.');
+                    }
+
+                    const sub = document.getElementById('admin-subject').value;
+                    if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
+
+                    let countQuestions = 0;
+                    let countCards = 0;
+
+                    importedArray.forEach((item, idx) => {
+                        // Detectar si es pregunta o flashcard
+                        if (item.q && item.a && !item.rawOptions) {
+                            customData[sub].flashcards.push({
+                                id: 'bulk_fc_' + Date.now() + '_' + idx,
+                                q: item.q,
+                                a: item.a,
+                                tag: item.tag || 'normal'
+                            });
+                            countCards++;
+                        } else if (item.q && (item.rawOptions || item.options)) {
+                            let opts = item.rawOptions || item.options;
+                            customData[sub].preguntas.push({
+                                id: 'bulk_q_' + Date.now() + '_' + idx,
+                                q: item.q,
+                                rawOptions: opts,
+                                correctText: item.correctText || opts[0],
+                                explanation: item.explanation || '',
+                                discardExplanation: item.discardExplanation || null
+                            });
+                            countQuestions++;
+                        }
+                    });
+
+                    localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                    prepareRandomizedLists();
+                    alert(`¡Importación masiva exitosa!\n- Preguntas agregadas: ${countQuestions}\n- Flashcards agregadas: ${countCards}`);
+                    toggleAdminPanel();
+                    renderContent();
+                } catch (err) {
+                    alert('Error al procesar el archivo JSON masivo.');
+                }
+            };
+            reader.readAsText(file);
         }
 
         function saveAdminContent() {
@@ -1697,6 +1767,7 @@
             }
 
             localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+            prepareRandomizedLists();
             alert('¡Guardado exitosamente!');
             toggleAdminPanel();
             renderContent();
@@ -1797,6 +1868,7 @@
                     pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
                     maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
 
+                    prepareRandomizedLists();
                     alert('¡Progreso importado con éxito!');
                     renderContent();
                 } catch (err) {
