@@ -109,7 +109,7 @@
         .content-panel {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             min-height: 380px;
         }
@@ -120,18 +120,20 @@
             border-radius: 12px;
             padding: 3px;
             margin-bottom: 20px;
+            overflow-x: auto;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px 0;
+            padding: 10px 6px;
             border: none;
             background: transparent;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             color: var(--text-muted);
             border-radius: 9px;
             cursor: pointer;
+            white-space: nowrap;
             transition: all 0.2s ease;
         }
 
@@ -238,19 +240,79 @@
         .option-btn.correct { background-color: #D4EDDA; border-color: #28A745; color: #155724; font-weight: 600; }
         .option-btn.incorrect { background-color: #F8D7DA; border-color: #DC3545; color: #721C24; }
 
-        /* Resúmenes */
-        .summary-card {
+        /* Resúmenes Infográficos */
+        .info-card {
             background: #FAFAFA;
-            border-left: 4px solid var(--primary-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
+            border: 1px solid #E5E5EA;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
         }
 
-        .summary-card h4 { font-size: 14px; margin-bottom: 4px; }
-        .summary-card p { font-size: 13px; color: #4A4A4A; line-height: 1.4; }
+        .info-card h4 {
+            font-size: 15px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 4px;
+        }
 
-        /* Temario Avanzado */
+        .pearl-box {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #856404;
+            margin: 8px 0;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .info-table th {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: left;
+            padding: 6px;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .info-table td {
+            padding: 6px;
+            border-bottom: 1px solid #E5E5EA;
+            background: #FFFFFF;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .flow-badge {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Temario */
         .topic-card {
             background: #FAFAFA;
             border: 1px solid #E5E5EA;
@@ -292,6 +354,62 @@
             accent-color: var(--primary-color);
             cursor: pointer;
         }
+
+        /* Esquemas GPC */
+        .gpc-upload-zone {
+            border: 2px dashed var(--primary-color);
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .gpc-upload-zone p {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .gpc-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .gpc-img-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background: #000;
+            aspect-ratio: 4 / 3;
+        }
+
+        .gpc-img-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .gpc-img-card .delete-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(229, 57, 53, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -321,6 +439,7 @@
                 <button class="tab-btn" onclick="selectTab('preguntas')">Preguntas</button>
                 <button class="tab-btn" onclick="selectTab('resumenes')">Resúmenes</button>
                 <button class="tab-btn" onclick="selectTab('temario')">Temario</button>
+                <button class="tab-btn" onclick="selectTab('esquemas')">Esquemas GPC</button>
             </div>
 
             <div id="content-area"></div>
@@ -350,7 +469,18 @@
                     }
                 ],
                 resumenes: [
-                    { title: "Cáncer Cervicouterino", text: "El VPH de alto riesgo (16 y 18) es el factor etiológico principal. El tamizaje se inicia a los 25 años con citología cervical." }
+                    {
+                        title: "Cáncer Cervicouterino (CaCu)",
+                        pearl: "PERLA ENARM: VPH 16 (45-50%) y VPH 18 (10-15%) son los serotipos más oncogénicos.",
+                        table: {
+                            headers: ["Método", "Inicio", "Frecuencia"],
+                            rows: [
+                                ["Citología (Papanicolaou)", "25 años", "Anual (tras 2 negativas -> c/3 años)"],
+                                ["Prueba VPH Bio. Mol.", "30 años", "Cada 5 años"]
+                            ]
+                        },
+                        flow: ["Tamizaje positivo", "Colposcopia", "Biopsia guiada", "Tratamiento según Etapa"]
+                    }
                 ],
                 temario: [
                     "Ciclo femenino", "Síndrome de ovario poliquístico (SOP)", "Menopausia y climaterio", "Osteoporosis",
@@ -374,7 +504,18 @@
                     }
                 ],
                 resumenes: [
-                    { title: "Hemorragia de la Segunda Mitad", text: "Placenta previa: indolora, sangre rutilante. DPPNI: dolorosa, hipertonía uterina, sangre oscura." }
+                    {
+                        title: "Hemorragia de la 2da Mitad del Embarazo",
+                        pearl: "DIAG NÓSTICO DIFERENCIAL CLAVE: Placenta Previa NO duele | DPPNI SÍ duele e hipertonía.",
+                        table: {
+                            headers: ["Entidad", "Sangrado", "Dolor", "Tono Uterino"],
+                            rows: [
+                                ["Placenta Previa", "Rojo rutilante", "Ausente", "Normal"],
+                                ["DPPNI", "Oscuro / Oculto", "Severo", "Hipertonía / Leñoso"]
+                            ]
+                        },
+                        flow: ["Estabilidad hemodinámica", "USG Pélvico / Obstétrico", "Evaluación Fetal", "Resolución por Cesárea si hay compromiso"]
+                    }
                 ],
                 temario: [
                     "Control prenatal", "Hemorragias del primer trimestre", "Amenaza de aborto", "Aborto", "Embarazo ectópico",
@@ -398,7 +539,19 @@
                     }
                 ],
                 resumenes: [
-                    { title: "Cetoacidosis Diabética vs EHH", text: "CAD: Glucosa >250, pH <7.30, cetonas positivas. EHH: Glucosa >600, osmolaridad >320, sin cetoacidosis." }
+                    {
+                        title: "Complicaciones Agudas de la Diabetes",
+                        pearl: "CAD = Anion Gap elevado + Cetonas | EHH = Osmolaridad >320 mOsm/kg sin cetoacidosis.",
+                        table: {
+                            headers: ["Parámetro", "Cetoacidosis (CAD)", "Estado Hiperosmolar (EHH)"],
+                            rows: [
+                                ["Glucosa", "> 250 mg/dL", "> 600 mg/dL"],
+                                ["pH Arterial", "< 7.30", "> 7.30"],
+                                ["Osmolaridad", "Variable", "> 320 mOsm/kg"]
+                            ]
+                        },
+                        flow: ["Hidratación NaCl 0.9%", "Insulina Regular 0.1 U/kg/h", "Medir K+ (Asegurar >3.3)", "Corregir Causa Desencadenante"]
+                    }
                 ],
                 temario: [
                     "Insuficiencia cardíaca", "Síndrome coronario agudo", "Arritmias", "Fibrilación auricular", "Valvulopatías",
@@ -425,7 +578,18 @@
                     }
                 ],
                 resumenes: [
-                    { title: "Escala de Alvarado", text: "Evalúa migración del dolor, anorexia, náusea, dolor en FID, rebote, fiebre, leucocitosis y desviación a la izquierda." }
+                    {
+                        title: "Escala de Alvarado (Apendicitis Aguda)",
+                        pearl: "Puntaje ≥ 7 = Alta probabilidad quirúrgica (Apendicectomía).",
+                        table: {
+                            headers: ["Criterio", "Puntos"],
+                            rows: [
+                                ["Dolor Migratorio / Leucocitosis", "2 Pts c/u"],
+                                ["Anorexia / Náusea / Fiebre / Rebote", "1 Pt c/u"]
+                            ]
+                        },
+                        flow: ["0-3: Descartar", "4-6: Observación / TAC / USG", "7-10: Cirugía Directa"]
+                    }
                 ],
                 temario: [
                     "Apendicitis aguda", "Abdomen agudo", "Patología biliar", "Colecistitis no complicada", "Colecistitis crónica litiásica",
@@ -450,7 +614,18 @@
                     }
                 ],
                 resumenes: [
-                    { title: "Escala de APGAR", text: "Evalúa Apariencia, Pulso, Gesticulación, Actividad y Respiración a los 1 min y 5 min." }
+                    {
+                        title: "Diferenciación de Estridor Respiratorio Alto",
+                        pearl: "CRUP: Tos perruna + Parainfluenza | EPIGLOTITIS: Babeo + Posición en trípode + S. aureus/Haemophilus.",
+                        table: {
+                            headers: ["Entidad", "Clínica Clave", "Rx Cuello"],
+                            rows: [
+                                ["Crup (LTB)", "Tos perruna, estridor", "Signo de la Torre / Aguja"],
+                                ["Epiglotitis", "Trípode, disfagia, babeo", "Signo del Pulgar"]
+                            ]
+                        },
+                        flow: ["Mantener calma", "Dexametasona Dosis Única (0.6 mg/kg)", "Nebulizar L-Epinefrina si hay estridor grave"]
+                    }
                 ],
                 temario: [
                     "Recién nacido sano", "Reanimación neonatal", "Síndrome de dificultad respiratoria (SDR)", "Enfermedad de membrana hialina",
@@ -470,11 +645,11 @@
         let answeredQuestions = parseInt(localStorage.getItem('yn_questions') || '0');
         let topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
+        let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
 
         function updateStatsDisplay() {
             document.getElementById('stat-questions').textContent = answeredQuestions;
             
-            // Cálculo de avance general
             let totalPossibleChecks = 0;
             Object.keys(data).forEach(s => {
                 totalPossibleChecks += data[s].temario.length * 5;
@@ -548,9 +723,26 @@
                 `;
             } else if (currentTab === 'resumenes') {
                 area.innerHTML = subjectData.resumenes.map(r => `
-                    <div class="summary-card">
+                    <div class="info-card">
                         <h4>${r.title}</h4>
-                        <p>${r.text}</p>
+                        <div class="pearl-box">${r.pearl}</div>
+                        <table class="info-table">
+                            <thead>
+                                <tr>${r.table.headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                            </thead>
+                            <tbody>
+                                ${r.table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 10px;">
+                            <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Flujo Manejo:</strong>
+                            ${r.flow.map((step, sIdx) => `
+                                <div class="flow-step">
+                                    <div class="flow-badge">${sIdx + 1}</div>
+                                    <span>${step}</span>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 `).join('');
             } else if (currentTab === 'temario') {
@@ -577,7 +769,51 @@
                         </div>
                     `;
                 }).join('');
+            } else if (currentTab === 'esquemas') {
+                const list = gpcImages[currentSubject] || [];
+                area.innerHTML = `
+                    <div class="gpc-upload-zone" onclick="document.getElementById('gpc-input').click()">
+                        <p>+ Subir Esquema de Tratamiento GPC</p>
+                        <span style="font-size: 10px; color: var(--text-muted);">Formatos aceptados: PNG, JPG, JPEG</span>
+                        <input type="file" id="gpc-input" accept="image/*" style="display: none;" onchange="uploadGpcImage(event)">
+                    </div>
+                    <div class="gpc-gallery">
+                        ${list.map((imgSrc, iIdx) => `
+                            <div class="gpc-img-card">
+                                <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
+                                <button class="delete-btn" onclick="deleteGpcImage(${iIdx})">✕</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             }
+        }
+
+        function uploadGpcImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (!gpcImages[currentSubject]) gpcImages[currentSubject] = [];
+                gpcImages[currentSubject].push(e.target.result);
+                localStorage.setItem('yn_gpc_images', JSON.stringify(gpcImages));
+                renderContent();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function deleteGpcImage(idx) {
+            if (gpcImages[currentSubject]) {
+                gpcImages[currentSubject].splice(idx, 1);
+                localStorage.setItem('yn_gpc_images', JSON.stringify(gpcImages));
+                renderContent();
+            }
+        }
+
+        function openImageModal(src) {
+            const w = window.open("");
+            w.document.write(`<body style="margin:0; background: black; display:flex; align-items:center; justify-content:center; height:100vh;"><img src="${src}" style="max-width:100%; max-height:100%;"></body>`);
         }
 
         function checkAnswer(btn, isCorrect) {
