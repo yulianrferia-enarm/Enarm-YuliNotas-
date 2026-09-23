@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -837,7 +837,7 @@
             renderContent();
         }
 
-        // --- EXPORTAR E IMPORTAR ENTRE DISPOSITIVOS ---
+        // --- EXPORTAR E IMPORTAR ENTRE DISPOSITIVOS (SOPORTE IOS FIX) ---
         function exportBackup() {
             const backupData = {
                 yn_custom_data: customData,
@@ -847,13 +847,31 @@
                 yn_info_images: infographicImages
             };
 
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
+            const jsonString = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const fileName = `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`;
+
+            // Para dispositivos iOS / Safari (Abre la hoja de compartir de iPhone)
+            if (navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                const file = new File([blob], fileName, { type: "application/json" });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: 'Respaldar YuliNotas',
+                    }).catch(() => {});
+                    return;
+                }
+            }
+
+            // Descarga normal para otros navegadores
+            const url = URL.createObjectURL(blob);
             const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`);
+            downloadAnchor.href = url;
+            downloadAnchor.download = fileName;
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
-            downloadAnchor.remove();
+            document.body.removeChild(downloadAnchor);
+            URL.revokeObjectURL(url);
         }
 
         function importBackup(e) {
