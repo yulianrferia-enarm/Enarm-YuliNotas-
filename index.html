@@ -87,7 +87,7 @@
         .btn-font { background: #4A148C; color: white; }
 
         .container {
-            max-width: 650px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 12px 16px;
         }
@@ -101,31 +101,33 @@
             font-weight: 700;
         }
 
-        /* 1. Materias hasta arriba */
+        /* 1. Materias abarcando más espacio horizontal */
         .subjects-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 10px;
+            margin-bottom: 16px;
+            width: 100%;
         }
 
         .subject-btn {
             border: none;
             border-radius: 12px;
-            padding: 12px 8px;
+            padding: 16px 12px;
             color: #FFFFFF;
             font-weight: 700;
-            font-size: calc(13px * var(--font-scale));
+            font-size: calc(14px * var(--font-scale));
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
             transition: transform 0.15s ease, opacity 0.15s ease;
+            width: 100%;
         }
 
-        .subject-btn:active { transform: scale(0.96); }
+        .subject-btn:active { transform: scale(0.98); }
 
         .subject-btn.active {
             outline: 3px solid var(--text-dark);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
         }
 
         .btn-gineco { background-color: #D81B60; }
@@ -134,20 +136,21 @@
         .btn-cirugia { background-color: #1565C0; }
         .btn-pedia { background-color: #E53935; }
 
-        /* 2. Apartados al centro */
+        /* 2. Navegación por pestañas reordenadas y sin emojis */
         .tabs-nav {
             display: flex;
             background-color: var(--info-bg);
             border-radius: 12px;
-            padding: 3px;
+            padding: 4px;
             margin-bottom: 12px;
             overflow-x: auto;
             border: 1px solid var(--border-color);
+            width: 100%;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 9px 6px;
+            padding: 10px 8px;
             border: none;
             background: transparent;
             font-size: calc(11px * var(--font-scale));
@@ -157,6 +160,7 @@
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.2s ease;
+            text-align: center;
         }
 
         .tab-btn.active {
@@ -176,7 +180,7 @@
             position: relative;
         }
 
-        /* 3. Contador discreto en la esquina */
+        /* Contador discreto en la esquina */
         .corner-badge {
             position: absolute;
             top: 12px;
@@ -360,7 +364,7 @@
             width: 100%;
         }
 
-        /* Mis YuliNotas PDF */
+        /* YuliNotas PDF */
         .pdf-list-container {
             display: flex;
             flex-direction: column;
@@ -417,7 +421,7 @@
             background: #FFFFFF;
         }
 
-        /* Modal visor de imagen con botón de salir */
+        /* Modal visor de imagen */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -658,8 +662,8 @@
         <div id="admin-panel" class="admin-panel">
             <h3>⚡ Agregar Nuevo Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
-                <option value="flashcard">Flashcard</option>
                 <option value="pregunta">Pregunta Caso Clínico</option>
+                <option value="flashcard">Flashcard</option>
             </select>
 
             <select id="admin-subject">
@@ -675,7 +679,7 @@
             <button onclick="saveAdminContent()">Guardar Contenido</button>
         </div>
 
-        <!-- 1. MATERIAS HASTA ARRIBA -->
+        <!-- 1. MATERIAS (Ocupando todo el ancho) -->
         <div class="section-title">Materia</div>
         <div class="subjects-grid">
             <button class="subject-btn btn-gineco" onclick="selectSubject('gineco')">Ginecología</button>
@@ -685,19 +689,19 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. APARTADOS EN EL MEDIO Y CONTENIDO -->
+        <!-- 2. PESTAÑAS (Ordenadas sin emojis) -->
         <div class="tabs-nav">
-            <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
-            <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">📄 Mis YuliNotas</button>
+            <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
             <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
+            <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
+            <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
-            <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquemas GPC</button>
-            <button class="tab-btn btn-tab-stats" onclick="selectTab('stats')">📈 Métricas</button>
+            <button class="tab-btn btn-tab-stats" onclick="selectTab('stats')">Métricas</button>
         </div>
 
         <div class="content-panel">
-            <div id="corner-badge" class="corner-badge">0%</div>
+            <div id="corner-badge" class="corner-badge">0/0</div>
             <div id="content-area"></div>
         </div>
     </div>
@@ -770,7 +774,7 @@
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
         let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
-        let currentTab = localStorage.getItem('yn_current_tab') || 'flashcards';
+        let currentTab = localStorage.getItem('yn_current_tab') || 'preguntas';
         let currentCardIndex = 0;
         let currentQuestionIndex = 0;
         let activeCardFilter = 'all';
@@ -819,12 +823,12 @@
             const data = getData();
             const subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [] };
 
-            if (currentTab === 'flashcards') {
-                const total = (subjectData.flashcards || []).length;
-                badge.textContent = total > 0 ? `${(currentCardIndex % total) + 1}/${total}` : '0/0';
-            } else if (currentTab === 'preguntas') {
+            if (currentTab === 'preguntas') {
                 const total = (subjectData.preguntas || []).length;
                 badge.textContent = total > 0 ? `${(currentQuestionIndex % total) + 1}/${total}` : '0/0';
+            } else if (currentTab === 'flashcards') {
+                const total = (subjectData.flashcards || []).length;
+                badge.textContent = total > 0 ? `${(currentCardIndex % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'resumenes') {
                 const total = (infographicImages[currentSubject] || []).length;
                 badge.textContent = `${total} Infografías`;
@@ -844,11 +848,11 @@
                     });
                 });
                 let percentage = totalPossibleSubjectChecks > 0 ? Math.round((completedSubjectChecks / totalPossibleSubjectChecks) * 100) : 0;
-                badge.textContent = `Avance: ${percentage}%`;
+                badge.textContent = `${percentage}%`;
             } else if (currentTab === 'stats') {
                 const totalQuiz = quizStats.correct + quizStats.incorrect;
                 const quizAccuracy = totalQuiz > 0 ? Math.round((quizStats.correct / totalQuiz) * 100) : 0;
-                badge.textContent = `Precisión: ${quizAccuracy}%`;
+                badge.textContent = `${quizAccuracy}%`;
             }
         }
 
@@ -931,50 +935,7 @@
             const data = getData();
             const subjectData = data[currentSubject];
 
-            if (currentTab === 'flashcards') {
-                let cards = subjectData.flashcards || [];
-                
-                if (activeCardFilter === 'hard') {
-                    cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-                }
-
-                if (cards.length === 0) {
-                    area.innerHTML = `
-                        <div class="flashcard-filter-bar">
-                            <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Solo Difíciles</button>
-                        </div>
-                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
-                    `;
-                    return;
-                }
-
-                const card = cards[currentCardIndex % cards.length];
-                const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
-                const currentDiff = cardDifficulty[card.id] || 'normal';
-
-                area.innerHTML = `
-                    <div class="flashcard-filter-bar">
-                        <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Solo Difíciles</button>
-                    </div>
-                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
-                        <div class="flashcard-inner">
-                            <div class="flashcard-front">
-                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
-                                ${card.q}
-                            </div>
-                            <div class="flashcard-back">${card.a}</div>
-                        </div>
-                    </div>
-                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
-                    <div class="anki-controls">
-                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
-                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
-                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
-                    </div>
-                `;
-            } else if (currentTab === 'preguntas') {
+            if (currentTab === 'preguntas') {
                 const questionsList = subjectData.preguntas || [];
                 if (questionsList.length === 0) {
                     area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas registradas en esta materia.</p>`;
@@ -988,7 +949,6 @@
                 });
 
                 const q = sortedQuestions[currentQuestionIndex % sortedQuestions.length];
-                const qSched = questionSchedule[q.id] || { weight: 0, status: 'Nueva' };
 
                 let rawList = q.rawOptions || q.options || [];
                 let correctValue = q.correctText || rawList[q.correct || 0];
@@ -1009,35 +969,55 @@
                             <button class="option-btn" onclick="checkAnswer(this, ${idx}, ${correctNewIndex}, '${q.id}')">${String.fromCharCode(65 + idx)})${opt}</button>
                         `).join('')}
                         <div id="explanation-box" class="explanation-box">
-                            <strong>💡 Retroalimentación Desglosada:</strong>
+                            <strong>Retroalimentación Desglosada:</strong>
                             <div style="margin-bottom:8px;">${q.explanation || ''}</div>
-                            <strong style="display:block; margin-top:8px;">🔍 Descarte de Opciones:</strong>
+                            <strong style="display:block; margin-top:8px;">Descarte de Opciones:</strong>
                             ${discardHtml}
                             <button class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                         </div>
                     </div>
                 `;
-            } else if (currentTab === 'yulinotas') {
-                const list = pdfNotes[currentSubject] || [];
+            } else if (currentTab === 'flashcards') {
+                let cards = subjectData.flashcards || [];
+                
+                if (activeCardFilter === 'hard') {
+                    cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
+                }
+
+                if (cards.length === 0) {
+                    area.innerHTML = `
+                        <div class="flashcard-filter-bar">
+                            <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
+                        </div>
+                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
+                    `;
+                    return;
+                }
+
+                const card = cards[currentCardIndex % cards.length];
+                const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
+                const currentDiff = cardDifficulty[card.id] || 'normal';
+
                 area.innerHTML = `
-                    <div class="image-upload-zone" onclick="document.getElementById('pdf-input').click()">
-                        <p>📄 + Subir Nota en PDF (Goodnotes / Escaneado)</p>
-                        <input type="file" id="pdf-input" accept="application/pdf" style="display: none;" onchange="uploadPdfNote(event)">
+                    <div class="flashcard-filter-bar">
+                        <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
                     </div>
-                    <div class="pdf-list-container">
-                        ${list.length === 0 ? `<p style="text-align:center; font-size:calc(12px * var(--font-scale)); color:var(--text-muted); padding:10px;">No has subido notas en PDF para esta materia todavía.</p>` : ''}
-                        ${list.map((pdf, pIdx) => `
-                            <div class="pdf-card">
-                                <div class="pdf-card-header">
-                                    <div class="pdf-card-title">📄 ${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
-                                    <div class="pdf-card-actions">
-                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
-                                        <button class="pdf-btn pdf-btn-delete" onclick="deletePdfNote(${pIdx})">✕</button>
-                                    </div>
-                                </div>
-                                <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
+                                ${card.q}
                             </div>
-                        `).join('')}
+                            <div class="flashcard-back">${card.a}</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
+                    <div class="anki-controls">
+                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
+                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
+                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
@@ -1052,6 +1032,45 @@
                             <div class="gallery-img-card">
                                 <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
                                 <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'info')">✕</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (currentTab === 'esquemas') {
+                const list = gpcImages[currentSubject] || [];
+                area.innerHTML = `
+                    <div class="image-upload-zone" onclick="document.getElementById('gpc-input').click()">
+                        <p>+ Subir Esquema de Tratamiento GPC</p>
+                        <input type="file" id="gpc-input" accept="image/*" style="display: none;" onchange="uploadImage(event, 'gpc')">
+                    </div>
+                    <div class="image-gallery">
+                        ${list.map((imgSrc, iIdx) => `
+                            <div class="gallery-img-card">
+                                <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
+                                <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'gpc')">✕</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (currentTab === 'yulinotas') {
+                const list = pdfNotes[currentSubject] || [];
+                area.innerHTML = `
+                    <div class="image-upload-zone" onclick="document.getElementById('pdf-input').click()">
+                        <p>+ Subir Nota en PDF (Goodnotes / Escaneado)</p>
+                        <input type="file" id="pdf-input" accept="application/pdf" style="display: none;" onchange="uploadPdfNote(event)">
+                    </div>
+                    <div class="pdf-list-container">
+                        ${list.length === 0 ? `<p style="text-align:center; font-size:calc(12px * var(--font-scale)); color:var(--text-muted); padding:10px;">No has subido notas en PDF para esta materia todavía.</p>` : ''}
+                        ${list.map((pdf, pIdx) => `
+                            <div class="pdf-card">
+                                <div class="pdf-card-header">
+                                    <div class="pdf-card-title">${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
+                                    <div class="pdf-card-actions">
+                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
+                                        <button class="pdf-btn pdf-btn-delete" onclick="deletePdfNote(${pIdx})">✕</button>
+                                    </div>
+                                </div>
+                                <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
                             </div>
                         `).join('')}
                     </div>
@@ -1078,22 +1097,6 @@
                         </div>
                     `;
                 }).join('');
-            } else if (currentTab === 'esquemas') {
-                const list = gpcImages[currentSubject] || [];
-                area.innerHTML = `
-                    <div class="image-upload-zone" onclick="document.getElementById('gpc-input').click()">
-                        <p>+ Subir Esquema de Tratamiento GPC</p>
-                        <input type="file" id="gpc-input" accept="image/*" style="display: none;" onchange="uploadImage(event, 'gpc')">
-                    </div>
-                    <div class="image-gallery">
-                        ${list.map((imgSrc, iIdx) => `
-                            <div class="gallery-img-card">
-                                <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
-                                <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'gpc')">✕</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
             } else if (currentTab === 'stats') {
                 const totalQuiz = quizStats.correct + quizStats.incorrect;
                 const quizAccuracy = totalQuiz > 0 ? Math.round((quizStats.correct / totalQuiz) * 100) : 0;
@@ -1101,7 +1104,7 @@
                 area.innerHTML = `
                     <div class="stats-dashboard">
                         <div class="stat-card-box">
-                            <h4>🎯 Precisión en Preguntas</h4>
+                            <h4>Precisión en Preguntas</h4>
                             <p style="font-size: calc(20px * var(--font-scale)); font-weight: 800; margin: 4px 0;">${quizAccuracy}% Correctas</p>
                             <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted);">${quizStats.correct} aciertos | ${quizStats.incorrect} fallos (${totalQuiz} respondidas)</p>
                             <div class="progress-bar-container">
@@ -1109,10 +1112,10 @@
                             </div>
                         </div>
                         <div class="stat-card-box">
-                            <h4>🏷️ Distribución de Dificultad (Flashcards)</h4>
-                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">🔴 Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">🟡 Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">🟢 Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
+                            <h4>Distribución de Dificultad (Flashcards)</h4>
+                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
+                            <p style="font-size: calc(12px * var(--font-scale));">Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
+                            <p style="font-size: calc(12px * var(--font-scale));">Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
                         </div>
                     </div>
                 `;
@@ -1137,13 +1140,13 @@
                 quizStats.incorrect++;
                 questionSchedule[qId] = {
                     weight: ((questionSchedule[qId] || {}).weight || 0) + 5,
-                    status: '🔴 Frecuente (Repasar pronto)'
+                    status: 'Frecuente (Repasar pronto)'
                 };
             } else {
                 quizStats.correct++;
                 questionSchedule[qId] = {
                     weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0),
-                    status: '🟢 Dominada'
+                    status: 'Dominada'
                 };
             }
 
