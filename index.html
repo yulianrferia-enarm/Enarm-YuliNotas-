@@ -217,7 +217,7 @@
         .topic-group-body {
             padding: 12px;
             border-top: 1px solid var(--border-color);
-            display: block;
+            display: none;
         }
 
         .topic-count-badge {
@@ -754,6 +754,7 @@
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
         };
 
+        // TEMARIOS COMPLETOS DEL ÍNDICE ENARM OFICIAL (Editorial Prado / Dr. Re)
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
@@ -770,7 +771,15 @@
                         "<b>CA-125 sérico:</b> INCORRECTA. Marcador inespecífico; no se recomienda de rutina."
                     ] 
                 }],
-                temario: ["Ciclo femenino", "SOP", "Menopausia", "Osteoporosis", "Amenorrea primaria", "Amenorrea secundaria", "Cervicovaginitis", "Endometriosis", "Miomatosis", "CaCu", "Cáncer de mama"]
+                temario: [
+                    "Síndrome de ovario poliquístico", "Menopausia y climaterio", "Osteoporosis", 
+                    "Amenorrea primaria", "Amenorrea secundaria", "Metrorragias", 
+                    "Insuficiencia ovárica primaria", "Cervicovaginitis", "Candidosis vulvovaginal", 
+                    "Enfermedad pélvica inflamatoria", "Miomatosis uterina", "Endometriosis", 
+                    "Hiperplasia endometrial", "Cáncer de endometrio", "Cáncer de ovario", 
+                    "Cáncer cervicouterino (CACU)", "Cáncer de mama", "Patología benigna de mama", 
+                    "Prolapso de órganos pélvicos", "Incontinencia urinaria"
+                ]
             },
             obste: {
                 flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio.", tag: "normal" }],
@@ -787,11 +796,79 @@
                         "<b>Vasa Previa:</b> INCORRECTA. Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
                     ] 
                 }],
-                temario: ["Control prenatal", "Aborto", "Embarazo ectópico", "ETG", "Placenta previa", "DPPNI", "HPP", "Preeclampsia", "Diabetes gestacional"]
+                temario: [
+                    "Control prenatal", "Amenaza de aborto", "Aborto", "Embarazo ectópico", 
+                    "Enfermedad trofoblástica gestacional", "Placenta previa", "Acretismo placentario", 
+                    "Abrupto placentario / DPPNI", "Rotura uterina", "Hemorragia postparto (HPP)", 
+                    "Atonía uterina", "Vasa previa", "Parto pretérmino", "Gestación múltiple", 
+                    "Gestación cronológicamente prolongada", "Ruptura prematura de membranas", 
+                    "Corioamnionitis", "Sepsis puerperal", "Elementos de tocología", 
+                    "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
+                ]
             },
-            interna: { flashcards: [], preguntas: [], temario: ["HAS", "Diabetes Mellitus", "CAD/EHH", "EPOC", "Asma", "ERC"] },
-            cirugia: { flashcards: [], preguntas: [], temario: ["Apendicitis aguda", "Colecistitis", "Hernias", "Oclusión intestinal", "ATLS"] },
-            pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "SDR", "Crup", "Epiglotitis", "Vacunas", "Diarrea aguda"] }
+            cirugia: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Abdomen agudo", "Apendicitis aguda", "Colecistitis crónica litiásica", "Coledocolitiasis", 
+                    "Colangitis", "Enfermedad diverticular", "Acalasia", "Espasmo esofágico difuso", 
+                    "Enfermedad por reflujo gastroesofágico (ERGE)", "Esófago de Barrett", "Dispepsia funcional", 
+                    "Carcinoma de esófago", "Gastritis", "Úlcera péptica", "Úlcera péptica perforada", 
+                    "Síndrome de Zollinger-Ellison", "Cáncer gástrico", "Obesidad y cirugía bariátrica", 
+                    "Hernia umbilical", "Hernias inguinales y femorales", "Hernia ventral", "Esplenectomía", 
+                    "Pancreatitis aguda", "Pancreatitis crónica", "Adenocarcinoma de páncreas", 
+                    "Enfermedad arterial periférica", "Oclusión arterial aguda", "Insuficiencia venosa crónica", 
+                    "Mordeduras y picaduras (Serpientes, Arañas, Alacrán)", "Patología perianal (Hemorroides, Absceso, Fístula, Fisura)", 
+                    "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", "Cáncer de colon", 
+                    "Hepatoblastoma y Carcinoma hepatocelular", "Trasplante de hígado", "Quemaduras", 
+                    "Úlceras por presión", "Derrame pleural", "Infección y dehiscencia de herida quirúrgica", 
+                    "ATLS y Trauma (Tórax, Abdomen, Craneoencefálico)", "Hematoma epidural y subdural", 
+                    "Hipertensión intracraneal e Hidrocefalia", "Oftalmología (Conjuntivitis, Glaucoma, Catarata, Retinopatía)", 
+                    "Urología (HPB, Cáncer de Próstata, Litiasis, IVU, Cáncer Renal y Testicular)", 
+                    "Otorrinolaringología (Vértigo, Epistaxis, Sinusitis, Otitis, Rinitis)", 
+                    "Traumatología y Ortopedia (Fracturas, Artritis Séptica, Túnel del Carpo, Lesiones Ligamentarias)"
+                ] 
+            },
+            interna: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Insuficiencia cardíaca", "Arritmias (FA, Bradiarritmias, Taquiarritmias)", "Síndrome coronario agudo", 
+                    "Valvulopatías y Cardiomiopatías", "Hipertensión arterial sistémica", "Basic & Advanced Life Support (BLS/ACLS)", 
+                    "Dermatología (Micosis, Toxicodermias, Acné, Psoriasis, Melanoma, Ca Basocelular)", 
+                    "Enfermedad diarreica aguda en adultos", "Síndrome de intestino irritable", "Enfermedad inflamatoria intestinal", 
+                    "Hepatitis aguda y crónica", "Absceso hepático y Varices esofágicas", "Enfermedades tiroideas (Hiper/Hipo, Nódulo, Tiroiditis)", 
+                    "Síndrome de Cushing e Insuficiencia suprarrenal", "Diabetes mellitus", "Cetoacidosis diabética y Estado hiperosmolar", 
+                    "Pie diabético", "Anemias (Ferropénica, Megaloblástica, Hemolítica)", "Leucemias agudas y crónicas", 
+                    "Linfomas (Hodgkin y No Hodgkin)", "Mieloma múltiple", "Insuficiencia renal aguda y Enfermedad renal crónica", 
+                    "Síndrome nefrítico y nefrótico", "Nefropatía diabética y lúpica", "EPOC y Exacerbaciones", 
+                    "Enfermedad tromboembólica venosa", "Cáncer de pulmón", "Asma en el adulto", 
+                    "Lupus eritematoso sistémico", "Artritis reumatoide", "Artropatía por cristales (Gota)", 
+                    "Espondilitis anquilosante y Artrosis", "Demencias (Alzheimer)", "Enfermedad vascular cerebral (Isquémico/Hemorrágico)", 
+                    "Guillain-Barré y Miastenia gravis", "Cefaleas (Migraña, Tensional)", "Infectología (TBP, Endocarditis, VIHsida, Dengue, COVID-19)", 
+                    "Intoxicaciones (Agroquímicos, Paracetamol, Opiáceos, CO)", "Sepsis y Choque séptico", 
+                    "Psiquiatría (Depresión mayor, Ansiedad, Esquizofrenia, Trastornos alimentarios)"
+                ] 
+            },
+            pedia: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Recién nacido sano", "Reanimación neonatal", "Patología respiratoria neonatal (SDR, TTRN, SAM)", 
+                    "Ictericia neonatal y TORCH", "Sepsis neonatal y Encefalopatía hipóxico-isquémica", 
+                    "Patología congénita (Atresia esofágica, Gastrosquisis, Onfalocele, Hernia diafragmática)", 
+                    "Control y seguimiento de la salud en <5 años", "Vacunas (Esquema nacional)", 
+                    "Desnutrición y Obesidad infantil", "Infecciones de vías respiratorias (Neumonía, Bronquiolitis, Croup, Otitis)", 
+                    "Asma pediátrica y Fibrosis quística", "Invaginación intestinal y Estenosis hipertrófica del píloro", 
+                    "Talla baja y Pubertad precoz/retardada", "Infección de vías urinarias y Reflujo vesicoureteral", 
+                    "Enfermedades exantemáticas y Enfermedad de Kawasaki", "Diarrea aguda y Deshidratación", 
+                    "Epilepsia y Crisis febriles", "Infecciones del SNC (Meningitis, Encefalitis)", 
+                    "Displasia del desarrollo de la cadera", "Legg-Calvé-Perthes y Epifisiólisis femoral", 
+                    "Oncología pediátrica (Leucemias, Tumores de Wilms, Neuroblastoma, Retinoblastoma)", 
+                    "Cardiopatías congénitas (Acianógenas y Cianógenas)", "Lactancia materna y Alimentación complementaria", 
+                    "Dermatología pediátrica (Dermatitis atópica, del pañal, Impétigo)", "TDAH y Parálisis cerebral infantil"
+                ] 
+            }
         };
 
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
@@ -930,7 +1007,7 @@
 
         function toggleTopicGroup(headerElem) {
             const body = headerElem.nextElementSibling;
-            if (body.style.display === 'none') {
+            if (body.style.display === 'none' || body.style.display === '') {
                 body.style.display = 'block';
             } else {
                 body.style.display = 'none';
