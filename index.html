@@ -370,6 +370,105 @@
             width: 100%;
         }
 
+        /* YuliNotas PDF Container */
+        .pdf-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pdf-card {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pdf-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-card-title {
+            font-size: calc(13px * var(--font-scale));
+            font-weight: 700;
+            color: var(--primary-color);
+            word-break: break-all;
+        }
+
+        .pdf-card-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .pdf-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: calc(11px * var(--font-scale));
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+        }
+
+        .pdf-btn-open { background: var(--primary-color); }
+        .pdf-btn-delete { background: #E53935; }
+
+        .pdf-viewer-frame {
+            width: 100%;
+            height: 400px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #FFFFFF;
+        }
+
+        /* Modal visor de imagen */
+        .image-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .image-modal-overlay.active {
+            display: flex;
+        }
+
+        .image-modal-overlay img {
+            max-width: 90%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .image-modal-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1001;
+        }
+
         /* Estadísticas */
         .stats-dashboard {
             display: flex;
@@ -608,6 +707,7 @@
             <div class="tabs-nav">
                 <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
                 <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
+                <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">📄 Mis YuliNotas (PDF)</button>
                 <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
                 <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
                 <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquemas GPC</button>
@@ -616,6 +716,12 @@
 
             <div id="content-area"></div>
         </div>
+    </div>
+
+    <!-- Modal Visor de Imágenes con Botón de Salir -->
+    <div id="image-modal" class="image-modal-overlay" onclick="closeImageModal()">
+        <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
+        <img id="modal-img-element" src="" onclick="event.stopPropagation()">
     </div>
 
     <script>
@@ -675,6 +781,7 @@
         let questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
+        let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -686,6 +793,10 @@
 
         if (isDarkMode) document.body.classList.add('dark-mode');
         document.documentElement.style.setProperty('--font-scale', currentFontScale);
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeImageModal();
+        });
 
         function changeFontSize(delta) {
             currentFontScale = Math.min(Math.max(currentFontScale + delta, 0.8), 1.6);
@@ -784,6 +895,46 @@
             renderContent();
         }
 
+        // --- MANEJO DE PDF (YULINOTAS) ---
+        function uploadPdfNote(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.type !== 'application/pdf') {
+                alert('Por favor selecciona un archivo PDF válido.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                if (!pdfNotes[currentSubject]) pdfNotes[currentSubject] = [];
+                
+                pdfNotes[currentSubject].push({
+                    name: file.name,
+                    data: evt.target.result,
+                    date: new Date().toLocaleDateString('es-MX')
+                });
+
+                localStorage.setItem('yn_pdf_notes', JSON.stringify(pdfNotes));
+                renderContent();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function deletePdfNote(idx) {
+            if (!pdfNotes[currentSubject]) return;
+            pdfNotes[currentSubject].splice(idx, 1);
+            localStorage.setItem('yn_pdf_notes', JSON.stringify(pdfNotes));
+            renderContent();
+        }
+
+        function openPdfWindow(dataUrl) {
+            const win = window.open();
+            if (win) {
+                win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+            }
+        }
+
         function renderContent() {
             const area = document.getElementById('content-area');
             const data = getData();
@@ -877,6 +1028,29 @@
                             ${discardHtml}
                             <button class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                         </div>
+                    </div>
+                `;
+            } else if (currentTab === 'yulinotas') {
+                const list = pdfNotes[currentSubject] || [];
+                area.innerHTML = `
+                    <div class="image-upload-zone" onclick="document.getElementById('pdf-input').click()">
+                        <p>📄 + Subir Nota en PDF (Goodnotes / Escaneado)</p>
+                        <input type="file" id="pdf-input" accept="application/pdf" style="display: none;" onchange="uploadPdfNote(event)">
+                    </div>
+                    <div class="pdf-list-container">
+                        ${list.length === 0 ? `<p style="text-align:center; font-size:calc(12px * var(--font-scale)); color:var(--text-muted); padding:10px;">No has subido notas en PDF para esta materia todavía.</p>` : ''}
+                        ${list.map((pdf, pIdx) => `
+                            <div class="pdf-card">
+                                <div class="pdf-card-header">
+                                    <div class="pdf-card-title">📄 ${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
+                                    <div class="pdf-card-actions">
+                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
+                                        <button class="pdf-btn pdf-btn-delete" onclick="deletePdfNote(${pIdx})">✕</button>
+                                    </div>
+                                </div>
+                                <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
+                            </div>
+                        `).join('')}
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
@@ -1102,8 +1276,15 @@
         }
 
         function openImageModal(src) {
-            const w = window.open("");
-            w.document.write(`<body style="margin:0; background: black; display:flex; align-items:center; justify-content:center; height:100vh;"><img src="${src}" style="max-width:100%; max-height:100%;"></body>`);
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img-element');
+            img.src = src;
+            modal.classList.add('active');
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('active');
         }
 
         function toggleCheck(key) {
@@ -1138,6 +1319,7 @@
                 yn_question_schedule: questionSchedule,
                 yn_gpc_images: gpcImages,
                 yn_info_images: infographicImages,
+                yn_pdf_notes: pdfNotes,
                 yn_font_scale: currentFontScale
             };
 
@@ -1183,6 +1365,7 @@
                     if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
                     if (imported.yn_gpc_images) localStorage.setItem('yn_gpc_images', JSON.stringify(imported.yn_gpc_images));
                     if (imported.yn_info_images) localStorage.setItem('yn_info_images', JSON.stringify(imported.yn_info_images));
+                    if (imported.yn_pdf_notes) localStorage.setItem('yn_pdf_notes', JSON.stringify(imported.yn_pdf_notes));
                     if (imported.yn_font_scale) {
                         currentFontScale = imported.yn_font_scale;
                         localStorage.setItem('yn_font_scale', currentFontScale.toString());
@@ -1197,6 +1380,7 @@
                     questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
                     gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
                     infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
+                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes') || '{}');
 
                     alert('¡Progreso importado con éxito!');
                     updateStatsDisplay();
