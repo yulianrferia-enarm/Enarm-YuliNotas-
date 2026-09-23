@@ -45,22 +45,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 6px;
         }
 
         .app-header h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
         }
 
-        .admin-toggle-btn {
+        .header-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-action {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
+        }
+
+        .btn-sync {
+            background: #2E7D32;
         }
 
         .stats-bar {
@@ -292,7 +302,7 @@
             margin-bottom: 4px;
         }
 
-        /* Galerías de imágenes (Infografías y Esquemas) */
+        /* Galerías */
         .image-upload-zone {
             border: 2px dashed var(--primary-color);
             background: rgba(255,255,255,0.7);
@@ -391,7 +401,7 @@
             cursor: pointer;
         }
 
-        /* Panel Admin Form */
+        /* Admin Panel */
         .admin-panel {
             display: none;
             background: #FFFFFF;
@@ -436,9 +446,15 @@
 
     <header class="app-header">
         <div class="app-header-top">
-            <h1>YuliNotas ENARM</h1>
-            <button class="admin-toggle-btn" onclick="toggleAdminPanel()">+ Creador</button>
+            <h1>YuliNotas</h1>
+            <div class="header-actions">
+                <button class="btn-action btn-sync" onclick="exportBackup()">📥 Guardar</button>
+                <button class="btn-action btn-sync" onclick="document.getElementById('import-file-input').click()">📤 Cargar</button>
+                <button class="btn-action" onclick="toggleAdminPanel()">+ Creador</button>
+            </div>
         </div>
+        <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="importBackup(event)">
+
         <div class="stats-bar">
             <div class="subject-tag" id="stat-subject-name">Ginecología</div>
             <span>🎴 Flashcards: <strong id="stat-cards">0</strong></span>
@@ -451,7 +467,7 @@
 
     <div class="container">
 
-        <!-- Panel Creador (Solo para Flashcards y Preguntas con Retroalimentación) -->
+        <!-- Panel Creador -->
         <div id="admin-panel" class="admin-panel">
             <h3>⚡ Agregar Nuevo Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
@@ -520,14 +536,12 @@
             pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "SDR", "Crup", "Epiglotitis", "Vacunas", "Diarrea aguda"] }
         };
 
-        // Cargar datos del usuario guardados
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
         let topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
 
-        // Navegación
         let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
         let currentTab = localStorage.getItem('yn_current_tab') || 'flashcards';
         let currentCardIndex = 0;
@@ -543,7 +557,6 @@
             return combined;
         }
 
-        // Actualización de contadores por materia activa
         function updateStatsDisplay() {
             let data = getData();
             let subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [] };
@@ -559,7 +572,6 @@
             document.getElementById('stat-summaries').textContent = summariesCount;
             document.getElementById('stat-gpc').textContent = gpcCount;
 
-            // Porcentaje de avance
             let totalPossibleSubjectChecks = subjectData.temario.length * 5;
             let completedSubjectChecks = 0;
 
@@ -702,7 +714,7 @@
             }
         }
 
-        // --- FUNCIONES DEL PANEL CREADOR ---
+        // --- CREADOR ---
         function toggleAdminPanel() {
             const panel = document.getElementById('admin-panel');
             panel.classList.toggle('active');
@@ -766,7 +778,7 @@
             renderContent();
         }
 
-        // --- SUBIR / ELIMINAR FOTOS (Infografías y GPC) ---
+        // --- SUBIR / ELIMINAR FOTOS ---
         function uploadImage(e, type) {
             const file = e.target.files[0];
             if (!file) return;
@@ -823,6 +835,56 @@
             localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
             currentCardIndex = (currentCardIndex + 1) % getData()[currentSubject].flashcards.length;
             renderContent();
+        }
+
+        // --- EXPORTAR E IMPORTAR ENTRE DISPOSITIVOS ---
+        function exportBackup() {
+            const backupData = {
+                yn_custom_data: customData,
+                yn_topic_checklist: topicChecklist,
+                yn_anki: ankiReviews,
+                yn_gpc_images: gpcImages,
+                yn_info_images: infographicImages
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    
+                    if (imported.yn_custom_data) localStorage.setItem('yn_custom_data', JSON.stringify(imported.yn_custom_data));
+                    if (imported.yn_topic_checklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.yn_topic_checklist));
+                    if (imported.yn_anki) localStorage.setItem('yn_anki', JSON.stringify(imported.yn_anki));
+                    if (imported.yn_gpc_images) localStorage.setItem('yn_gpc_images', JSON.stringify(imported.yn_gpc_images));
+                    if (imported.yn_info_images) localStorage.setItem('yn_info_images', JSON.stringify(imported.yn_info_images));
+
+                    customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
+                    topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
+                    ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
+                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
+                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
+
+                    alert('¡Progreso importado con éxito!');
+                    updateStatsDisplay();
+                    renderContent();
+                } catch (err) {
+                    alert('Error al leer el archivo de respaldo. Asegúrate de que sea un archivo .json válido.');
+                }
+            };
+            reader.readAsText(file);
         }
 
         // Inicializar app
