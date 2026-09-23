@@ -83,19 +83,9 @@
             cursor: pointer;
         }
 
-        .btn-sync {
-            background: #2E7D32;
-        }
-
-        .btn-theme {
-            background: #333333;
-            color: #FFD700;
-        }
-
-        .btn-font {
-            background: #4A148C;
-            color: white;
-        }
+        .btn-sync { background: #2E7D32; }
+        .btn-theme { background: #333333; color: #FFD700; }
+        .btn-font { background: #4A148C; color: white; }
 
         .stats-bar {
             display: flex;
@@ -111,9 +101,7 @@
             border: 1px solid var(--border-color);
         }
 
-        .stats-bar span {
-            white-space: nowrap;
-        }
+        .stats-bar span { white-space: nowrap; }
 
         .subject-tag {
             width: 100%;
@@ -161,9 +149,7 @@
             transition: transform 0.15s ease, opacity 0.15s ease;
         }
 
-        .subject-btn:active {
-            transform: scale(0.96);
-        }
+        .subject-btn:active { transform: scale(0.96); }
 
         .subject-btn.active {
             outline: 3px solid var(--text-dark);
@@ -255,9 +241,7 @@
             transform-style: preserve-3d;
         }
 
-        .flashcard.flipped .flashcard-inner {
-            transform: rotateY(180deg);
-        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
 
         .flashcard-front, .flashcard-back {
             position: absolute;
@@ -343,10 +327,22 @@
             text-align: left;
             font-size: calc(13px * var(--font-scale));
             cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .option-btn.correct { background-color: #D4EDDA; border-color: #28A745; color: #155724; font-weight: 600; }
-        .option-btn.incorrect { background-color: #F8D7DA; border-color: #DC3545; color: #721C24; }
+        .option-btn.correct {
+            background-color: #D4EDDA !important;
+            border-color: #28A745 !important;
+            color: #155724 !important;
+            font-weight: 700;
+        }
+
+        .option-btn.incorrect {
+            background-color: #F8D7DA !important;
+            border-color: #DC3545 !important;
+            color: #721C24 !important;
+            font-weight: 700;
+        }
 
         .explanation-box {
             display: none;
@@ -357,7 +353,24 @@
             font-size: calc(12px * var(--font-scale));
             color: var(--text-dark);
             margin-top: 10px;
-            line-height: 1.4;
+            line-height: 1.5;
+        }
+
+        .explanation-box div {
+            margin-bottom: 6px;
+        }
+
+        .next-q-btn {
+            margin-top: 12px;
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: calc(12px * var(--font-scale));
+            cursor: pointer;
+            width: 100%;
         }
 
         /* Estadísticas */
@@ -504,9 +517,7 @@
             border: 2px solid var(--primary-color);
         }
 
-        .admin-panel.active {
-            display: block;
-        }
+        .admin-panel.active { display: block; }
 
         .admin-panel h3 {
             font-size: calc(15px * var(--font-scale));
@@ -622,12 +633,36 @@
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
-                preguntas: [{ q: "Femenina de 32 años con dismenorrea y dispareunia. ¿Estándar de oro?", options: ["Laparoscopia diagnóstica", "Ecografía", "RM", "Ca-125"], correct: 0, explanation: "La laparoscopia permite la visualización directa de los implantes endometriósicos y la toma de biopsia para confirmación histológica." }],
+                preguntas: [{ 
+                    id: "qp_g1",
+                    q: "Femenina de 32 años con dismenorrea secundaria progresiva, dispareunia e infertilidad. ¿Estándar de oro diagnóstico?", 
+                    options: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
+                    correct: 0, 
+                    explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
+                    discardExplanation: [
+                        "<b>Laparoscopia diagnóstica:</b> CORRECTA. Permite visión directa e histopatología.",
+                        "<b>Ecografía pélvica:</b> INCORRECTA. Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
+                        "<b>Resonancia Magnética:</b> INCORRECTA. Reservada para endometriosis profunda con compromiso visceral.",
+                        "<b>CA-125 sérico:</b> INCORRECTA. Marcador inespecífico; no se recomienda de rutina."
+                    ] 
+                }],
                 temario: ["Ciclo femenino", "SOP", "Menopausia", "Osteoporosis", "Amenorrea primaria", "Amenorrea secundaria", "Cervicovaginitis", "Endometriosis", "Miomatosis", "CaCu", "Cáncer de mama"]
             },
             obste: {
                 flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio.", tag: "normal" }],
-                preguntas: [{ q: "Gestante con sangrado rojo rutilante, indoloro. ¿Diagnóstico?", options: ["Placenta Previa", "DPPNI", "Ruptura Uterina", "Vasa Previa"], correct: 0, explanation: "La placenta previa se caracteriza típicamente por sangrado indoloro y rojo rutilante en la segunda mitad del embarazo." }],
+                preguntas: [{ 
+                    id: "qp_o1",
+                    q: "Gestante de 34 semanas con sangrado transvaginal rojo rutilante, indoloro y sin actividad uterina. ¿Diagnóstico probable?", 
+                    options: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
+                    correct: 0, 
+                    explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
+                    discardExplanation: [
+                        "<b>Placenta Previa:</b> CORRECTA. Sangrado indoloro, rojo brillante y de inicio insidioso.",
+                        "<b>DPPNI:</b> INCORRECTA. Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
+                        "<b>Ruptura Uterina:</b> INCORRECTA. Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
+                        "<b>Vasa Previa:</b> INCORRECTA. Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
+                    ] 
+                }],
                 temario: ["Control prenatal", "Aborto", "Embarazo ectópico", "ETG", "Placenta previa", "DPPNI", "HPP", "Preeclampsia", "Diabetes gestacional"]
             },
             interna: { flashcards: [], preguntas: [], temario: ["HAS", "Diabetes Mellitus", "CAD/EHH", "EPOC", "Asma", "ERC"] },
@@ -640,6 +675,7 @@
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
         let cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
         let quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
+        let questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
@@ -648,6 +684,7 @@
         let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
         let currentTab = localStorage.getItem('yn_current_tab') || 'flashcards';
         let currentCardIndex = 0;
+        let currentQuestionIndex = 0;
         let activeCardFilter = 'all';
 
         if (isDarkMode) document.body.classList.add('dark-mode');
@@ -711,6 +748,7 @@
             currentSubject = subjectKey;
             localStorage.setItem('yn_current_subject', subjectKey);
             currentCardIndex = 0;
+            currentQuestionIndex = 0;
             
             const config = subjectsConfig[subjectKey];
             if (!isDarkMode) {
@@ -794,20 +832,45 @@
                     </div>
                 `;
             } else if (currentTab === 'preguntas') {
-                if (subjectData.preguntas.length === 0) {
+                const questionsList = subjectData.preguntas || [];
+                if (questionsList.length === 0) {
                     area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas registradas en esta materia.</p>`;
                     return;
                 }
-                const q = subjectData.preguntas[0];
+
+                // Priorización por repetición espaciada
+                const sortedQuestions = [...questionsList].sort((a, b) => {
+                    const weightA = (questionSchedule[a.id] || {}).weight || 0;
+                    const weightB = (questionSchedule[b.id] || {}).weight || 0;
+                    return weightB - weightA;
+                });
+
+                const q = sortedQuestions[currentQuestionIndex % sortedQuestions.length];
+                const qSched = questionSchedule[q.id] || { weight: 0, status: 'Nueva' };
+
+                let discardHtml = '';
+                if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
+                    discardHtml = q.discardExplanation.map(desc => `<div>• ${desc}</div>`).join('');
+                } else {
+                    discardHtml = `<div>• <b>Opción correcta:</b> ${q.options[q.correct]}</div>`;
+                }
+
                 area.innerHTML = `
                     <div class="question-card">
+                        <div style="display:flex; justify-content:space-between; font-size:calc(11px * var(--font-scale)); color:var(--text-muted);">
+                            <span>Pregunta ${ (currentQuestionIndex % sortedQuestions.length) + 1 } de ${sortedQuestions.length}</span>
+                            <span>Repetición: <strong>${qSched.status || 'Nueva'}</strong></span>
+                        </div>
                         <div class="question-text">${q.q}</div>
                         ${q.options.map((opt, idx) => `
-                            <button class="option-btn" onclick="checkAnswer(this, ${idx === q.correct})">${opt}</button>
+                            <button class="option-btn" onclick="checkAnswer(this, ${idx},${q.correct}, '${q.id}')">${opt}</button>
                         `).join('')}
                         <div id="explanation-box" class="explanation-box">
-                            <strong>💡 Retroalimentación / Explicación:</strong>
-                            <span>${q.explanation || 'Sin explicación registrada.'}</span>
+                            <strong>💡 Retroalimentación Desglosada:</strong>
+                            <div style="margin-bottom:8px;">${q.explanation || ''}</div>
+                            <strong style="display:block; margin-top:8px;">🔍 Descarte de Opciones:</strong>
+                            ${discardHtml}
+                            <button class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                         </div>
                     </div>
                 `;
@@ -874,7 +937,7 @@
                         <div class="stat-card-box">
                             <h4>🎯 Precisión en Preguntas</h4>
                             <p style="font-size: calc(20px * var(--font-scale)); font-weight: 800; margin: 4px 0;">${quizAccuracy}% Correctas</p>
-                            <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted);">${quizStats.correct} bien de ${totalQuiz} respondidas</p>
+                            <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted);">${quizStats.correct} aciertos | ${quizStats.incorrect} fallos (${totalQuiz} respondidas)</p>
                             <div class="progress-bar-container">
                                 <div class="progress-fill" style="width: ${quizAccuracy}%;"></div>
                             </div>
@@ -889,6 +952,51 @@
                     </div>
                 `;
             }
+        }
+
+        function checkAnswer(selectedBtn, selectedIdx, correctIdx, qId) {
+            const parent = selectedBtn.parentElement;
+            const buttons = parent.querySelectorAll('.option-btn');
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === correctIdx) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            const isCorrect = selectedIdx === correctIdx;
+
+            if (!isCorrect) {
+                selectedBtn.classList.add('incorrect');
+                quizStats.incorrect++;
+                // Incrementar peso de repetición (aparece con más frecuencia)
+                questionSchedule[qId] = {
+                    weight: ((questionSchedule[qId] || {}).weight || 0) + 5,
+                    status: '🔴 Frecuente (Repasar pronto)'
+                };
+            } else {
+                quizStats.correct++;
+                // Disminuir peso de repetición
+                questionSchedule[qId] = {
+                    weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0),
+                    status: '🟢 Dominada'
+                };
+            }
+
+            localStorage.setItem('yn_quiz_stats', JSON.stringify(quizStats));
+            localStorage.setItem('yn_question_schedule', JSON.stringify(questionSchedule));
+            updateStatsDisplay();
+
+            const expBox = document.getElementById('explanation-box');
+            if (expBox) {
+                expBox.style.display = 'block';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            renderContent();
         }
 
         // --- CREADOR ---
@@ -914,7 +1022,8 @@
                     <input type="text" id="af-o1" placeholder="Opción B">
                     <input type="text" id="af-o2" placeholder="Opción C">
                     <input type="text" id="af-o3" placeholder="Opción D">
-                    <textarea id="af-exp" placeholder="Explicación / Retroalimentación de la respuesta correcta"></textarea>
+                    <textarea id="af-exp" placeholder="Explicación general"></textarea>
+                    <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
                 `;
             }
         }
@@ -937,14 +1046,19 @@
                 const o2 = document.getElementById('af-o2').value;
                 const o3 = document.getElementById('af-o3').value;
                 const exp = document.getElementById('af-exp').value;
+                const discText = document.getElementById('af-disc').value;
 
                 if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos 2 opciones');
                 
+                let discArr = discText ? discText.split('\n').filter(Boolean) : null;
+
                 customData[sub].preguntas.push({
+                    id: 'qcustom_' + Date.now(),
                     q,
                     options: [o0, o1, o2, o3].filter(Boolean),
                     correct: 0,
-                    explanation: exp
+                    explanation: exp,
+                    discardExplanation: discArr
                 });
             }
 
@@ -989,23 +1103,6 @@
             w.document.write(`<body style="margin:0; background: black; display:flex; align-items:center; justify-content:center; height:100vh;"><img src="${src}" style="max-width:100%; max-height:100%;"></body>`);
         }
 
-        function checkAnswer(btn, isCorrect) {
-            btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-            btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-            
-            if (isCorrect) {
-                quizStats.correct++;
-            } else {
-                quizStats.incorrect++;
-            }
-            localStorage.setItem('yn_quiz_stats', JSON.stringify(quizStats));
-
-            const expBox = document.getElementById('explanation-box');
-            if (expBox) {
-                expBox.style.display = 'block';
-            }
-        }
-
         function toggleCheck(key) {
             topicChecklist[key] = !topicChecklist[key];
             localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
@@ -1035,6 +1132,7 @@
                 yn_anki: ankiReviews,
                 yn_card_diff: cardDifficulty,
                 yn_quiz_stats: quizStats,
+                yn_question_schedule: questionSchedule,
                 yn_gpc_images: gpcImages,
                 yn_info_images: infographicImages,
                 yn_font_scale: currentFontScale
@@ -1079,6 +1177,7 @@
                     if (imported.yn_anki) localStorage.setItem('yn_anki', JSON.stringify(imported.yn_anki));
                     if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
                     if (imported.yn_quiz_stats) localStorage.setItem('yn_quiz_stats', JSON.stringify(imported.yn_quiz_stats));
+                    if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
                     if (imported.yn_gpc_images) localStorage.setItem('yn_gpc_images', JSON.stringify(imported.yn_gpc_images));
                     if (imported.yn_info_images) localStorage.setItem('yn_info_images', JSON.stringify(imported.yn_info_images));
                     if (imported.yn_font_scale) {
@@ -1092,6 +1191,7 @@
                     ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
                     cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
                     quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
+                    questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
                     gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
                     infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
 
