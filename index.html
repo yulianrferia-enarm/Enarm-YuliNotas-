@@ -462,7 +462,7 @@
             width: 100%;
         }
 
-        /* YuliNotas PDF */
+        /* YuliNotas & Madera PDF */
         .pdf-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -502,7 +502,6 @@
         }
 
         .pdf-btn-open { background: var(--primary-color); }
-        .pdf-btn-delete { background: #E53935; }
 
         .pdf-viewer-frame {
             width: 100%;
@@ -757,9 +756,10 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. PESTAÑAS -->
+        <!-- 2. PESTAÑAS (Incluyendo "Madera") -->
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
+            <button class="tab-btn btn-tab-madera" onclick="selectTab('madera')">Madera</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
             <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
@@ -949,6 +949,7 @@
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
         let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
+        let maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -1014,6 +1015,8 @@
             if (currentTab === 'preguntas') {
                 const total = (subjectData.preguntas || []).length;
                 badge.textContent = total > 0 ? `${(currentQuestionIndex % total) + 1}/${total}` : '0/0';
+            } else if (currentTab === 'madera') {
+                badge.textContent = `${countTopicItems(maderaFiles, currentSubject)} Madera`;
             } else if (currentTab === 'flashcards') {
                 const total = (subjectData.flashcards || []).length;
                 badge.textContent = total > 0 ? `${(currentCardIndex % total) + 1}/${total}` : '0/0';
@@ -1097,20 +1100,24 @@
 
             const reader = new FileReader();
             reader.onload = function(evt) {
-                let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
-                let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : 'yn_pdf_notes_v3');
+                let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
+                let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
 
                 if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
                 if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
 
-                if (type === 'pdf') {
+                if (file.type === 'application/pdf') {
                     targetStorage[currentSubject][topicName].push({
+                        isPdf: true,
                         name: file.name,
                         data: evt.target.result,
                         date: new Date().toLocaleDateString('es-MX')
                     });
                 } else {
-                    targetStorage[currentSubject][topicName].push(evt.target.result);
+                    targetStorage[currentSubject][topicName].push({
+                        isPdf: false,
+                        data: evt.target.result
+                    });
                 }
 
                 localStorage.setItem(storageKey, JSON.stringify(targetStorage));
@@ -1120,8 +1127,8 @@
         }
 
         function deleteTopicItem(sub, topicName, idx, type) {
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
-            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : 'yn_pdf_notes_v3');
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
 
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
@@ -1137,13 +1144,13 @@
             }
         }
 
-        // NAVEGACIÓN DESLIZABLE (CARRUSEL)
+        // NAVEGACIÓN DESLIZABLE (CARRUSEL POR TEMA)
         function renderTopicGroupedView(type) {
             const data = getData();
             const topics = (data[currentSubject] || {}).temario || ["General"];
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
-            let inputAccept = type === 'pdf' ? 'application/pdf' : 'image/*';
-            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : '+ Subir YuliNotas (PDF)');
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
+            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
+            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : '+ Subir YuliNotas (PDF)'));
 
             return topics.map((topic, tIdx) => {
                 const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
@@ -1152,45 +1159,41 @@
 
                 let contentHtml = '';
                 if (items.length > 0) {
-                    if (type === 'pdf') {
-                        contentHtml = `
-                            <div class="carousel-wrapper">
-                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
-                                <div class="carousel-container" id="${carouselId}">
-                                    ${items.map((pdf, pIdx) => `
-                                        <div class="carousel-slide">
-                                            <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}',${pIdx}, 'pdf')">✕</button>
-                                            <div class="pdf-card" style="border:none;">
-                                                <div class="pdf-card-header">
-                                                    <div class="pdf-card-title">${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
-                                                    <div class="pdf-card-actions">
-                                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
+                    contentHtml = `
+                        <div class="carousel-wrapper">
+                            ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
+                            <div class="carousel-container" id="${carouselId}">
+                                ${items.map((item, itemIdx) => {
+                                    const isPdfObj = (typeof item === 'object' && item.isPdf) || (typeof item === 'object' && item.name);
+                                    if (isPdfObj) {
+                                        return `
+                                            <div class="carousel-slide">
+                                                <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
+                                                <div class="pdf-card" style="border:none;">
+                                                    <div class="pdf-card-header">
+                                                        <div class="pdf-card-title">${item.name || 'Documento PDF'} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${item.date || ''})</span></div>
+                                                        <div class="pdf-card-actions">
+                                                            <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${item.data}')">↗ Abrir</button>
+                                                        </div>
                                                     </div>
+                                                    <iframe class="pdf-viewer-frame" src="${item.data}"></iframe>
                                                 </div>
-                                                <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
                                             </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
+                                        `;
+                                    } else {
+                                        const imgSrc = (typeof item === 'object' && item.data) ? item.data : item;
+                                        return `
+                                            <div class="carousel-slide">
+                                                <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
+                                                <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
+                                            </div>
+                                        `;
+                                    }
+                                }).join('')}
                             </div>
-                        `;
-                    } else {
-                        contentHtml = `
-                            <div class="carousel-wrapper">
-                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
-                                <div class="carousel-container" id="${carouselId}">
-                                    ${items.map((imgSrc, iIdx) => `
-                                        <div class="carousel-slide">
-                                            <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${iIdx}, '${type}')">✕</button>
-                                            <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
-                                        </div>
-                                    `).join('')}
-                                </div>
-                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
-                            </div>
-                        `;
-                    }
+                            ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
+                        </div>
+                    `;
                 }
 
                 return `
@@ -1259,6 +1262,8 @@
                         </div>
                     </div>
                 `;
+            } else if (currentTab === 'madera') {
+                area.innerHTML = renderTopicGroupedView('madera');
             } else if (currentTab === 'flashcards') {
                 let cards = subjectData.flashcards || [];
                 
@@ -1512,6 +1517,7 @@
                 yn_gpc_images_v3: gpcImages,
                 yn_info_images_v3: infographicImages,
                 yn_pdf_notes_v3: pdfNotes,
+                yn_madera_files_v1: maderaFiles,
                 yn_font_scale: currentFontScale
             };
 
@@ -1558,6 +1564,7 @@
                     if (imported.yn_gpc_images_v3) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.yn_gpc_images_v3));
                     if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
                     if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
+                    if (imported.yn_madera_files_v1) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.yn_madera_files_v1));
                     if (imported.yn_font_scale) {
                         currentFontScale = imported.yn_font_scale;
                         localStorage.setItem('yn_font_scale', currentFontScale.toString());
@@ -1573,6 +1580,7 @@
                     gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
                     infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
                     pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
+                    maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
 
                     alert('¡Progreso importado con éxito!');
                     renderContent();
