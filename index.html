@@ -73,11 +73,23 @@
             font-size: 11px;
             font-weight: 600;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
         }
 
         .stats-bar span {
             white-space: nowrap;
+        }
+
+        .subject-tag {
+            width: 100%;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+            padding-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .container {
@@ -263,76 +275,77 @@
         .option-btn.correct { background-color: #D4EDDA; border-color: #28A745; color: #155724; font-weight: 600; }
         .option-btn.incorrect { background-color: #F8D7DA; border-color: #DC3545; color: #721C24; }
 
-        /* Resúmenes Infográficos */
-        .info-card {
-            background: #FAFAFA;
-            border: 1px solid #E5E5EA;
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 14px;
+        .explanation-box {
+            display: none;
+            background: #E8F4FD;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #0D47A1;
+            margin-top: 10px;
+            line-height: 1.4;
         }
 
-        .info-card h4 {
-            font-size: 15px;
-            color: var(--primary-color);
-            margin-bottom: 8px;
+        .explanation-box strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Galerías de imágenes (Infografías y Esquemas) */
+        .image-upload-zone {
+            border: 2px dashed var(--primary-color);
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .image-upload-zone p {
+            font-size: 12px;
             font-weight: 700;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 4px;
+            color: var(--primary-color);
         }
 
-        .pearl-box {
-            background: #FFF3CD;
-            border-left: 4px solid #FFC107;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #856404;
-            margin: 8px 0;
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
 
-        .info-table {
+        .gallery-img-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background: #000;
+            aspect-ratio: 4 / 3;
+        }
+
+        .gallery-img-card img {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-            font-size: 12px;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
         }
 
-        .info-table th {
-            background-color: var(--primary-color);
+        .gallery-img-card .delete-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(229, 57, 53, 0.9);
             color: white;
-            text-align: left;
-            padding: 6px;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .info-table td {
-            padding: 6px;
-            border-bottom: 1px solid #E5E5EA;
-            background: #FFFFFF;
-        }
-
-        .flow-step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .flow-badge {
-            background: var(--primary-color);
-            color: white;
+            border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-            flex-shrink: 0;
         }
 
         /* Temario */
@@ -376,62 +389,6 @@
             height: 16px;
             accent-color: var(--primary-color);
             cursor: pointer;
-        }
-
-        /* Esquemas GPC */
-        .gpc-upload-zone {
-            border: 2px dashed var(--primary-color);
-            background: rgba(255,255,255,0.7);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 16px;
-        }
-
-        .gpc-upload-zone p {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .gpc-gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .gpc-img-card {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            background: #000;
-            aspect-ratio: 4 / 3;
-        }
-
-        .gpc-img-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .gpc-img-card .delete-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(229, 57, 53, 0.9);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         /* Panel Admin Form */
@@ -483,9 +440,10 @@
             <button class="admin-toggle-btn" onclick="toggleAdminPanel()">+ Creador</button>
         </div>
         <div class="stats-bar">
+            <div class="subject-tag" id="stat-subject-name">Ginecología</div>
             <span>🎴 Flashcards: <strong id="stat-cards">0</strong></span>
             <span>❓ Preguntas: <strong id="stat-questions">0</strong></span>
-            <span>📑 Resúmenes: <strong id="stat-summaries">0</strong></span>
+            <span>📑 Infografías: <strong id="stat-summaries">0</strong></span>
             <span>🖼️ GPC: <strong id="stat-gpc">0</strong></span>
             <span>📊 Avance: <strong id="stat-progress">0%</strong></span>
         </div>
@@ -493,13 +451,12 @@
 
     <div class="container">
 
-        <!-- Panel de administración para agregar contenido -->
+        <!-- Panel Creador (Solo para Flashcards y Preguntas con Retroalimentación) -->
         <div id="admin-panel" class="admin-panel">
             <h3>⚡ Agregar Nuevo Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="flashcard">Flashcard</option>
                 <option value="pregunta">Pregunta Caso Clínico</option>
-                <option value="resumen">Resumen Infográfico</option>
             </select>
 
             <select id="admin-subject">
@@ -529,7 +486,7 @@
             <div class="tabs-nav">
                 <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
                 <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
-                <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Resúmenes</button>
+                <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
                 <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
                 <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquemas GPC</button>
             </div>
@@ -550,28 +507,27 @@
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación)." }],
-                preguntas: [{ q: "Femenina de 32 años con dismenorrea y dispareunia. ¿Estándar de oro?", options: ["Laparoscopia diagnóstica", "Ecografía", "RM", "Ca-125"], correct: 0 }],
-                resumenes: [{ title: "Cáncer Cervicouterino", pearl: "PERLA: VPH 16 y 18 son los más oncogénicos.", table: { headers: ["Método", "Inicio"], rows: [["Pap", "25 años"], ["VPH", "30 años"]] }, flow: ["Tamizaje", "Colposcopia", "Biopsia"] }],
+                preguntas: [{ q: "Femenina de 32 años con dismenorrea y dispareunia. ¿Estándar de oro?", options: ["Laparoscopia diagnóstica", "Ecografía", "RM", "Ca-125"], correct: 0, explanation: "La laparoscopia permite la visualización directa de los implantes endometriósicos y la toma de biopsia para confirmación histológica." }],
                 temario: ["Ciclo femenino", "SOP", "Menopausia", "Osteoporosis", "Amenorrea primaria", "Amenorrea secundaria", "Cervicovaginitis", "Endometriosis", "Miomatosis", "CaCu", "Cáncer de mama"]
             },
             obste: {
                 flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio." }],
-                preguntas: [{ q: "Gestante con sangrado rojo rutilante, indoloro. ¿Diagnóstico?", options: ["Placenta Previa", "DPPNI", "Ruptura Uterina", "Vasa Previa"], correct: 0 }],
-                resumenes: [{ title: "Hemorragia 2da Mitad", pearl: "Placenta previa NO duele | DPPNI SÍ duele.", table: { headers: ["Entidad", "Dolor"], rows: [["Placenta Previa", "No"], ["DPPNI", "Sí"]] }, flow: ["Estabilizar", "USG", "Cesárea si hay sufrimiento"] }],
+                preguntas: [{ q: "Gestante con sangrado rojo rutilante, indoloro. ¿Diagnóstico?", options: ["Placenta Previa", "DPPNI", "Ruptura Uterina", "Vasa Previa"], correct: 0, explanation: "La placenta previa se caracteriza típicamente por sangrado indoloro y rojo rutilante en la segunda mitad del embarazo." }],
                 temario: ["Control prenatal", "Aborto", "Embarazo ectópico", "ETG", "Placenta previa", "DPPNI", "HPP", "Preeclampsia", "Diabetes gestacional"]
             },
-            interna: { flashcards: [], preguntas: [], resumenes: [], temario: ["HAS", "Diabetes Mellitus", "CAD/EHH", "EPOC", "Asma", "ERC"] },
-            cirugia: { flashcards: [], preguntas: [], resumenes: [], temario: ["Apendicitis aguda", "Colecistitis", "Hernias", "Oclusión intestinal", "ATLS"] },
-            pedia: { flashcards: [], preguntas: [], resumenes: [], temario: ["Reanimación neonatal", "SDR", "Crup", "Epiglotitis", "Vacunas", "Diarrea aguda"] }
+            interna: { flashcards: [], preguntas: [], temario: ["HAS", "Diabetes Mellitus", "CAD/EHH", "EPOC", "Asma", "ERC"] },
+            cirugia: { flashcards: [], preguntas: [], temario: ["Apendicitis aguda", "Colecistitis", "Hernias", "Oclusión intestinal", "ATLS"] },
+            pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "SDR", "Crup", "Epiglotitis", "Vacunas", "Diarrea aguda"] }
         };
 
-        // Cargar datos del usuario
+        // Cargar datos del usuario guardados
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
         let topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
+        let infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
 
-        // Persistencia de navegación
+        // Navegación
         let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
         let currentTab = localStorage.getItem('yn_current_tab') || 'flashcards';
         let currentCardIndex = 0;
@@ -582,38 +538,41 @@
                 if (combined[sub]) {
                     if (customData[sub].flashcards) combined[sub].flashcards.push(...customData[sub].flashcards);
                     if (customData[sub].preguntas) combined[sub].preguntas.push(...customData[sub].preguntas);
-                    if (customData[sub].resumenes) combined[sub].resumenes.push(...customData[sub].resumenes);
                 }
             });
             return combined;
         }
 
+        // Actualización de contadores por materia activa
         function updateStatsDisplay() {
             let data = getData();
-            let totalCards = 0;
-            let totalQuestions = 0;
-            let totalSummaries = 0;
-            let totalGpc = 0;
+            let subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [] };
 
-            Object.keys(data).forEach(s => {
-                totalCards += (data[s].flashcards || []).length;
-                totalQuestions += (data[s].preguntas || []).length;
-                totalSummaries += (data[s].resumenes || []).length;
+            let cardsCount = (subjectData.flashcards || []).length;
+            let questionsCount = (subjectData.preguntas || []).length;
+            let summariesCount = (infographicImages[currentSubject] || []).length;
+            let gpcCount = (gpcImages[currentSubject] || []).length;
+
+            document.getElementById('stat-subject-name').textContent = subjectsConfig[currentSubject].title;
+            document.getElementById('stat-cards').textContent = cardsCount;
+            document.getElementById('stat-questions').textContent = questionsCount;
+            document.getElementById('stat-summaries').textContent = summariesCount;
+            document.getElementById('stat-gpc').textContent = gpcCount;
+
+            // Porcentaje de avance
+            let totalPossibleSubjectChecks = subjectData.temario.length * 5;
+            let completedSubjectChecks = 0;
+
+            subjectData.temario.forEach((_, idx) => {
+                const topicKey = `${currentSubject}_${idx}`;
+                ['gpc', 'cto', 'drre', 'yuli', 'clase'].forEach(res => {
+                    if (topicChecklist[`${topicKey}_${res}`]) {
+                        completedSubjectChecks++;
+                    }
+                });
             });
 
-            Object.keys(gpcImages).forEach(s => {
-                totalGpc += (gpcImages[s] || []).length;
-            });
-
-            document.getElementById('stat-cards').textContent = totalCards;
-            document.getElementById('stat-questions').textContent = totalQuestions;
-            document.getElementById('stat-summaries').textContent = totalSummaries;
-            document.getElementById('stat-gpc').textContent = totalGpc;
-
-            let totalPossibleChecks = 0;
-            Object.keys(data).forEach(s => { totalPossibleChecks += data[s].temario.length * 5; });
-            let completedChecks = Object.keys(topicChecklist).filter(k => topicChecklist[k]).length;
-            let percentage = totalPossibleChecks > 0 ? Math.round((completedChecks / totalPossibleChecks) * 100) : 0;
+            let percentage = totalPossibleSubjectChecks > 0 ? Math.round((completedSubjectChecks / totalPossibleSubjectChecks) * 100) : 0;
             document.getElementById('stat-progress').textContent = percentage + '%';
         }
 
@@ -628,6 +587,8 @@
             
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.btn-${subjectKey}`).classList.add('active');
+            
+            updateStatsDisplay();
             renderContent();
         }
 
@@ -648,7 +609,7 @@
             if (currentTab === 'flashcards') {
                 const card = subjectData.flashcards[currentCardIndex];
                 if (!card) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay flashcards agregadas en esta materia.</p>`;
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay flashcards en esta materia.</p>`;
                     return;
                 }
                 const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
@@ -668,7 +629,7 @@
                 `;
             } else if (currentTab === 'preguntas') {
                 if (subjectData.preguntas.length === 0) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay preguntas agregadas aún.</p>`;
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay preguntas registradas en esta materia.</p>`;
                     return;
                 }
                 const q = subjectData.preguntas[0];
@@ -678,31 +639,28 @@
                         ${q.options.map((opt, idx) => `
                             <button class="option-btn" onclick="checkAnswer(this, ${idx === q.correct})">${opt}</button>
                         `).join('')}
+                        <div id="explanation-box" class="explanation-box">
+                            <strong>💡 Retroalimentación / Explicación:</strong>
+                            <span>${q.explanation || 'Sin explicación registrada.'}</span>
+                        </div>
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
-                if (subjectData.resumenes.length === 0) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay resúmenes agregados aún.</p>`;
-                    return;
-                }
-                area.innerHTML = subjectData.resumenes.map(r => `
-                    <div class="info-card">
-                        <h4>${r.title}</h4>
-                        <div class="pearl-box">${r.pearl}</div>
-                        <table class="info-table">
-                            <thead><tr>${r.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-                            <tbody>${r.table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
-                        </table>
-                        <div style="margin-top: 10px;">
-                            ${r.flow.map((step, sIdx) => `
-                                <div class="flow-step">
-                                    <div class="flow-badge">${sIdx + 1}</div>
-                                    <span>${step}</span>
-                                </div>
-                            `).join('')}
-                        </div>
+                const list = infographicImages[currentSubject] || [];
+                area.innerHTML = `
+                    <div class="image-upload-zone" onclick="document.getElementById('info-input').click()">
+                        <p>+ Subir Foto de Infografía / Apunte</p>
+                        <input type="file" id="info-input" accept="image/*" style="display: none;" onchange="uploadImage(event, 'info')">
                     </div>
-                `).join('');
+                    <div class="image-gallery">
+                        ${list.map((imgSrc, iIdx) => `
+                            <div class="gallery-img-card">
+                                <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
+                                <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'info')">✕</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             } else if (currentTab === 'temario') {
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
@@ -728,15 +686,15 @@
             } else if (currentTab === 'esquemas') {
                 const list = gpcImages[currentSubject] || [];
                 area.innerHTML = `
-                    <div class="gpc-upload-zone" onclick="document.getElementById('gpc-input').click()">
+                    <div class="image-upload-zone" onclick="document.getElementById('gpc-input').click()">
                         <p>+ Subir Esquema de Tratamiento GPC</p>
-                        <input type="file" id="gpc-input" accept="image/*" style="display: none;" onchange="uploadGpcImage(event)">
+                        <input type="file" id="gpc-input" accept="image/*" style="display: none;" onchange="uploadImage(event, 'gpc')">
                     </div>
-                    <div class="gpc-gallery">
+                    <div class="image-gallery">
                         ${list.map((imgSrc, iIdx) => `
-                            <div class="gpc-img-card">
+                            <div class="gallery-img-card">
                                 <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
-                                <button class="delete-btn" onclick="deleteGpcImage(${iIdx})">✕</button>
+                                <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'gpc')">✕</button>
                             </div>
                         `).join('')}
                     </div>
@@ -744,7 +702,7 @@
             }
         }
 
-        // --- FUNCIONES DEL PANEL ADMIN ---
+        // --- FUNCIONES DEL PANEL CREADOR ---
         function toggleAdminPanel() {
             const panel = document.getElementById('admin-panel');
             panel.classList.toggle('active');
@@ -767,14 +725,7 @@
                     <input type="text" id="af-o1" placeholder="Opción B">
                     <input type="text" id="af-o2" placeholder="Opción C">
                     <input type="text" id="af-o3" placeholder="Opción D">
-                `;
-            } else if (type === 'resumen') {
-                container.innerHTML = `
-                    <input type="text" id="af-title" placeholder="Título del Tema">
-                    <input type="text" id="af-pearl" placeholder="Perla ENARM clave">
-                    <input type="text" id="af-t1" placeholder="Columna 1: Criterio / Entidad">
-                    <input type="text" id="af-t2" placeholder="Columna 2: Valor / Manejo">
-                    <textarea id="af-flow" placeholder="Algoritmo de flujo (separado por comas) Ej: Estabilizar, USG, Cesárea"></textarea>
+                    <textarea id="af-exp" placeholder="Explicación / Retroalimentación de la respuesta correcta"></textarea>
                 `;
             }
         }
@@ -783,7 +734,7 @@
             const type = document.getElementById('admin-type').value;
             const sub = document.getElementById('admin-subject').value;
 
-            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [], resumenes: [] };
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             if (type === 'flashcard') {
                 const q = document.getElementById('af-q').value;
@@ -796,21 +747,15 @@
                 const o1 = document.getElementById('af-o1').value;
                 const o2 = document.getElementById('af-o2').value;
                 const o3 = document.getElementById('af-o3').value;
-                if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos 2 opciones');
-                customData[sub].preguntas.push({ q, options: [o0, o1, o2, o3].filter(Boolean), correct: 0 });
-            } else if (type === 'resumen') {
-                const title = document.getElementById('af-title').value;
-                const pearl = document.getElementById('af-pearl').value;
-                const t1 = document.getElementById('af-t1').value;
-                const t2 = document.getElementById('af-t2').value;
-                const flowStr = document.getElementById('af-flow').value;
-                if (!title) return alert('Ingresa un título');
+                const exp = document.getElementById('af-exp').value;
 
-                customData[sub].resumenes.push({
-                    title,
-                    pearl,
-                    table: { headers: ["Criterio", "Detalle"], rows: [[t1, t2]] },
-                    flow: flowStr.split(',').map(s => s.trim())
+                if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos 2 opciones');
+                
+                customData[sub].preguntas.push({
+                    q,
+                    options: [o0, o1, o2, o3].filter(Boolean),
+                    correct: 0,
+                    explanation: exp
                 });
             }
 
@@ -821,24 +766,31 @@
             renderContent();
         }
 
-        // Auxiliares
-        function uploadGpcImage(e) {
+        // --- SUBIR / ELIMINAR FOTOS (Infografías y GPC) ---
+        function uploadImage(e, type) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(evt) {
-                if (!gpcImages[currentSubject]) gpcImages[currentSubject] = [];
-                gpcImages[currentSubject].push(evt.target.result);
-                localStorage.setItem('yn_gpc_images', JSON.stringify(gpcImages));
+                let targetStorage = type === 'info' ? infographicImages : gpcImages;
+                let storageKey = type === 'info' ? 'yn_info_images' : 'yn_gpc_images';
+
+                if (!targetStorage[currentSubject]) targetStorage[currentSubject] = [];
+                targetStorage[currentSubject].push(evt.target.result);
+                
+                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
                 updateStatsDisplay();
                 renderContent();
             };
             reader.readAsDataURL(file);
         }
 
-        function deleteGpcImage(idx) {
-            gpcImages[currentSubject].splice(idx, 1);
-            localStorage.setItem('yn_gpc_images', JSON.stringify(gpcImages));
+        function deleteImage(sub, idx, type) {
+            let targetStorage = type === 'info' ? infographicImages : gpcImages;
+            let storageKey = type === 'info' ? 'yn_info_images' : 'yn_gpc_images';
+
+            targetStorage[sub].splice(idx, 1);
+            localStorage.setItem(storageKey, JSON.stringify(targetStorage));
             updateStatsDisplay();
             renderContent();
         }
@@ -851,6 +803,11 @@
         function checkAnswer(btn, isCorrect) {
             btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
             btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+            
+            const expBox = document.getElementById('explanation-box');
+            if (expBox) {
+                expBox.style.display = 'block';
+            }
         }
 
         function toggleCheck(key) {
@@ -868,10 +825,9 @@
             renderContent();
         }
 
-        // Inicializar app con la sesión guardada
+        // Inicializar app
         selectSubject(currentSubject);
         selectTab(currentTab);
-        updateStatsDisplay();
     </script>
 </body>
 </html>
