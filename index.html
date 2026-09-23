@@ -217,7 +217,6 @@
             gap: 6px;
         }
 
-        /* Botón de eliminación en formato compacto de solo Emoji */
         .btn-delete-topic {
             background: transparent;
             color: #E53935;
@@ -531,9 +530,10 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             background: #FFFFFF;
+            cursor: pointer;
         }
 
-        /* Modal visor de imagen / PDF en pantalla completa */
+        /* Modal visor de imagen / PDF en pantalla completa con soporte de Zoom */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -558,6 +558,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            overflow: auto; /* Permite hacer zoom y desplazarse dentro de la imagen/PDF */
         }
 
         .modal-content-container img {
@@ -566,6 +567,8 @@
             object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease;
+            cursor: zoom-in;
         }
 
         .modal-content-container iframe {
@@ -833,7 +836,7 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. PESTAÑAS (Madera ubicada después de Infografías) -->
+        <!-- 2. PESTAÑAS -->
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
@@ -851,15 +854,15 @@
         </div>
     </div>
 
-    <!-- Modal Visor de Imágenes/PDFs en Pantalla Completa -->
-    <div id="image-modal" class="image-modal-overlay">
+    <!-- Modal Visor Pantalla Completa con Zoom y Deslizamiento -->
+    <div id="image-modal" class="image-modal-overlay" onclick="closeImageModal()">
         <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
         <div id="modal-counter-badge" class="modal-counter-badge">1 / 1</div>
         
         <button class="modal-nav-btn modal-nav-prev" onclick="prevModalItem(event)">◄</button>
         
         <div class="modal-content-container" id="modal-content-container" onclick="event.stopPropagation()">
-            <!-- El contenido dinámico (IMG o IFRAME) se inserta aquí -->
+            <!-- Contenido dinámico con zoom -->
         </div>
         
         <button class="modal-nav-btn modal-nav-next" onclick="nextModalItem(event)">►</button>
@@ -874,7 +877,6 @@
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
         };
 
-        // TEMARIO LITERAL TEMA POR TEMA (INDICE OFICIAL ENARM)
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
@@ -922,107 +924,9 @@
                     "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
-            cirugia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Hepatoblastoma", "Carcinoma hepatocelular", "Abdomen agudo", "Apendicitis aguda", "Patología biliar", 
-                    "Colecistitis crónica litiásica", "Coledocolitiasis", "Colangitis", "Enfermedad diverticular", 
-                    "Trastornos motores del esófago", "Acalasia", "Espasmo esofágico difuso", "Enfermedad por reflujo gastroesofágico (ERGE)", 
-                    "Esófago de Barret", "Dispepsia funcional", "Carcinoma epidermoide de esófago", "Gastritis", "Úlcera péptica", 
-                    "Enfermedad ulcerosa péptica", "Úlcera péptica perforada", "Síndrome de Zollinger Ellison", "Cáncer gástrico (adenocarcinoma)", 
-                    "Obesidad y cirugía bariátrica", "Obesidad", "Hernia umbilical", "Hernias inguinales y femorales", "Hernia ventral", 
-                    "Esplenectomía", "Pancreatitis aguda", "Pancreatitis crónica", "Adenocarcinoma de páncreas", "Enfermedad arterial periférica", 
-                    "Oclusión arterial aguda", "Insuficiencia venosa crónica", "Mordedura de serpiente", "Mordedura por arañas", 
-                    "Intoxicación por picadura de alacrán", "Picadura por himenópteros", "Patología perianal: enfermedad hemorroidal", 
-                    "Absceso anal", "Fistula anal", "Fisura anal", "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", 
-                    "Cáncer de colon", "Tumor de intestino delgado", "Trasplante de hígado", "Quemaduras", "Quemaduras por frío", 
-                    "Úlceras por presión", "Derrame pleural", "Infección de sitio quirúrgico", "Dehiscencia de herida quirúrgica", 
-                    "ATLS", "Trauma de tórax", "Trauma de abdomen", "Traumatismo craneoencefálico", "Hematoma epidural", "Hematoma subdural", 
-                    "Contusiones y hematomas intracerebrales", "Herniación uncal", "Neuralgia del trigémino", "Síndrome de hipertensión intracraneal", 
-                    "Síndrome de herniación cerebral", "Síndrome de hipertensión intracraneal benigna", "Hidrocefalia", 
-                    "Hidrocefalia crónica del adulto", "Absceso cerebral", "Tumores cerebrales", "Blefaritis", "Chalazión y orzuelo", 
-                    "Ectoprión", "Triquiasis", "Endoprión", "Síndrome de ojo seco", "Dacriocistitis", "Estenosis congénita de la vía lagrimal", 
-                    "Retinopatía diabética (RD)", "Retinopatía hipertensiva", "Oclusión venosa de la retina", 
-                    "Desprendimiento de retina regmatógeno no traumático", "Desprendimiento de retina seroso", "Ambliopía", 
-                    "Estrabismo concomitante convergente", "Parálisis oculomotoras", "Glaucoma primario de ángulo abierto", 
-                    "Glaucoma de ángulo estrecho", "Glaucoma congénito", "Uveitis", "Catarata", "Catarata congénita", "Conjuntivitis", 
-                    "Pterigión", "Queratitis infecciosa", "Queratocono", "Escleritis", "Episcleritis", "Trauma ocular", "Campimetría", 
-                    "Neuritis óptica", "Retinopatía del prematuro", "Hiperplasia prostática benigna", "Cáncer de próstata", 
-                    "Litiasis renal", "Cólico renoureteral", "Bacteriuria asintomática e infección del tracto urinario en el embarazo", 
-                    "Cáncer renal", "Cáncer de vejiga", "Infección de vías urinarias", "Cáncer de testículo", "Trasplante renal", 
-                    "Vértigo", "Vértigo postural paroxístico benigno (VPPB)", "Enfermedad de Ménière", "Neuronitis vestibular", 
-                    "Neurinoma del acústico", "Hipoacusia", "Hipoacusia del recién nacido", "Ototoxicidad", "Fracturas faciales", 
-                    "Fracturas del peñasco", "Fracturas nasales", "Fracturas mandibulares", "Parálisis facial", "Epistaxis", 
-                    "Rinitis alérgica", "Rinitis no alérgica", "Sinusitis aguda", "Pólipos nasales", "Patología maligna de senos paranasales", 
-                    "Carcinoma epidermoide de laringe", "Patología benigna de cuerdas vocales", "Papilomatosis laringea juvenil", 
-                    "Faringitis", "Absceso profundo de cuello", "Síndrome de apnea obstructiva del sueño", "Otitis externa aguda", 
-                    "Otoesclerosis", "Otitis media", "Angiofibroma juvenil", "Artritis séptica en niños y adultos", "Fracturas de miembro superior", 
-                    "Fracturas intracapsulares del extremo proximal del fémur", "Osteosarcoma", "Sarcoma de Ewing", "Codo de niñera", 
-                    "Síndrome del tunel del carpo", "Lesiones ligamentarias de rodilla", "Síndrome doloroso de hombro", 
-                    "Fracturas de miembro inferior", "Patologías de columna", "Esguince de tobillo"
-                ] 
-            },
-            interna: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Insuficiencia cardíaca", "Bradiarritmias", "Taquiarritmias", "Fibrilación auricular", "Síndrome coronario agudo", 
-                    "Valvulopatías", "Cardiomiopatías", "Pericarditis aguda", "Hipertensión arterial sistémica", "Basic Life Support", 
-                    "Advanced Cardiovascular Life Support", "Enfermedades micóticas", "Toxicodermias", "Eritema multiforme mayor o síndrome de Stevens Jonhson", 
-                    "Acné", "Alopecia androgénica", "Alopecia areata", "Psoriasis", "Tumores cutáneos benignos", "Carcinoma basocelular", 
-                    "Melanoma maligno", "Enfermedad diarreica aguda en adultos", "Síndrome de colon irritable", "Enfermedad inflamatoria intestinal", 
-                    "Alteraciones de metabolismo bilirrubina", "Abscesos hepáticos", "Absceso amebiano", "Hepatitis aguda", 
-                    "Hemorragia digestiva alta por varices esofágicas", "Hipertiroidismo o tirotoxicosis", "Nódulo tiroideo", "Tiroiditis", 
-                    "Sindrome de Cushing", "Insuficiencia suprarrenal", "Hiperaldosteronismo", "Feocromocitoma", "Diabetes mellitus", 
-                    "Cetoacidosis diabética", "Síndrome hiperglucémico hiperosmolar", "Pie diabético", "Anemia", "Leucemia mieloide crónica", 
-                    "Leucemia linfática crónica (LLC)", "Leucemias agudas", "Linfoma no Hodgkin", "Linfoma Hodgkin", "Policitemia vera", 
-                    "Trombocitemia", "Mieloma múltiple", "Alteraciones de la coagulación", "Trombocitopenia", "Insuficiencia renal prerenal", 
-                    "IRA parenquimatosa", "IRA postrenal", "Enfermedad renal crónica", "Síndrome nefrítico", "Síndrome nefrótico", 
-                    "Glomerulonefritis", "Nefropatía diabética", "Lupus eritematoso sistémico", "Vasculitis", "Enfermedad de Goodpasture", 
-                    "Trastornos tubulares", "Microangiopatías trombóticas", "Enfermedad pulmonar obstructiva crónica", "Exacerbaciones EPOC", 
-                    "Enfermedad tromboembólica venosa", "Cáncer de pulmón", "Asma en adulto", "Enfermedades intersticiales", "Sarcoidosis", 
-                    "Panarteritis nodosa clásica", "Enfermedad de Behcet", "Artropatía por cristales", "Artritis reumatoide", 
-                    "Factor reumatoide y ANA negativos", "Espondilitis anquilosante", "Artrosis", "Demencias", "Alzheimer", 
-                    "Enfermedad vascular cerebral", "Hemorragia intraparenquimatosa", "Hemorragia subaracnoidea", "Síndrome de Guillain-Barré", 
-                    "Miastenia gravis", "Crisis miasténica", "Cefaleas", "Endocarditis infecciosa", "Tuberculosis pulmonar", "Neumonía", 
-                    "Neumoconiosis", "Tétanos", "Botulismo", "Difteria", "Rabia", "Enfermedad gonocócica", "Chlamydia trachomatis", 
-                    "Sífilis", "Verrugas genitales", "Neoplasia intraepitelial anal", "Tumor de Buschke-Löwenstein", "Borreliosis de Lyme", 
-                    "Leptospirosis", "Carbunco", "Tularemia", "Erisipeloide", "Peste", "Virus de Inmunodeficiencia Humana VIH/sida", 
-                    "Paludismo", "Tripanosomiasis", "Leishmaniasis", "Rickettsia", "Brucelosis", "Nocardiosis", "Actinomicosis", 
-                    "Intoxicación por agroquímicos", "Intoxicación por opiáceos y benzodiacepinas", "Intoxicación por metales pesados", 
-                    "Intoxicación etílica", "Intoxicación por acetaminofén (paracetamol)", "Intoxicación por CO", "Fiebre reumática", 
-                    "Dengue", "Chikungunya", "Zika", "Covid-19", "Herpes zoster", "Viruela del mono", "Peritonitis infecciosa", "Lepra", 
-                    "Sepsis y choque séptico", "Dislipidemias", "Golpe de calor", "Depresión mayor", "Ansiedad", "Esquizofrenia", "Trastornos alimentarios"
-                ] 
-            },
-            pedia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Recién nacido sano", "Reanimación neonatal", "Patología respiratoria neonatal", 
-                    "Síndrome de dificultad respiratoria o enfermedad membrana hialina", "Taquipnea transitoria del recién nacido", 
-                    "Síndrome de aspiración meconial", "Enfermedad hemorrágica del recién nacido", "Hipoglucemia neonatal", 
-                    "Atresia esofágica", "Atresia de coanas", "Gastrosquisis y onfalocele", "Divertículo de Meckel", "Hernia diafragmática", 
-                    "Enterocolitis necrotizante", "Sepsis neonatal", "Recién nacido con fiebre y sin evidencia de infección", 
-                    "Encefalopatía hipóxico-isquémica", "Ictericia neonatal", "TORCH", "Control y seguimiento de la salud en la niña y el niño menor de 5 años", 
-                    "Otitis media aguda", "Infección de vías respiratorias altas", "Rinosinusitis aguda", "Vacunas", "Desnutrición", 
-                    "Raquitismo carencial", "Neumonía bacteriana adquirida en la comunidad en menores de 18 Años", 
-                    "Síndrome de muerte súbita del lactante (SMSL)", "Bronquiolitis aguda", "Sibilante recurrente", "Asma", "Fibrosis quística", 
-                    "Enfermedad por reflujo gastroesofágico", "Invaginación intestinal", "Estenosis hipertrófica del píloro", "Talla baja", 
-                    "Pubertad", "Sobrepeso y obesidad", "Mal descenso testicular", "Escroto agudo", "Reflujo vesico-ureteral", 
-                    "Infección de vías urinarias <18 años", "Enfermedades exantemáticas", "Enfermedad de Kawasaki", "Diarrea aguda", 
-                    "VIH en el binomio", "Epilepsia y crisis febriles", "Parálisis braquial", "Infecciones del SNC", "Encefalitis", 
-                    "Displasia del desarrollo de la cadera", "Artritis séptica", "Sinovitis transitoria", "Enfermedad de Legg Calve-Perthes", 
-                    "Epifisiólisis femoral proximal", "Osteosarcoma", "Sarcoma de Ewing", "Osteocondroma", "Osteoma osteoide", 
-                    "Pronación dolorosa/codo de niñera", "Enfermedad Osgood Schlatter/apofisitis de tracción de rodilla", "Dermatitis atópica", 
-                    "Dermatitis seborreica", "Dermatitis del área del pañal", "Infecciones cutánea bacterianas", "Impétigo", "Escabiasis", 
-                    "Pediculosis capitis", "Maltrato infantil", "Neuroblastoma", "Tumor de Wilms", "Trastorno por déficit de atención e hiperactividad (TDAH)", 
-                    "Parálisis cerebral infantil (PCI)", "Diarrea crónica", "Alergia a la proteína de la leche de vaca", "Intolerancia a la lactosa en niños", 
-                    "Enfermedad celíaca", "Síndrome de Down", "Síndrome de Turner", "Cardiopatias congenitas", "Persistencia del conducto arterioso", 
-                    "Retinoblastoma", "Ingesta de causticos", "Metabolismo y enfermedades pediátricas", "Lactancia materna"
-                ] 
-            }
+            cirugia: { flashcards: [], preguntas: [], temario: ["Abdomen agudo", "Apendicitis aguda", "Patología biliar", "Colecistitis crónica litiásica", "Hernias inguinales y femorales", "Pancreatitis aguda"] },
+            interna: { flashcards: [], preguntas: [], temario: ["Insuficiencia cardíaca", "Hipertensión arterial sistémica", "Diabetes mellitus", "Neumonía", "Infarto agudo de miocardio"] },
+            pedia: { flashcards: [], preguntas: [], temario: ["Recién nacido sano", "Reanimación neonatal", "Bronquiolitis aguda", "Crisis febriles", "Vacunas"] }
         };
 
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
@@ -1045,11 +949,11 @@
         let currentQuestionIndex = 0;
         let activeCardFilter = 'all';
 
-        // Variables para el visor modal interactivo
         let currentModalList = [];
         let currentModalIndex = 0;
         let touchStartX = 0;
         let touchEndX = 0;
+        let currentZoom = 1;
 
         if (isDarkMode) document.body.classList.add('dark-mode');
         document.documentElement.style.setProperty('--font-scale', currentFontScale);
@@ -1063,24 +967,23 @@
             }
         });
 
-        // Configuración de gestos de deslizamiento (swipe) en pantalla completa
         const modalElement = document.getElementById('image-modal');
         modalElement.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
+            if (e.touches.length === 1) touchStartX = e.touches[0].screenX;
         }, { passive: true });
 
         modalElement.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
+            if (e.changedTouches.length === 1) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }
         }, { passive: true });
 
         function handleSwipe() {
+            if (currentZoom > 1) return; // Evita cambiar de página si se está haciendo zoom con los dedos
             const threshold = 50;
-            if (touchEndX < touchStartX - threshold) {
-                nextModalItem();
-            } else if (touchEndX > touchStartX + threshold) {
-                prevModalItem();
-            }
+            if (touchEndX < touchStartX - threshold) nextModalItem();
+            else if (touchEndX > touchStartX + threshold) prevModalItem();
         }
 
         function changeFontSize(delta) {
@@ -1177,9 +1080,7 @@
             currentQuestionIndex = 0;
             
             const config = subjectsConfig[subjectKey];
-            if (!isDarkMode) {
-                document.documentElement.style.setProperty('--bg-current', config.bg);
-            }
+            if (!isDarkMode) document.documentElement.style.setProperty('--bg-current', config.bg);
             document.documentElement.style.setProperty('--primary-color', config.color);
             
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
@@ -1205,21 +1106,16 @@
 
         function toggleTopicGroup(headerElem) {
             const body = headerElem.nextElementSibling;
-            if (body.style.display === 'none' || body.style.display === '') {
-                body.style.display = 'block';
-            } else {
-                body.style.display = 'none';
-            }
+            if (body.style.display === 'none' || body.style.display === '') body.style.display = 'block';
+            else body.style.display = 'none';
         }
 
         function scrollCarousel(containerId, direction) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            const scrollAmount = container.clientWidth;
-            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            container.scrollBy({ left: direction * container.clientWidth, behavior: 'smooth' });
         }
 
-        // --- GESTIÓN DE ELIMINACIÓN DE TEMAS POR APARTADO (Solo Emoji 🗑) ---
         function deleteTopicGroup(e, topicName) {
             e.stopPropagation();
             if (!confirm(`¿Eliminar la categoría "${topicName}" de este apartado?`)) return;
@@ -1232,7 +1128,6 @@
             renderContent();
         }
 
-        // --- SUBIR ARCHIVOS / FOTOS POR TEMA ---
         function uploadTopicFile(e, type, topicName) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1278,18 +1173,16 @@
 
         function openPdfWindow(dataUrl) {
             const win = window.open();
-            if (win) {
-                win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
-            }
+            if (win) win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
         }
 
-        // --- PANTALLA COMPLETA NAVEGABLE CON SWIPE ---
+        // Visor Pantalla Completa con Zoom Dinámico
         function openFullscreenModal(itemsList, startIndex) {
             currentModalList = itemsList;
             currentModalIndex = startIndex;
+            currentZoom = 1;
             renderModalContent();
-            const modal = document.getElementById('image-modal');
-            modal.classList.add('active');
+            document.getElementById('image-modal').classList.add('active');
         }
 
         function renderModalContent() {
@@ -1303,14 +1196,29 @@
 
             badge.textContent = `${currentModalIndex + 1} / ${currentModalList.length}`;
             const currentItem = currentModalList[currentModalIndex];
-
             const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
 
+            currentZoom = 1;
             if (isPdfObj) {
                 container.innerHTML = `<iframe src="${currentItem.data}"></iframe>`;
             } else {
                 const imgSrc = (typeof currentItem === 'object' && currentItem.data) ? currentItem.data : currentItem;
-                container.innerHTML = `<img src="${imgSrc}">`;
+                container.innerHTML = `<img id="modal-active-img" src="${imgSrc}" onclick="toggleZoom(event)">`;
+            }
+        }
+
+        function toggleZoom(e) {
+            e.stopPropagation();
+            const img = document.getElementById('modal-active-img');
+            if (!img) return;
+            if (currentZoom === 1) {
+                currentZoom = 2.2;
+                img.style.transform = `scale(${currentZoom})`;
+                img.style.cursor = 'zoom-out';
+            } else {
+                currentZoom = 1;
+                img.style.transform = `scale(1)`;
+                img.style.cursor = 'zoom-in';
             }
         }
 
@@ -1329,11 +1237,9 @@
         }
 
         function closeImageModal() {
-            const modal = document.getElementById('image-modal');
-            modal.classList.remove('active');
+            document.getElementById('image-modal').classList.remove('active');
         }
 
-        // NAVEGACIÓN DESLIZABLE (CARRUSEL POR TEMA)
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
@@ -1365,7 +1271,7 @@
                                                             <button class="pdf-btn pdf-btn-open" style="background:#2E7D32;" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Max</button>
                                                         </div>
                                                     </div>
-                                                    <iframe class="pdf-viewer-frame" src="${item.data}"></iframe>
+                                                    <iframe class="pdf-viewer-frame" src="${item.data}" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})"></iframe>
                                                 </div>
                                             </div>
                                         `;
@@ -1426,18 +1332,14 @@
                 });
 
                 const q = sortedQuestions[currentQuestionIndex % sortedQuestions.length];
-
                 let rawList = q.rawOptions || q.options || [];
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 let correctNewIndex = shuffledOptions.indexOf(correctValue);
 
-                let discardHtml = '';
-                if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
-                    discardHtml = q.discardExplanation.map(desc => `<div>• ${desc}</div>`).join('');
-                } else {
-                    discardHtml = `<div>• <b>Opción correcta:</b> ${correctValue}</div>`;
-                }
+                let discardHtml = q.discardExplanation && Array.isArray(q.discardExplanation) 
+                    ? q.discardExplanation.map(desc => `<div>• ${desc}</div>`).join('') 
+                    : `<div>• <b>Opción correcta:</b> ${correctValue}</div>`;
 
                 area.innerHTML = `
                     <div class="question-card">
@@ -1458,10 +1360,7 @@
                 area.innerHTML = renderTopicGroupedView('madera');
             } else if (currentTab === 'flashcards') {
                 let cards = subjectData.flashcards || [];
-                
-                if (activeCardFilter === 'hard') {
-                    cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-                }
+                if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
 
                 if (cards.length === 0) {
                     area.innerHTML = `
@@ -1554,39 +1453,26 @@
 
         function checkAnswer(selectedBtn, selectedIdx, correctIdx, qId) {
             const parent = selectedBtn.parentElement;
-            const buttons = parent.querySelectorAll('.option-btn');
-            
-            buttons.forEach((btn, idx) => {
+            parent.querySelectorAll('.option-btn').forEach((btn, idx) => {
                 btn.disabled = true;
-                if (idx === correctIdx) {
-                    btn.classList.add('correct');
-                }
+                if (idx === correctIdx) btn.classList.add('correct');
             });
 
             const isCorrect = selectedIdx === correctIdx;
-
             if (!isCorrect) {
                 selectedBtn.classList.add('incorrect');
                 quizStats.incorrect++;
-                questionSchedule[qId] = {
-                    weight: ((questionSchedule[qId] || {}).weight || 0) + 5,
-                    status: 'Frecuente (Repasar pronto)'
-                };
+                questionSchedule[qId] = { weight: ((questionSchedule[qId] || {}).weight || 0) + 5, status: 'Frecuente (Repasar pronto)' };
             } else {
                 quizStats.correct++;
-                questionSchedule[qId] = {
-                    weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0),
-                    status: 'Dominada'
-                };
+                questionSchedule[qId] = { weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0), status: 'Dominada' };
             }
 
             localStorage.setItem('yn_quiz_stats', JSON.stringify(quizStats));
             localStorage.setItem('yn_question_schedule', JSON.stringify(questionSchedule));
 
             const expBox = document.getElementById('explanation-box');
-            if (expBox) {
-                expBox.style.display = 'block';
-            }
+            if (expBox) expBox.style.display = 'block';
         }
 
         function nextQuestion() {
@@ -1594,7 +1480,6 @@
             renderContent();
         }
 
-        // --- CREADOR ---
         function toggleAdminPanel() {
             const panel = document.getElementById('admin-panel');
             panel.classList.toggle('active');
@@ -1626,7 +1511,6 @@
         function saveAdminContent() {
             const type = document.getElementById('admin-type').value;
             const sub = document.getElementById('admin-subject').value;
-
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             if (type === 'flashcard') {
@@ -1645,16 +1529,13 @@
 
                 if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos 2 opciones');
                 
-                let discArr = discText ? discText.split('\n').filter(Boolean) : null;
-                let rawOptionsList = [o0, o1, o2, o3].filter(Boolean);
-
                 customData[sub].preguntas.push({
                     id: 'qcustom_' + Date.now(),
                     q,
-                    rawOptions: rawOptionsList,
+                    rawOptions: [o0, o1, o2, o3].filter(Boolean),
                     correctText: o0,
                     explanation: exp,
-                    discardExplanation: discArr
+                    discardExplanation: discText ? discText.split('\n').filter(Boolean) : null
                 });
             }
 
@@ -1680,12 +1561,10 @@
             
             cardDifficulty[cardId] = diffTag;
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
-
             currentCardIndex++;
             renderContent();
         }
 
-        // --- EXPORTAR E IMPORTAR ENTRE DISPOSITIVOS ---
         function exportBackup() {
             const backupData = {
                 yn_custom_data: customData,
@@ -1709,10 +1588,7 @@
             if (navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
                 const file = new File([blob], fileName, { type: "application/json" });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share({
-                        files: [file],
-                        title: 'Respaldar YuliNotas',
-                    }).catch(() => {});
+                    navigator.share({ files: [file], title: 'Respaldar YuliNotas' }).catch(() => {});
                     return;
                 }
             }
@@ -1735,7 +1611,6 @@
             reader.onload = function(evt) {
                 try {
                     const imported = JSON.parse(evt.target.result);
-                    
                     if (imported.yn_custom_data) localStorage.setItem('yn_custom_data', JSON.stringify(imported.yn_custom_data));
                     if (imported.yn_topic_checklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.yn_topic_checklist));
                     if (imported.yn_deleted_topics_v1) localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(imported.yn_deleted_topics_v1));
@@ -1768,13 +1643,12 @@
                     alert('¡Progreso importado con éxito!');
                     renderContent();
                 } catch (err) {
-                    alert('Error al leer el archivo de respaldo. Asegúrate de que sea un archivo .json válido.');
+                    alert('Error al leer el archivo de respaldo.');
                 }
             };
             reader.readAsText(file);
         }
 
-        // Inicializar app
         selectSubject(currentSubject);
         selectTab(currentTab);
     </script>
