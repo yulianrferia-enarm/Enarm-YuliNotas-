@@ -190,7 +190,27 @@
             font-weight: 800;
         }
 
-        /* Agrupación por Temario Desplegable */
+        .ga-card {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .ga-title {
+            font-size: calc(13px * var(--font-scale));
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .ga-body {
+            font-size: calc(12px * var(--font-scale));
+            line-height: 1.5;
+            color: var(--text-dark);
+        }
+
         .topic-group-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -247,7 +267,6 @@
             font-weight: 700;
         }
 
-        /* Carrusel Deslizable por Tema */
         .carousel-wrapper {
             position: relative;
             display: flex;
@@ -313,7 +332,6 @@
         .carousel-btn-prev { left: 4px; }
         .carousel-btn-next { right: 4px; }
 
-        /* Flashcards */
         .flashcard-filter-bar {
             display: flex;
             gap: 6px;
@@ -415,7 +433,6 @@
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
-        /* Preguntas */
         .question-card {
             display: flex;
             flex-direction: column;
@@ -483,7 +500,6 @@
             width: 100%;
         }
 
-        /* PDF Cards */
         .pdf-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -533,7 +549,6 @@
             cursor: pointer;
         }
 
-        /* Modal visor de imagen / PDF en pantalla completa con Pinch-to-Zoom fluido */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -652,7 +667,6 @@
             z-index: 1003;
         }
 
-        /* Estadísticas */
         .stats-dashboard {
             display: flex;
             flex-direction: column;
@@ -722,7 +736,6 @@
             z-index: 5;
         }
 
-        /* Temario */
         .topic-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -765,7 +778,6 @@
             cursor: pointer;
         }
 
-        /* Admin Panel */
         .admin-panel {
             display: none;
             background: var(--card-bg);
@@ -826,13 +838,12 @@
 
     <div class="container">
 
-        <!-- Panel Creador y Carga Masiva -->
         <div id="admin-panel" class="admin-panel">
-            <h3>⚡ Agregar Contenido</h3>
+            <h3>⚡ Agregar Contenido & Importación Masiva</h3>
             <select id="admin-type" onchange="changeAdminFields()">
-                <option value="pregunta">Pregunta 1x1</option>
-                <option value="flashcard">Flashcard 1x1</option>
-                <option value="bulk">📂 Importación Masiva (JSON)</option>
+                <option value="pregunta">Banco de Preguntas (1x1)</option>
+                <option value="flashcard">Flashcards de Memoria (1x1)</option>
+                <option value="bulk">📂 Importación Masiva Ampliada (.json, .pdf, .docx, múltiples archivos)</option>
             </select>
 
             <select id="admin-subject">
@@ -848,7 +859,6 @@
             <button id="admin-save-btn" onclick="saveAdminContent()">Guardar Contenido</button>
         </div>
 
-        <!-- 1. MATERIAS -->
         <div class="section-title">Materia</div>
         <div class="subjects-grid">
             <button class="subject-btn btn-gineco" onclick="selectSubject('gineco')">Ginecología</button>
@@ -858,14 +868,14 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. PESTAÑAS -->
         <div class="tabs-nav">
-            <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
+            <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Banco de Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
             <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
             <button class="tab-btn btn-tab-madera" onclick="selectTab('madera')">Madera</button>
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
             <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
+            <button class="tab-btn btn-tab-ga" onclick="selectTab('ga')">GA</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
             <button class="tab-btn btn-tab-stats" onclick="selectTab('stats')">Métricas</button>
         </div>
@@ -876,7 +886,6 @@
         </div>
     </div>
 
-    <!-- Modal Visor Pantalla Completa con Pinch-to-Zoom y Pan -->
     <div id="image-modal" class="image-modal-overlay">
         <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
         <button class="modal-reset-zoom-btn" onclick="resetZoom(event)">↺ Tamaño Normal</button>
@@ -896,6 +905,29 @@
             interna: { title: "Medicina Interna", color: "#00695C", bg: "#E0F2F1" },
             cirugia: { title: "Cirugía General", color: "#1565C0", bg: "#E3F2FD" },
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
+        };
+
+        const gaData = {
+            gineco: [
+                { title: "Manejo inicial de SUA (Sangrado Uterino Anormal)", desc: "Descartar embarazo con fracción beta. Evaluar estructurales mediante ECO pélvico (Palpación/USG). Primera línea no hormonal: AINES (ácido mefenámico) o antifibrinolíticos (ácido tranexámico)." },
+                { title: "Diagnóstico diferencial de Amenorrea Secundaria", desc: "1. Prueba de embarazo. 2. Perfil hormonal (TSH y Prolactina). 3. Prueba de deprivación con acetato de medroxiprogesterona. Si hay sangrado = anovulación; si no hay sangrado = evaluar estrógenos/progestágenos o alteración anatómica." }
+            ],
+            obste: [
+                { title: "Clasificación y Manejo de Trastornos Hipertensivos del Embarazo", desc: "HTA gestacional vs Preeclampsia (≥140/90 mmHg posterior a la semana 20 + proteinuria o daño a órgano blanco). Criterios de severidad: ≥160/110 mmHg, síntomas vasomotores, elevación de transaminasas o trombocitopenia. Tratamiento de primera línea crisis: Hidralazina IV, Labetalol o Nifedipina VO. Profilaxis convulsiva: Sulfato de Magnesio (Esquema Zuspan o Pritchard)." },
+                { title: "Manejo de Hemorragia Postparto (HPP)", desc: "Causas (Las 4 T): Tono (atonía uterina, 70%), Trauma (laceraciones), Tijera/Tejido (retención placentaria), Trombina (coagulopatía). Primera línea: Masaje uterino bimanual + Oxiocina IV/IM + vaciamiento vesical." }
+            ],
+            interna: [
+                { title: "Abordaje del Síndrome Coronario Agudo (SCA)", desc: "Realizar EKG en los primeros 10 minutos. Evaluar elevación del segmento ST (IAMCEST vs IAMSEST). Manejo inicial antiisquémico y doble antiagregación (Aspirina + Clopidogrel / Ticagrelor) a menos que esté contraindicado." },
+                { title: "Criterios Diagnósticos Cetoacidosis Diabética", desc: "Glucemia > 250 mg/dL, pH venoso/arterial < 7.3, Bicarbonato sérico < 15 mEq/L, Anión gap elevado y presencia de cetonemia/cetonuria positiva. Pilar del manejo: Hidratación agresiva con solución salina 0.9% e Insulina rápida en infusión continua." }
+            ],
+            cirugia: [
+                { title: "Escala de Alvarado para Apendicitis Aguda", desc: "Migración del dolor (1), Anorexia (1), Náusea/Vómita (1), Dolor en fosa ilíaca derecha (2), Rebote positivo (1), Elevación térmica (1), Leucocitosis (2), Desviación izquierda (1). Puntaje ≥ 7 sugiere alta probabilidad quirúrgica." },
+                { title: "Manejo de Abdomen Agudo / Perforación", desc: "Ayuno, sonda nasogástrica a derivación, reposición hidroelectrolítica agresiva, analgesia normada y cobertura antibiótica de amplio espectro de origen empírico enfocada a flora mixta entérica." }
+            ],
+            pedia: [
+                { title: "Reanimación Neonatal Básica", desc: "Pasos iniciales en los primeros 30 segundos: Proveer calor, despejar vía aérea si es necesario (aspirar boca antes que nariz), secar y estimular. Evaluar frecuencia cardiaca y respiración. Si FC < 100 lpm o respiración ineficaz: iniciar VPP con aire ambiental o FiO2 adecuada." },
+                { title: "Deshidratación en EDA (Plan A, B y C)", desc: "Plan A (sin deshidratación): continuar alimentación habitual, líquidos a libre demanda y Vida Suero Oral posterior a cada evacuación. Plan B (deshidratación moderada): VSO 50-100 ml/kg fraccionado en 4 horas. Plan C (deshidratación grave con choque): Carga con solución fisiológica 0.9% a 20-30 ml/kg en etapa inicial." }
+            ]
         };
 
         let baseData = {
@@ -945,107 +977,9 @@
                     "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
-            cirugia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Hepatoblastoma", "Carcinoma hepatocelular", "Abdomen agudo", "Apendicitis aguda", "Patología biliar", 
-                    "Colecistitis crónica litiásica", "Coledocolitiasis", "Colangitis", "Enfermedad diverticular", 
-                    "Trastornos motores del esófago", "Acalasia", "Espasmo esofágico difuso", "Enfermedad por reflujo gastroesofágico (ERGE)", 
-                    "Esófago de Barret", "Dispepsia funcional", "Carcinoma epidermoide de esófago", "Gastritis", "Úlcera péptica", 
-                    "Enfermedad ulcerosa péptica", "Úlcera péptica perforada", "Síndrome de Zollinger Ellison", "Cáncer gástrico (adenocarcinoma)", 
-                    "Obesidad y cirugía bariátrica", "Obesidad", "Hernia umbilical", "Hernias inguinales y femorales", "Hernia ventral", 
-                    "Esplenectomía", "Pancreatitis aguda", "Pancreatitis crónica", "Adenocarcinoma de páncreas", "Enfermedad arterial periférica", 
-                    "Oclusión arterial aguda", "Insuficiencia venosa crónica", "Mordedura de serpiente", "Mordedura por arañas", 
-                    "Intoxicación por picadura de alacrán", "Picadura por himenópteros", "Patología perianal: enfermedad hemorroidal", 
-                    "Absceso anal", "Fistula anal", "Fisura anal", "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", 
-                    "Cáncer de colon", "Tumor de intestino delgado", "Trasplante de hígado", "Quemaduras", "Quemaduras por frío", 
-                    "Úlceras por presión", "Derrame pleural", "Infección de sitio quirúrgico", "Dehiscencia de herida quirúrgica", 
-                    "ATLS", "Trauma de tórax", "Trauma de abdomen", "Traumatismo craneoencefálico", "Hematoma epidural", "Hematoma subdural", 
-                    "Contusiones y hematomas intracerebrales", "Herniación uncal", "Neuralgia del trigémino", "Síndrome de hipertensión intracraneal", 
-                    "Síndrome de herniación cerebral", "Síndrome de hipertensión intracraneal benigna", "Hidrocefalia", 
-                    "Hidrocefalia crónica del adulto", "Absceso cerebral", "Tumores cerebrales", "Blefaritis", "Chalazión y orzuelo", 
-                    "Ectoprión", "Triquiasis", "Endoprión", "Síndrome de ojo seco", "Dacriocistitis", "Estenosis congénita de la vía lagrimal", 
-                    "Retinopatía diabética (RD)", "Retinopatía hipertensiva", "Oclusión venosa de la retina", 
-                    "Desprendimiento de retina regmatógeno no traumático", "Desprendimiento de retina seroso", "Ambliopía", 
-                    "Estrabismo concomitante convergente", "Parálisis oculomotoras", "Glaucoma primario de ángulo abierto", 
-                    "Glaucoma de ángulo estrecho", "Glaucoma congénito", "Uveitis", "Catarata", "Catarata congénita", "Conjuntivitis", 
-                    "Pterigión", "Queratitis infecciosa", "Queratocono", "Escleritis", "Episcleritis", "Trauma ocular", "Campimetría", 
-                    "Neuritis óptica", "Retinopatía del prematuro", "Hiperplasia prostática benigna", "Cáncer de próstata", 
-                    "Litiasis renal", "Cólico renoureteral", "Bacteriuria asintomática e infección del tracto urinario en el embarazo", 
-                    "Cáncer renal", "Cáncer de vejiga", "Infección de vías urinarias", "Cáncer de testículo", "Trasplante renal", 
-                    "Vértigo", "Vértigo postural paroxístico benigno (VPPB)", "Enfermedad de Ménière", "Neuronitis vestibular", 
-                    "Neurinoma del acústico", "Hipoacusia", "Hipoacusia del recién nacido", "Ototoxicidad", "Fracturas faciales", 
-                    "Fracturas del peñasco", "Fracturas nasales", "Fracturas mandibulares", "Parálisis facial", "Epistaxis", 
-                    "Rinitis alérgica", "Rinitis no alérgica", "Sinusitis aguda", "Pólipos nasales", "Patología maligna de senos paranasales", 
-                    "Carcinoma epidermoide de laringe", "Patología benigna de cuerdas vocales", "Papilomatosis laringea juvenil", 
-                    "Faringitis", "Absceso profundo de cuello", "Síndrome de apnea obstructiva del sueño", "Otitis externa aguda", 
-                    "Otoesclerosis", "Otitis media", "Angiofibroma juvenil", "Artritis séptica en niños y adultos", "Fracturas de miembro superior", 
-                    "Fracturas intracapsulares del extremo proximal del fémur", "Osteosarcoma", "Sarcoma de Ewing", "Codo de niñera", 
-                    "Síndrome del tunel del carpo", "Lesiones ligamentarias de rodilla", "Síndrome doloroso de hombro", 
-                    "Fracturas de miembro inferior", "Patologías de columna", "Esguince de tobillo"
-                ] 
-            },
-            interna: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Insuficiencia cardíaca", "Bradiarritmias", "Taquiarritmias", "Fibrilación auricular", "Síndrome coronario agudo", 
-                    "Valvulopatías", "Cardiomiopatías", "Pericarditis aguda", "Hipertensión arterial sistémica", "Basic Life Support", 
-                    "Advanced Cardiovascular Life Support", "Enfermedades micóticas", "Toxicodermias", "Eritema multiforme mayor o síndrome de Stevens Jonhson", 
-                    "Acné", "Alopecia androgénica", "Alopecia areata", "Psoriasis", "Tumores cutáneos benignos", "Carcinoma basocelular", 
-                    "Melanoma maligno", "Enfermedad diarreica aguda en adultos", "Síndrome de colon irritable", "Enfermedad inflamatoria intestinal", 
-                    "Alteraciones de metabolismo bilirrubina", "Abscesos hepáticos", "Absceso amebiano", "Hepatitis aguda", 
-                    "Hemorragia digestiva alta por varices esofágicas", "Hipertiroidismo o tirotoxicosis", "Nódulo tiroideo", "Tiroiditis", 
-                    "Sindrome de Cushing", "Insuficiencia suprarrenal", "Hiperaldosteronismo", "Feocromocitoma", "Diabetes mellitus", 
-                    "Cetoacidosis diabética", "Síndrome hiperglucémico hiperosmolar", "Pie diabético", "Anemia", "Leucemia mieloide crónica", 
-                    "Leucemia linfática crónica (LLC)", "Leucemias agudas", "Linfoma no Hodgkin", "Linfoma Hodgkin", "Policitemia vera", 
-                    "Trombocitemia", "Mieloma múltiple", "Alteraciones de la coagulación", "Trombocitopenia", "Insuficiencia renal prerenal", 
-                    "IRA parenquimatosa", "IRA postrenal", "Enfermedad renal crónica", "Síndrome nefrítico", "Síndrome nefrótico", 
-                    "Glomerulonefritis", "Nefropatía diabética", "Lupus eritematoso sistémico", "Vasculitis", "Enfermedad de Goodpasture", 
-                    "Trastornos tubulares", "Microangiopatías trombóticas", "Enfermedad pulmonar obstructiva crónica", "Exacerbaciones EPOC", 
-                    "Enfermedad tromboembólica venosa", "Cáncer de pulmón", "Asma en adulto", "Enfermedades intersticiales", "Sarcoidosis", 
-                    "Panarteritis nodosa clásica", "Enfermedad de Behcet", "Artropatía por cristales", "Artritis reumatoide", 
-                    "Factor reumatoide y ANA negativos", "Espondilitis anquilosante", "Artrosis", "Demencias", "Alzheimer", 
-                    "Enfermedad vascular cerebral", "Hemorragia intraparenquimatosa", "Hemorragia subaracnoidea", "Síndrome de Guillain-Barré", 
-                    "Miastenia gravis", "Crisis miasténica", "Cefaleas", "Endocarditis infecciosa", "Tuberculosis pulmonar", "Neumonía", 
-                    "Neumoconiosis", "Tétanos", "Botulismo", "Difteria", "Rabia", "Enfermedad gonocócica", "Chlamydia trachomatis", 
-                    "Sífilis", "Verrugas genitales", "Neoplasia intraepitelial anal", "Tumor de Buschke-Löwenstein", "Borreliosis de Lyme", 
-                    "Leptospirosis", "Carbunco", "Tularemia", "Erisipeloide", "Peste", "Virus de Inmunodeficiencia Humana VIH/sida", 
-                    "Paludismo", "Tripanosomiasis", "Leishmaniasis", "Rickettsia", "Brucelosis", "Nocardiosis", "Actinomicosis", 
-                    "Intoxicación por agroquímicos", "Intoxicación por opiáceos y benzodiacepinas", "Intoxicación por metales pesados", 
-                    "Intoxicación etílica", "Intoxicación por acetaminofén (paracetamol)", "Intoxicación por CO", "Fiebre reumática", 
-                    "Dengue", "Chikungunya", "Zika", "Covid-19", "Herpes zoster", "Viruela del mono", "Peritonitis infecciosa", "Lepra", 
-                    "Sepsis y choque séptico", "Dislipidemias", "Golpe de calor", "Depresión mayor", "Ansiedad", "Esquizofrenia", "Trastornos alimentarios"
-                ] 
-            },
-            pedia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Recién nacido sano", "Reanimación neonatal", "Patología respiratoria neonatal", 
-                    "Síndrome de dificultad respiratoria o enfermedad membrana hialina", "Taquipnea transitoria del recién nacido", 
-                    "Síndrome de aspiración meconial", "Enfermedad hemorrágica del recién nacido", "Hipoglucemia neonatal", 
-                    "Atresia esofágica", "Atresia de coanas", "Gastrosquisis y onfalocele", "Divertículo de Meckel", "Hernia diafragmática", 
-                    "Enterocolitis necrotizante", "Sepsis neonatal", "Recién nacido con fiebre y sin evidencia de infección", 
-                    "Encefalopatía hipóxico-isquémica", "Ictericia neonatal", "TORCH", "Control y seguimiento de la salud en la niña y el niño menor de 5 años", 
-                    "Otitis media aguda", "Infección de vías respiratorias altas", "Rinosinusitis aguda", "Vacunas", "Desnutrición", 
-                    "Raquitismo carencial", "Neumonía bacteriana adquirida en la comunidad en menores de 18 Años", 
-                    "Síndrome de muerte súbita del lactante (SMSL)", "Bronquiolitis aguda", "Sibilante recurrente", "Asma", "Fibrosis quística", 
-                    "Enfermedad por reflujo gastroesofágico", "Invaginación intestinal", "Estenosis hipertrófica del píloro", "Talla baja", 
-                    "Pubertad", "Sobrepeso y obesidad", "Mal descenso testicular", "Escroto agudo", "Reflujo vesico-ureteral", 
-                    "Infección de vías urinarias <18 años", "Enfermedades exantemáticas", "Enfermedad de Kawasaki", "Diarrea aguda", 
-                    "VIH en el binomio", "Epilepsia y crisis febriles", "Parálisis braquial", "Infecciones del SNC", "Encefalitis", 
-                    "Displasia del desarrollo de la cadera", "Artritis séptica", "Sinovitis transitoria", "Enfermedad de Legg Calve-Perthes", 
-                    "Epifisiólisis femoral proximal", "Osteosarcoma", "Sarcoma de Ewing", "Osteocondroma", "Osteoma osteoide", 
-                    "Pronación dolorosa/codo de niñera", "Enfermedad Osgood Schlatter/apofisitis de tracción de rodilla", "Dermatitis atópica", 
-                    "Dermatitis seborreica", "Dermatitis del área del pañal", "Infecciones cutánea bacterianas", "Impétigo", "Escabiasis", 
-                    "Pediculosis capitis", "Maltrato infantil", "Neuroblastoma", "Tumor de Wilms", "Trastorno por déficit de atención e hiperactividad (TDAH)", 
-                    "Parálisis cerebral infantil (PCI)", "Diarrea crónica", "Alergia a la proteína de la leche de vaca", "Intolerancia a la lactosa en niños", 
-                    "Enfermedad celíaca", "Síndrome de Down", "Síndrome de Turner", "Cardiopatias congenitas", "Persistencia del conducto arterioso", 
-                    "Retinoblastoma", "Ingesta de causticos", "Metabolismo y enfermedades pediátricas", "Lactancia materna"
-                ] 
-            }
+            cirugia: { flashcards: [], preguntas: [], temario: ["Abdomen agudo", "Apendicitis aguda", "Patología biliar"] },
+            interna: { flashcards: [], preguntas: [], temario: ["Insuficiencia cardíaca", "Hipertensión arterial sistémica", "Diabetes mellitus"] },
+            pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "Bronquiolitis aguda", "Deshidratación en EDA"] }
         };
 
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
@@ -1237,6 +1171,9 @@
                 badge.textContent = `${countTopicItems(gpcImages, currentSubject)} Esquemas`;
             } else if (currentTab === 'yulinotas') {
                 badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
+            } else if (currentTab === 'ga') {
+                const list = gaData[currentSubject] || [];
+                badge.textContent = `${list.length} GA`;
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 5;
                 let completedSubjectChecks = 0;
@@ -1325,7 +1262,7 @@
                 if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
                 if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
 
-                if (file.type === 'application/pdf') {
+                if (file.type === 'application/pdf' || file.name.endsWith('.docx') || file.name.endsWith('.pdf')) {
                     targetStorage[currentSubject][topicName].push({
                         isPdf: true,
                         name: file.name,
@@ -1414,8 +1351,8 @@
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
-            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : '+ Subir YuliNotas (PDF)'));
+            let inputAccept = type === 'pdf' ? 'application/pdf,.docx' : (type === 'madera' ? 'application/pdf,.docx,image/*' : 'image/*');
+            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / DOCX / Imagen)' : '+ Subir YuliNotas (PDF / DOCX)'));
 
             return topics.map((topic, tIdx) => {
                 const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
@@ -1436,7 +1373,7 @@
                                                 <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
                                                 <div class="pdf-card" style="border:none;">
                                                     <div class="pdf-card-header">
-                                                        <div class="pdf-card-title">${item.name || 'Documento PDF'} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${item.date || ''})</span></div>
+                                                        <div class="pdf-card-title">${item.name || 'Documento PDF/DOCX'} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${item.date || ''})</span></div>
                                                         <div class="pdf-card-actions">
                                                             <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${item.data}')">↗ Abrir</button>
                                                             <button class="pdf-btn pdf-btn-open" style="background:#2E7D32;" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Max</button>
@@ -1489,7 +1426,7 @@
 
             if (currentTab === 'preguntas') {
                 if (randomizedQuestions.length === 0) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas registradas en esta materia. Usa el botón "+ Creador" para agregarlas.</p>`;
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas de simulación o casos clínicos en esta materia. Usa el botón "+ Creador" para agregarlas.</p>`;
                     return;
                 }
 
@@ -1510,11 +1447,11 @@
                             <button class="option-btn" onclick="checkAnswer(this, ${idx}, ${correctNewIndex}, '${q.id}')">${String.fromCharCode(65 + idx)})${opt}</button>
                         `).join('')}
                         <div id="explanation-box" class="explanation-box">
-                            <strong>Retroalimentación Desglosada:</strong>
+                            <strong>Retroalimentación del Caso Clínico:</strong>
                             <div style="margin-bottom:8px;">${q.explanation || ''}</div>
-                            <strong style="display:block; margin-top:8px;">Descarte de Opciones:</strong>
+                            <strong style="display:block; margin-top:8px;">Descarte Independiente de Reactivos:</strong>
                             ${discardHtml}
-                            <button class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
+                            <button class="next-q-btn" onclick="nextQuestion()">Siguiente Reactivo ➔</button>
                         </div>
                     </div>
                 `;
@@ -1527,7 +1464,7 @@
                             <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
                             <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
                         </div>
-                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
+                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay tarjetas de memorización activa (high-yield) registradas bajo este filtro.</p>
                     `;
                     return;
                 }
@@ -1550,7 +1487,7 @@
                             <div class="flashcard-back">${card.a}</div>
                         </div>
                     </div>
-                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
+                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso activo: ${cardAnki.nextDate}</p>
                     <div class="anki-controls">
                         <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
                         <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
@@ -1563,6 +1500,18 @@
                 area.innerHTML = renderTopicGroupedView('gpc');
             } else if (currentTab === 'yulinotas') {
                 area.innerHTML = renderTopicGroupedView('pdf');
+            } else if (currentTab === 'ga') {
+                const list = gaData[currentSubject] || [];
+                area.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 4px;">
+                        ${list.map(item => `
+                            <div class="ga-card">
+                                <div class="ga-title">💡 ${item.title}</div>
+                                <div class="ga-body">${item.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             } else if (currentTab === 'temario') {
                 const data = getData();
                 const subjectData = data[currentSubject];
@@ -1594,7 +1543,7 @@
                 area.innerHTML = `
                     <div class="stats-dashboard">
                         <div class="stat-card-box">
-                            <h4>Precisión en Preguntas</h4>
+                            <h4>Precisión en Banco de Preguntas</h4>
                             <p style="font-size: calc(20px * var(--font-scale)); font-weight: 800; margin: 4px 0;">${quizAccuracy}% Correctas</p>
                             <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted);">${quizStats.correct} aciertos | ${quizStats.incorrect} fallos (${totalQuiz} respondidas)</p>
                             <div class="progress-bar-container">
@@ -1602,10 +1551,10 @@
                             </div>
                         </div>
                         <div class="stat-card-box">
-                            <h4>Distribución de Dificultad (Flashcards)</h4>
-                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
+                            <h4>Distribución de Repetición Espaciada (Flashcards)</h4>
+                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">Tarjetas Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
+                            <p style="font-size: calc(12px * var(--font-scale));">Tarjetas Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
+                            <p style="font-size: calc(12px * var(--font-scale));">Tarjetas Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
                         </div>
                     </div>
                 `;
@@ -1655,80 +1604,100 @@
             if (type === 'flashcard') {
                 saveBtn.style.display = 'block';
                 container.innerHTML = `
-                    <input type="text" id="af-q" placeholder="Pregunta de la Flashcard">
-                    <textarea id="af-a" placeholder="Respuesta clave"></textarea>
+                    <input type="text" id="af-q" placeholder="Término / Pregunta (High-Yield)">
+                    <textarea id="af-a" placeholder="Respuesta / Explicación de alta rendimiento"></textarea>
                 `;
             } else if (type === 'pregunta') {
                 saveBtn.style.display = 'block';
                 container.innerHTML = `
-                    <textarea id="af-q" placeholder="Caso clínico / Pregunta"></textarea>
+                    <textarea id="af-q" placeholder="Caso clínico / Reactivo tipo ENARM"></textarea>
                     <input type="text" id="af-o0" placeholder="Opción Correcta">
                     <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
                     <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
                     <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" placeholder="Explicación general"></textarea>
-                    <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
+                    <textarea id="af-exp" placeholder="Explicación clínica general"></textarea>
+                    <textarea id="af-disc" placeholder="Descarte de opciones independientes (A:..., B:...)"></textarea>
                 `;
             } else if (type === 'bulk') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube un archivo .json con un arreglo de preguntas o flashcards para importarlas masivamente de golpe:</p>
-                    <input type="file" id="bulk-file-input" accept=".json" onchange="processBulkImport(event)">
+                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Selecciona o arrastra múltiples archivos de tipo documento y PDF (.json, .pdf, .docx):</p>
+                    <input type="file" id="bulk-file-input" accept=".json,.pdf,.docx" multiple onchange="processBulkImport(event)">
                 `;
             }
         }
 
         function processBulkImport(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
 
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const importedArray = JSON.parse(evt.target.result);
-                    if (!Array.isArray(importedArray)) {
-                        return alert('El archivo JSON debe contener una lista (array) de elementos.');
+            const sub = document.getElementById('admin-subject').value;
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
+
+            let processedCount = 0;
+
+            Array.from(files).forEach((file, fIdx) => {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        if (file.name.endsWith('.json')) {
+                            const importedArray = JSON.parse(evt.target.result);
+                            if (Array.isArray(importedArray)) {
+                                importedArray.forEach((item, idx) => {
+                                    if (item.q && item.a && !item.rawOptions) {
+                                        customData[sub].flashcards.push({
+                                            id: 'bulk_fc_' + Date.now() + '_' + fIdx + '_' + idx,
+                                            q: item.q,
+                                            a: item.a,
+                                            tag: item.tag || 'normal'
+                                        });
+                                    } else if (item.q && (item.rawOptions || item.options)) {
+                                        let opts = item.rawOptions || item.options;
+                                        customData[sub].preguntas.push({
+                                            id: 'bulk_q_' + Date.now() + '_' + fIdx + '_' + idx,
+                                            q: item.q,
+                                            rawOptions: opts,
+                                            correctText: item.correctText || opts[0],
+                                            explanation: item.explanation || '',
+                                            discardExplanation: item.discardExplanation || null
+                                        });
+                                    }
+                                });
+                            }
+                        } else {
+                            // Procesamiento de documentos individuales (.pdf, .docx) hacia YuliNotas / Material clínico
+                            const topicName = file.name.replace(/\.[^/.]+$/, "");
+                            if (!pdfNotes[sub]) pdfNotes[sub] = {};
+                            if (!pdfNotes[sub][topicName]) pdfNotes[sub][topicName] = [];
+                            
+                            pdfNotes[sub][topicName].push({
+                                isPdf: true,
+                                name: file.name,
+                                data: evt.target.result,
+                                date: new Date().toLocaleDateString('es-MX')
+                            });
+                            localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
+                        }
+                    } catch (err) {
+                        console.error("Error procesando archivo individual", err);
                     }
 
-                    const sub = document.getElementById('admin-subject').value;
-                    if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
-
-                    let countQuestions = 0;
-                    let countCards = 0;
-
-                    importedArray.forEach((item, idx) => {
-                        if (item.q && item.a && !item.rawOptions) {
-                            customData[sub].flashcards.push({
-                                id: 'bulk_fc_' + Date.now() + '_' + idx,
-                                q: item.q,
-                                a: item.a,
-                                tag: item.tag || 'normal'
-                            });
-                            countCards++;
-                        } else if (item.q && (item.rawOptions || item.options)) {
-                            let opts = item.rawOptions || item.options;
-                            customData[sub].preguntas.push({
-                                id: 'bulk_q_' + Date.now() + '_' + idx,
-                                q: item.q,
-                                rawOptions: opts,
-                                correctText: item.correctText || opts[0],
-                                explanation: item.explanation || '',
-                                discardExplanation: item.discardExplanation || null
-                            });
-                            countQuestions++;
-                        }
-                    });
-
-                    localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                    prepareRandomizedLists();
-                    alert(`¡Importación masiva exitosa!\n- Preguntas agregadas: ${countQuestions}\n- Flashcards agregadas: ${countCards}`);
-                    toggleAdminPanel();
-                    renderContent();
-                } catch (err) {
-                    alert('Error al procesar el archivo JSON masivo.');
+                    processedCount++;
+                    if (processedCount === files.length) {
+                        localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                        prepareRandomizedLists();
+                        alert(`¡Importación masiva ampliada completada con éxito para ${files.length} archivo(s)!`);
+                        toggleAdminPanel();
+                        renderContent();
+                    }
+                };
+                
+                if (file.name.endsWith('.json')) {
+                    reader.readAsText(file);
+                } else {
+                    reader.readAsDataURL(file);
                 }
-            };
-            reader.readAsText(file);
+            });
         }
 
         function saveAdminContent() {
@@ -1739,7 +1708,7 @@
             if (type === 'flashcard') {
                 const q = document.getElementById('af-q').value;
                 const a = document.getElementById('af-a').value;
-                if (!q || !a) return alert('Completa los campos');
+                if (!q || !a) return alert('Completa los campos de la tarjeta');
                 customData[sub].flashcards.push({ id: 'custom_' + Date.now(), q, a });
             } else if (type === 'pregunta') {
                 const q = document.getElementById('af-q').value;
@@ -1764,7 +1733,7 @@
 
             localStorage.setItem('yn_custom_data', JSON.stringify(customData));
             prepareRandomizedLists();
-            alert('¡Guardado exitosamente!');
+            alert('¡Contenido guardado exitosamente!');
             toggleAdminPanel();
             renderContent();
         }
