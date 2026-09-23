@@ -214,18 +214,23 @@
         .topic-group-header-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
+        /* Botón de eliminación en formato compacto de solo Emoji */
         .btn-delete-topic {
-            background: #E53935;
-            color: white;
+            background: transparent;
+            color: #E53935;
             border: none;
-            padding: 4px 8px;
+            padding: 2px 6px;
             border-radius: 6px;
-            font-size: calc(10px * var(--font-scale));
-            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-delete-topic:hover {
+            background: rgba(229, 57, 53, 0.1);
         }
 
         .topic-group-body {
@@ -1214,7 +1219,7 @@
             container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
-        // --- GESTIÓN DE ELIMINACIÓN DE TEMAS POR APARTADO ---
+        // --- GESTIÓN DE ELIMINACIÓN DE TEMAS POR APARTADO (Solo Emoji 🗑) ---
         function deleteTopicGroup(e, topicName) {
             e.stopPropagation();
             if (!confirm(`¿Eliminar la categoría "${topicName}" de este apartado?`)) return;
@@ -1386,7 +1391,7 @@
                             <span>📌 ${topic}</span>
                             <div class="topic-group-header-actions">
                                 <span class="topic-count-badge">${items.length}</span>
-                                <button class="btn-delete-topic" onclick="deleteTopicGroup(event, '${topic}')">🗑 Eliminar Tema</button>
+                                <button class="btn-delete-topic" title="Eliminar categoría" onclick="deleteTopicGroup(event, '${topic}')">🗑</button>
                             </div>
                         </div>
                         <div class="topic-group-body">
