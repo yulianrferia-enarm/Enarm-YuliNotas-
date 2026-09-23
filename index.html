@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,18 @@
             --card-bg: #FFFFFF;
             --text-dark: #1C1C1E;
             --text-muted: #6C757D;
+            --border-color: #E5E5EA;
+            --info-bg: #FAFAFA;
+        }
+
+        body.dark-mode {
+            --bg-current: #121212;
+            --primary-color: #BB86FC;
+            --card-bg: #1E1E1E;
+            --text-dark: #F5F5F7;
+            --text-muted: #A1A1A6;
+            --border-color: #38383A;
+            --info-bg: #2C2C2E;
         }
 
         * {
@@ -26,16 +38,15 @@
             background-color: var(--bg-current);
             color: var(--text-dark);
             padding-bottom: 40px;
-            transition: background-color 0.4s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         .app-header {
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
+            background-color: var(--card-bg);
             color: var(--text-dark);
             padding: 16px;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -73,10 +84,15 @@
             background: #2E7D32;
         }
 
+        .btn-theme {
+            background: #333333;
+            color: #FFD700;
+        }
+
         .stats-bar {
             display: flex;
             justify-content: space-around;
-            background: rgba(255, 255, 255, 0.6);
+            background: var(--info-bg);
             padding: 8px 10px;
             margin-top: 8px;
             border-radius: 10px;
@@ -84,6 +100,7 @@
             font-weight: 600;
             flex-wrap: wrap;
             gap: 6px;
+            border: 1px solid var(--border-color);
         }
 
         .stats-bar span {
@@ -97,13 +114,13 @@
             font-weight: 800;
             text-transform: uppercase;
             color: var(--primary-color);
-            border-bottom: 1px dashed rgba(0,0,0,0.1);
+            border-bottom: 1px dashed var(--border-color);
             padding-bottom: 4px;
             margin-bottom: 2px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             padding: 16px;
         }
@@ -141,7 +158,7 @@
         }
 
         .subject-btn.active {
-            outline: 3px solid #1C1C1E;
+            outline: 3px solid var(--text-dark);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
@@ -155,17 +172,19 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             min-height: 380px;
+            border: 1px solid var(--border-color);
         }
 
         .tabs-nav {
             display: flex;
-            background-color: #EFEFF4;
+            background-color: var(--info-bg);
             border-radius: 12px;
             padding: 3px;
             margin-bottom: 20px;
             overflow-x: auto;
+            border: 1px solid var(--border-color);
         }
 
         .tab-btn {
@@ -183,12 +202,35 @@
         }
 
         .tab-btn.active {
-            background: #FFFFFF;
+            background: var(--card-bg);
             color: var(--text-dark);
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* Flashcards */
+        /* Flashcards & Dificultad */
+        .flashcard-filter-bar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            justify-content: center;
+        }
+
+        .filter-chip {
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--info-bg);
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .filter-chip.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
         .flashcard {
             perspective: 1000px;
             height: 180px;
@@ -223,11 +265,11 @@
             font-size: 15px;
             font-weight: 600;
             line-height: 1.4;
-            border: 1px solid #E5E5EA;
+            border: 1px solid var(--border-color);
         }
 
         .flashcard-front {
-            background-color: #FAFAFA;
+            background-color: var(--info-bg);
             color: var(--text-dark);
         }
 
@@ -237,18 +279,29 @@
             transform: rotateY(180deg);
         }
 
+        .card-tag-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            background: rgba(0,0,0,0.1);
+        }
+
         .anki-controls {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-top: 12px;
         }
 
         .anki-btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 10px;
-            font-size: 12px;
+            border-radius: 8px;
+            font-size: 11px;
             font-weight: 700;
             color: white;
             cursor: pointer;
@@ -257,6 +310,7 @@
         .anki-hard { background-color: #E53935; }
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
+        .anki-fav { background-color: #FBC02D; color: #000; }
 
         /* Preguntas */
         .question-card {
@@ -274,9 +328,10 @@
 
         .option-btn {
             padding: 12px;
-            border: 1px solid #E5E5EA;
+            border: 1px solid var(--border-color);
             border-radius: 10px;
-            background: #FFFFFF;
+            background: var(--card-bg);
+            color: var(--text-dark);
             text-align: left;
             font-size: 13px;
             cursor: pointer;
@@ -287,25 +342,55 @@
 
         .explanation-box {
             display: none;
-            background: #E8F4FD;
-            border-left: 4px solid #2196F3;
+            background: var(--info-bg);
+            border-left: 4px solid var(--primary-color);
             padding: 12px;
             border-radius: 8px;
             font-size: 12px;
-            color: #0D47A1;
+            color: var(--text-dark);
             margin-top: 10px;
             line-height: 1.4;
         }
 
-        .explanation-box strong {
-            display: block;
-            margin-bottom: 4px;
+        /* Estadísticas Avanzadas */
+        .stats-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-card-box {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 12px;
+        }
+
+        .stat-card-box h4 {
+            font-size: 13px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-container {
+            background: var(--border-color);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+
+        .progress-fill {
+            background: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
         }
 
         /* Galerías */
         .image-upload-zone {
             border: 2px dashed var(--primary-color);
-            background: rgba(255,255,255,0.7);
+            background: var(--info-bg);
             border-radius: 12px;
             padding: 16px;
             text-align: center;
@@ -360,8 +445,8 @@
 
         /* Temario */
         .topic-card {
-            background: #FAFAFA;
-            border: 1px solid #E5E5EA;
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 10px;
@@ -378,10 +463,10 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 4px;
-            background: #FFFFFF;
+            background: var(--card-bg);
             padding: 6px;
             border-radius: 8px;
-            border: 1px solid #EFEFF4;
+            border: 1px solid var(--border-color);
         }
 
         .check-item {
@@ -404,7 +489,7 @@
         /* Admin Panel */
         .admin-panel {
             display: none;
-            background: #FFFFFF;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 20px;
@@ -425,7 +510,9 @@
             width: 100%;
             padding: 8px 10px;
             margin-bottom: 10px;
-            border: 1px solid #E5E5EA;
+            border: 1px solid var(--border-color);
+            background: var(--info-bg);
+            color: var(--text-dark);
             border-radius: 8px;
             font-size: 12px;
         }
@@ -448,6 +535,7 @@
         <div class="app-header-top">
             <h1>YuliNotas</h1>
             <div class="header-actions">
+                <button class="btn-action btn-theme" onclick="toggleDarkMode()">🌙 Mode</button>
                 <button class="btn-action btn-sync" onclick="exportBackup()">📥 Guardar</button>
                 <button class="btn-action btn-sync" onclick="document.getElementById('import-file-input').click()">📤 Cargar</button>
                 <button class="btn-action" onclick="toggleAdminPanel()">+ Creador</button>
@@ -505,6 +593,7 @@
                 <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
                 <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
                 <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquemas GPC</button>
+                <button class="tab-btn btn-tab-stats" onclick="selectTab('stats')">📈 Métricas</button>
             </div>
 
             <div id="content-area"></div>
@@ -522,12 +611,12 @@
 
         let baseData = {
             gineco: {
-                flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación)." }],
+                flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
                 preguntas: [{ q: "Femenina de 32 años con dismenorrea y dispareunia. ¿Estándar de oro?", options: ["Laparoscopia diagnóstica", "Ecografía", "RM", "Ca-125"], correct: 0, explanation: "La laparoscopia permite la visualización directa de los implantes endometriósicos y la toma de biopsia para confirmación histológica." }],
                 temario: ["Ciclo femenino", "SOP", "Menopausia", "Osteoporosis", "Amenorrea primaria", "Amenorrea secundaria", "Cervicovaginitis", "Endometriosis", "Miomatosis", "CaCu", "Cáncer de mama"]
             },
             obste: {
-                flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio." }],
+                flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio.", tag: "normal" }],
                 preguntas: [{ q: "Gestante con sangrado rojo rutilante, indoloro. ¿Diagnóstico?", options: ["Placenta Previa", "DPPNI", "Ruptura Uterina", "Vasa Previa"], correct: 0, explanation: "La placenta previa se caracteriza típicamente por sangrado indoloro y rojo rutilante en la segunda mitad del embarazo." }],
                 temario: ["Control prenatal", "Aborto", "Embarazo ectópico", "ETG", "Placenta previa", "DPPNI", "HPP", "Preeclampsia", "Diabetes gestacional"]
             },
@@ -539,12 +628,24 @@
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
         let topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
+        let cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
+        let quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
+        let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
 
         let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
         let currentTab = localStorage.getItem('yn_current_tab') || 'flashcards';
         let currentCardIndex = 0;
+        let activeCardFilter = 'all';
+
+        if (isDarkMode) document.body.classList.add('dark-mode');
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('yn_dark_mode', isDarkMode.toString());
+        }
 
         function getData() {
             let combined = JSON.parse(JSON.stringify(baseData));
@@ -594,7 +695,9 @@
             currentCardIndex = 0;
             
             const config = subjectsConfig[subjectKey];
-            document.documentElement.style.setProperty('--bg-current', config.bg);
+            if (!isDarkMode) {
+                document.documentElement.style.setProperty('--bg-current', config.bg);
+            }
             document.documentElement.style.setProperty('--primary-color', config.color);
             
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
@@ -613,30 +716,63 @@
             renderContent();
         }
 
+        function setCardFilter(filter) {
+            activeCardFilter = filter;
+            currentCardIndex = 0;
+            renderContent();
+        }
+
         function renderContent() {
             const area = document.getElementById('content-area');
             const data = getData();
             const subjectData = data[currentSubject];
 
             if (currentTab === 'flashcards') {
-                const card = subjectData.flashcards[currentCardIndex];
-                if (!card) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay flashcards en esta materia.</p>`;
+                let cards = subjectData.flashcards || [];
+                
+                if (activeCardFilter === 'hard') {
+                    cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
+                } else if (activeCardFilter === 'fav') {
+                    cards = cards.filter(c => cardDifficulty[c.id] === 'fav');
+                }
+
+                if (cards.length === 0) {
+                    area.innerHTML = `
+                        <div class="flashcard-filter-bar">
+                            <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Difíciles</button>
+                            <button class="filter-chip ${activeCardFilter==='fav'?'active':''}" onclick="setCardFilter('fav')">⭐ Favoritas</button>
+                        </div>
+                        <p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
+                    `;
                     return;
                 }
+
+                const card = cards[currentCardIndex % cards.length];
                 const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
+                const currentDiff = cardDifficulty[card.id] || 'normal';
+
                 area.innerHTML = `
+                    <div class="flashcard-filter-bar">
+                        <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Difíciles</button>
+                        <button class="filter-chip ${activeCardFilter==='fav'?'active':''}" onclick="setCardFilter('fav')">⭐ Favoritas</button>
+                    </div>
                     <div class="flashcard" onclick="this.classList.toggle('flipped')">
                         <div class="flashcard-inner">
-                            <div class="flashcard-front">${card.q}</div>
+                            <div class="flashcard-front">
+                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
+                                ${card.q}
+                            </div>
                             <div class="flashcard-back">${card.a}</div>
                         </div>
                     </div>
                     <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
                     <div class="anki-controls">
-                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1)">Difícil (1d)</button>
-                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3)">Bien (3d)</button>
-                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7)">Fácil (7d)</button>
+                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
+                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
+                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
+                        <button class="anki-btn anki-fav" onclick="processAnki('${card.id}', 0, 'fav')">⭐ Favorita</button>
                     </div>
                 `;
             } else if (currentTab === 'preguntas') {
@@ -709,6 +845,29 @@
                                 <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'gpc')">✕</button>
                             </div>
                         `).join('')}
+                    </div>
+                `;
+            } else if (currentTab === 'stats') {
+                const totalQuiz = quizStats.correct + quizStats.incorrect;
+                const quizAccuracy = totalQuiz > 0 ? Math.round((quizStats.correct / totalQuiz) * 100) : 0;
+                
+                area.innerHTML = `
+                    <div class="stats-dashboard">
+                        <div class="stat-card-box">
+                            <h4>🎯 Precisión en Preguntas</h4>
+                            <p style="font-size: 20px; font-weight: 800; margin: 4px 0;">${quizAccuracy}% Correctas</p>
+                            <p style="font-size: 11px; color: var(--text-muted);">${quizStats.correct} bien de ${totalQuiz} respondidas</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill" style="width: ${quizAccuracy}%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat-card-box">
+                            <h4>🏷️ Distribución de Dificultad (Flashcards)</h4>
+                            <p style="font-size: 12px; margin-top: 6px;">🔴 Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
+                            <p style="font-size: 12px;">🟡 Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
+                            <p style="font-size: 12px;">🟢 Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
+                            <p style="font-size: 12px;">⭐ Favoritas: <strong>${Object.values(cardDifficulty).filter(v=>v==='fav').length}</strong></p>
+                        </div>
                     </div>
                 `;
             }
@@ -816,6 +975,13 @@
             btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
             btn.classList.add(isCorrect ? 'correct' : 'incorrect');
             
+            if (isCorrect) {
+                quizStats.correct++;
+            } else {
+                quizStats.incorrect++;
+            }
+            localStorage.setItem('yn_quiz_stats', JSON.stringify(quizStats));
+
             const expBox = document.getElementById('explanation-box');
             if (expBox) {
                 expBox.style.display = 'block';
@@ -828,21 +994,29 @@
             updateStatsDisplay();
         }
 
-        function processAnki(cardId, days) {
-            const nextDate = new Date();
-            nextDate.setDate(nextDate.getDate() + days);
-            ankiReviews[cardId] = { nextDate: nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
-            localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
-            currentCardIndex = (currentCardIndex + 1) % getData()[currentSubject].flashcards.length;
+        function processAnki(cardId, days, diffTag) {
+            if (days > 0) {
+                const nextDate = new Date();
+                nextDate.setDate(nextDate.getDate() + days);
+                ankiReviews[cardId] = { nextDate: nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
+                localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
+            }
+            
+            cardDifficulty[cardId] = diffTag;
+            localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
+
+            currentCardIndex++;
             renderContent();
         }
 
-        // --- EXPORTAR E IMPORTAR ENTRE DISPOSITIVOS (SOPORTE IOS FIX) ---
+        // --- EXPORTAR E IMPORTAR ENTRE DISPOSITIVOS ---
         function exportBackup() {
             const backupData = {
                 yn_custom_data: customData,
                 yn_topic_checklist: topicChecklist,
                 yn_anki: ankiReviews,
+                yn_card_diff: cardDifficulty,
+                yn_quiz_stats: quizStats,
                 yn_gpc_images: gpcImages,
                 yn_info_images: infographicImages
             };
@@ -851,7 +1025,6 @@
             const blob = new Blob([jsonString], { type: "application/json" });
             const fileName = `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`;
 
-            // Para dispositivos iOS / Safari (Abre la hoja de compartir de iPhone)
             if (navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
                 const file = new File([blob], fileName, { type: "application/json" });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -863,7 +1036,6 @@
                 }
             }
 
-            // Descarga normal para otros navegadores
             const url = URL.createObjectURL(blob);
             const downloadAnchor = document.createElement('a');
             downloadAnchor.href = url;
@@ -886,12 +1058,16 @@
                     if (imported.yn_custom_data) localStorage.setItem('yn_custom_data', JSON.stringify(imported.yn_custom_data));
                     if (imported.yn_topic_checklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.yn_topic_checklist));
                     if (imported.yn_anki) localStorage.setItem('yn_anki', JSON.stringify(imported.yn_anki));
+                    if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
+                    if (imported.yn_quiz_stats) localStorage.setItem('yn_quiz_stats', JSON.stringify(imported.yn_quiz_stats));
                     if (imported.yn_gpc_images) localStorage.setItem('yn_gpc_images', JSON.stringify(imported.yn_gpc_images));
                     if (imported.yn_info_images) localStorage.setItem('yn_info_images', JSON.stringify(imported.yn_info_images));
 
                     customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
                     topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
                     ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
+                    cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
+                    quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
                     gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
                     infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
 
@@ -911,3 +1087,4 @@
     </script>
 </body>
 </html>
+
