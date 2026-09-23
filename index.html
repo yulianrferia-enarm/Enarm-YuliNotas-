@@ -41,20 +41,43 @@
             z-index: 100;
         }
 
+        .app-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .app-header h1 {
             font-size: 20px;
             font-weight: 700;
+        }
+
+        .admin-toggle-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
         }
 
         .stats-bar {
             display: flex;
             justify-content: space-around;
             background: rgba(255, 255, 255, 0.6);
-            padding: 8px 12px;
+            padding: 8px 10px;
             margin-top: 8px;
             border-radius: 10px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .stats-bar span {
+            white-space: nowrap;
         }
 
         .container {
@@ -410,23 +433,92 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Panel Admin Form */
+        .admin-panel {
+            display: none;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-panel h3 {
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+        }
+
+        .admin-panel select, .admin-panel input, .admin-panel textarea {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #E5E5EA;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .admin-panel button {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <header class="app-header">
-        <h1>YuliNotas ENARM</h1>
+        <div class="app-header-top">
+            <h1>YuliNotas ENARM</h1>
+            <button class="admin-toggle-btn" onclick="toggleAdminPanel()">+ Creador</button>
+        </div>
         <div class="stats-bar">
-            <span>Preguntas: <strong id="stat-questions">0</strong></span>
-            <span>Avance General: <strong id="stat-progress">0%</strong></span>
+            <span>🎴 Flashcards: <strong id="stat-cards">0</strong></span>
+            <span>❓ Preguntas: <strong id="stat-questions">0</strong></span>
+            <span>📑 Resúmenes: <strong id="stat-summaries">0</strong></span>
+            <span>🖼️ GPC: <strong id="stat-gpc">0</strong></span>
+            <span>📊 Avance: <strong id="stat-progress">0%</strong></span>
         </div>
     </header>
 
     <div class="container">
+
+        <!-- Panel de administración para agregar contenido -->
+        <div id="admin-panel" class="admin-panel">
+            <h3>⚡ Agregar Nuevo Contenido</h3>
+            <select id="admin-type" onchange="changeAdminFields()">
+                <option value="flashcard">Flashcard</option>
+                <option value="pregunta">Pregunta Caso Clínico</option>
+                <option value="resumen">Resumen Infográfico</option>
+            </select>
+
+            <select id="admin-subject">
+                <option value="gineco">Ginecología</option>
+                <option value="obste">Obstetricia</option>
+                <option value="interna">Medicina Interna</option>
+                <option value="cirugia">Cirugía General</option>
+                <option value="pedia">Pediatría</option>
+            </select>
+
+            <div id="admin-fields"></div>
+
+            <button onclick="saveAdminContent()">Guardar Contenido</button>
+        </div>
+
         <div class="section-title">Materia</div>
         
         <div class="subjects-grid">
-            <button class="subject-btn btn-gineco active" onclick="selectSubject('gineco')">Ginecología</button>
+            <button class="subject-btn btn-gineco" onclick="selectSubject('gineco')">Ginecología</button>
             <button class="subject-btn btn-obste" onclick="selectSubject('obste')">Obstetricia</button>
             <button class="subject-btn btn-interna" onclick="selectSubject('interna')">Medicina Interna</button>
             <button class="subject-btn btn-cirugia" onclick="selectSubject('cirugia')">Cirugía General</button>
@@ -435,11 +527,11 @@
 
         <div class="content-panel">
             <div class="tabs-nav">
-                <button class="tab-btn active" onclick="selectTab('flashcards')">Flashcards</button>
-                <button class="tab-btn" onclick="selectTab('preguntas')">Preguntas</button>
-                <button class="tab-btn" onclick="selectTab('resumenes')">Resúmenes</button>
-                <button class="tab-btn" onclick="selectTab('temario')">Temario</button>
-                <button class="tab-btn" onclick="selectTab('esquemas')">Esquemas GPC</button>
+                <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
+                <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
+                <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Resúmenes</button>
+                <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
+                <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquemas GPC</button>
             </div>
 
             <div id="content-area"></div>
@@ -455,248 +547,111 @@
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
         };
 
-        const data = {
+        let baseData = {
             gineco: {
-                flashcards: [
-                    { id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en mujeres en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación)." },
-                    { id: "g2", q: "¿Criterio histológico diagnóstico de Endometriosis?", a: "Presencia de glándulas y estroma endometrial fuera de la cavidad uterina." }
-                ],
-                preguntas: [
-                    {
-                        q: "Femenina de 32 años acude por dismenorrea secundaria severa y dispareunia. Al tacto bimanual se palpan ligamentos uterosacros dolorosos. ¿Estándar de oro diagnóstico?",
-                        options: ["Laparoscopia diagnóstica con biopsia", "Ecografía pélvica transvaginal", "Resonancia magnética", "Ca-125 sérico"],
-                        correct: 0
-                    }
-                ],
-                resumenes: [
-                    {
-                        title: "Cáncer Cervicouterino (CaCu)",
-                        pearl: "PERLA ENARM: VPH 16 (45-50%) y VPH 18 (10-15%) son los serotipos más oncogénicos.",
-                        table: {
-                            headers: ["Método", "Inicio", "Frecuencia"],
-                            rows: [
-                                ["Citología (Papanicolaou)", "25 años", "Anual (tras 2 negativas -> c/3 años)"],
-                                ["Prueba VPH Bio. Mol.", "30 años", "Cada 5 años"]
-                            ]
-                        },
-                        flow: ["Tamizaje positivo", "Colposcopia", "Biopsia guiada", "Tratamiento según Etapa"]
-                    }
-                ],
-                temario: [
-                    "Ciclo femenino", "Síndrome de ovario poliquístico (SOP)", "Menopausia y climaterio", "Osteoporosis",
-                    "Amenorrea primaria", "Amenorrea secundaria", "Insuficiencia ovárica primaria (IOP)", "Métodos anticonceptivos",
-                    "Infertilidad y esterilidad", "Cervicovaginitis", "Gardnerella vaginalis / Vaginosis bacteriana", "Tricomoniasis",
-                    "Candidiasis", "Enfermedad pélvica inflamatoria", "Endometriosis", "Miomatosis uterina", "Hiperplasia endometrial",
-                    "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de cérvix", "Patología benigna de mama", "Mastitis",
-                    "Fibroadenoma", "Quiste mamario", "Mastopatía fibroquística", "Papiloma intraductal", "Cáncer de mama", "Violencia contra la mujer"
-                ]
+                flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación)." }],
+                preguntas: [{ q: "Femenina de 32 años con dismenorrea y dispareunia. ¿Estándar de oro?", options: ["Laparoscopia diagnóstica", "Ecografía", "RM", "Ca-125"], correct: 0 }],
+                resumenes: [{ title: "Cáncer Cervicouterino", pearl: "PERLA: VPH 16 y 18 son los más oncogénicos.", table: { headers: ["Método", "Inicio"], rows: [["Pap", "25 años"], ["VPH", "30 años"]] }, flow: ["Tamizaje", "Colposcopia", "Biopsia"] }],
+                temario: ["Ciclo femenino", "SOP", "Menopausia", "Osteoporosis", "Amenorrea primaria", "Amenorrea secundaria", "Cervicovaginitis", "Endometriosis", "Miomatosis", "CaCu", "Cáncer de mama"]
             },
             obste: {
-                flashcards: [
-                    { id: "o1", q: "¿Definición de Preeclampsia severa?", a: "PA ≥ 160/110 mmHg o presencia de criterios de severidad." },
-                    { id: "o2", q: "¿Tratamiento de primera línea para Preeclampsia con datos de severidad?", a: "Sulfato de Magnesio (Esquema Zuspan o Sibai)." }
-                ],
-                preguntas: [
-                    {
-                        q: "Gestante de 34 semanas con sangrado transvaginal rojo rutilante, indoloro y sin tono uterino aumentado. FCF normal. ¿Diagnóstico probable?",
-                        options: ["Placenta Previa", "Desprendimiento Prematuro de Placenta", "Ruptura Uterina", "Ruptura de Seno Marginal"],
-                        correct: 0
-                    }
-                ],
-                resumenes: [
-                    {
-                        title: "Hemorragia de la 2da Mitad del Embarazo",
-                        pearl: "DIAG NÓSTICO DIFERENCIAL CLAVE: Placenta Previa NO duele | DPPNI SÍ duele e hipertonía.",
-                        table: {
-                            headers: ["Entidad", "Sangrado", "Dolor", "Tono Uterino"],
-                            rows: [
-                                ["Placenta Previa", "Rojo rutilante", "Ausente", "Normal"],
-                                ["DPPNI", "Oscuro / Oculto", "Severo", "Hipertonía / Leñoso"]
-                            ]
-                        },
-                        flow: ["Estabilidad hemodinámica", "USG Pélvico / Obstétrico", "Evaluación Fetal", "Resolución por Cesárea si hay compromiso"]
-                    }
-                ],
-                temario: [
-                    "Control prenatal", "Hemorragias del primer trimestre", "Amenaza de aborto", "Aborto", "Embarazo ectópico",
-                    "Enfermedad Trofoblástica Gestacional (ETG)", "Hemorragias del tercer trimestre", "Placenta previa", "Acretismo placentario",
-                    "Abruptio placentae / DPPNI", "Rotura Uterina", "Hemorragia postparto (HPP)", "Atonía uterina", "Vasa previa",
-                    "Parto pretérmino", "Gestación múltiple", "Gestación cronológicamente prolongada", "Metrorragias",
-                    "Ruptura prematura de membranas (RPM)", "Elementos de tocología", "Episiotomía", "Corioamnionitis", "Puerperio",
-                    "Sepsis puerperal", "Prolapso de órganos pélvicos", "Incontinencia urinaria", "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
-                ]
+                flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio." }],
+                preguntas: [{ q: "Gestante con sangrado rojo rutilante, indoloro. ¿Diagnóstico?", options: ["Placenta Previa", "DPPNI", "Ruptura Uterina", "Vasa Previa"], correct: 0 }],
+                resumenes: [{ title: "Hemorragia 2da Mitad", pearl: "Placenta previa NO duele | DPPNI SÍ duele.", table: { headers: ["Entidad", "Dolor"], rows: [["Placenta Previa", "No"], ["DPPNI", "Sí"]] }, flow: ["Estabilizar", "USG", "Cesárea si hay sufrimiento"] }],
+                temario: ["Control prenatal", "Aborto", "Embarazo ectópico", "ETG", "Placenta previa", "DPPNI", "HPP", "Preeclampsia", "Diabetes gestacional"]
             },
-            interna: {
-                flashcards: [
-                    { id: "i1", q: "¿Meta de HbA1c en adultos no gestantes según la ADA?", a: "< 7.0% para la mayoría de los pacientes." },
-                    { id: "i2", q: "¿Tratamiento farmacológico de primera línea en Diabetes Mellitus tipo 2?", a: "Metformina." }
-                ],
-                preguntas: [
-                    {
-                        q: "Masculino de 58 años con hipertensión arterial sistémica. Presenta microalbuminuria. ¿Grupo farmacológico antihipertensivo de elección?",
-                        options: ["IECA o ARA-II", "Betabloqueadores", "Tiazidas", "Calcioantagonistas"],
-                        correct: 0
-                    }
-                ],
-                resumenes: [
-                    {
-                        title: "Complicaciones Agudas de la Diabetes",
-                        pearl: "CAD = Anion Gap elevado + Cetonas | EHH = Osmolaridad >320 mOsm/kg sin cetoacidosis.",
-                        table: {
-                            headers: ["Parámetro", "Cetoacidosis (CAD)", "Estado Hiperosmolar (EHH)"],
-                            rows: [
-                                ["Glucosa", "> 250 mg/dL", "> 600 mg/dL"],
-                                ["pH Arterial", "< 7.30", "> 7.30"],
-                                ["Osmolaridad", "Variable", "> 320 mOsm/kg"]
-                            ]
-                        },
-                        flow: ["Hidratación NaCl 0.9%", "Insulina Regular 0.1 U/kg/h", "Medir K+ (Asegurar >3.3)", "Corregir Causa Desencadenante"]
-                    }
-                ],
-                temario: [
-                    "Insuficiencia cardíaca", "Síndrome coronario agudo", "Arritmias", "Fibrilación auricular", "Valvulopatías",
-                    "Hipertensión arterial sistémica (HAS)", "Enfermedades micóticas", "Acné", "Psoriasis", "Carcinoma basocelular",
-                    "Melanoma maligno", "Enfermedad diarreica aguda en el adulto", "Síndrome de colon irritable", "Enfermedad inflamatoria intestinal",
-                    "Hepatitis aguda", "Hiperprolactinemia", "Enfermedades de glándula suprarrenal", "Enfermedades tiroideas",
-                    "Diabetes mellitus", "Pie diabético", "Cetoacidosis diabética", "Anemia ferropénica", "Leucemias agudas",
-                    "Linfomas", "Insuficiencia renal aguda (IRA)", "Enfermedad renal crónica (ERC)", "Síndrome nefrítico",
-                    "Síndrome nefrótico", "Enfermedad pulmonar obstructiva crónica (EPOC)", "Asma en el adulto", "Artritis reumatoide",
-                    "Lupus eritematoso sistémico", "Demencia tipo Alzheimer", "Enfermedad de Parkinson", "Enfermedad vascular cerebral (EVC)",
-                    "Tuberculosis", "Neumonía adquirida en la comunidad", "VIH/SIDA", "COVID-19"
-                ]
-            },
-            cirugia: {
-                flashcards: [
-                    { id: "c1", q: "¿Punto doloroso clásico en Apendicitis Aguda?", a: "Punto de McBurney." },
-                    { id: "c2", q: "¿Estudio de primera elección ante sospecha de Colecistitis Aguda?", a: "Ecografía de cuadrante superior derecho." }
-                ],
-                preguntas: [
-                    {
-                        q: "Masculino de 25 años con dolor en fosa ilíaca derecha, fiebre y signo de Rovsing positivo. ¿Estudio inicial de elección?",
-                        options: ["Ultrasonido abdominal", "Tomografía Computarizada", "Radiografía simple de abdomen", "Laparoscopia"],
-                        correct: 0
-                    }
-                ],
-                resumenes: [
-                    {
-                        title: "Escala de Alvarado (Apendicitis Aguda)",
-                        pearl: "Puntaje ≥ 7 = Alta probabilidad quirúrgica (Apendicectomía).",
-                        table: {
-                            headers: ["Criterio", "Puntos"],
-                            rows: [
-                                ["Dolor Migratorio / Leucocitosis", "2 Pts c/u"],
-                                ["Anorexia / Náusea / Fiebre / Rebote", "1 Pt c/u"]
-                            ]
-                        },
-                        flow: ["0-3: Descartar", "4-6: Observación / TAC / USG", "7-10: Cirugía Directa"]
-                    }
-                ],
-                temario: [
-                    "Apendicitis aguda", "Abdomen agudo", "Patología biliar", "Colecistitis no complicada", "Colecistitis crónica litiásica",
-                    "Coledocolitiasis", "Colangitis", "Enfermedad diverticular", "Trastornos motores del esófago", "Enfermedad por reflujo gastroesofágico (ERGE)",
-                    "Esófago de Barret", "Cáncer gástrico", "Úlcera péptica", "Obesidad y cirugía bariátrica", "Enfermedad hemorroidal",
-                    "Absceso perianal", "Fístula anal", "Fisura anal", "Hernias inguinales y femorales", "Hernia umbilical", "Hernia ventral",
-                    "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", "Cáncer de colon", "Pancreatitis aguda", "Pancreatitis crónica",
-                    "Quemaduras", "ATLS (Advance Trauma Life Support)", "Trauma de tórax", "Trauma de abdomen", "Traumatismo craneoencefálico (TCE)",
-                    "Infección de sitio quirúrgico (ISQ)", "Otorrinolaringología", "Oftalmología", "Urología", "Traumatología y Ortopedia"
-                ]
-            },
-            pedia: {
-                flashcards: [
-                    { id: "p1", q: "¿Triada clásica de la Invaginación Intestinal?", a: "Dolor abdominal cólico, masa palpable en salchicha y evacuaciones en jalea de grosella." },
-                    { id: "p2", q: "¿Agente etiológico más frecuente de la Laringotraqueobronquitis (Crup)?", a: "Virus Parainfluenza tipo 1." }
-                ],
-                preguntas: [
-                    {
-                        q: "Lactante de 18 meses con estridor inspiratorio, tos perruna y disfonía. En Rx AP de cuello se observa 'signo de la torre'. ¿Diagnóstico?",
-                        options: ["Laringotraqueobronquitis (Crup)", "Epiglotitis aguda", "Aspiración de cuerpo extraño", "Traqueítis bacteriana"],
-                        correct: 0
-                    }
-                ],
-                resumenes: [
-                    {
-                        title: "Diferenciación de Estridor Respiratorio Alto",
-                        pearl: "CRUP: Tos perruna + Parainfluenza | EPIGLOTITIS: Babeo + Posición en trípode + S. aureus/Haemophilus.",
-                        table: {
-                            headers: ["Entidad", "Clínica Clave", "Rx Cuello"],
-                            rows: [
-                                ["Crup (LTB)", "Tos perruna, estridor", "Signo de la Torre / Aguja"],
-                                ["Epiglotitis", "Trípode, disfagia, babeo", "Signo del Pulgar"]
-                            ]
-                        },
-                        flow: ["Mantener calma", "Dexametasona Dosis Única (0.6 mg/kg)", "Nebulizar L-Epinefrina si hay estridor grave"]
-                    }
-                ],
-                temario: [
-                    "Recién nacido sano", "Reanimación neonatal", "Síndrome de dificultad respiratoria (SDR)", "Enfermedad de membrana hialina",
-                    "Taquipnea transitoria del recién nacido", "Síndrome de aspiración meconial (SAM)", "Atresia esofágica", "Enterocolitis necrosante",
-                    "Sepsis neonatal", "Ictericia neonatal", "TORCH", "Control y seguimiento del niño menor de 5 años", "Otitis media aguda",
-                    "Infección de vías respiratorias altas (IVRA)", "Vacunas", "Desnutrición", "Laringotraqueitis aguda (crup)", "Epiglotitis aguda",
-                    "Neumonía bacteriana adquirida en la comunidad", "Bronquiolitis aguda", "Asma", "Invaginación intestinal", "Estenosis hipertrófica del píloro",
-                    "Enfermedades exantemáticas", "Diarrea aguda", "Infecciones del sistema nervioso central", "Crisis febriles", "Lactancia materna", "Cardiopatías congénitas"
-                ]
-            }
+            interna: { flashcards: [], preguntas: [], resumenes: [], temario: ["HAS", "Diabetes Mellitus", "CAD/EHH", "EPOC", "Asma", "ERC"] },
+            cirugia: { flashcards: [], preguntas: [], resumenes: [], temario: ["Apendicitis aguda", "Colecistitis", "Hernias", "Oclusión intestinal", "ATLS"] },
+            pedia: { flashcards: [], preguntas: [], resumenes: [], temario: ["Reanimación neonatal", "SDR", "Crup", "Epiglotitis", "Vacunas", "Diarrea aguda"] }
         };
 
-        let currentSubject = 'gineco';
-        let currentTab = 'flashcards';
-        let currentCardIndex = 0;
-
-        let answeredQuestions = parseInt(localStorage.getItem('yn_questions') || '0');
+        // Cargar datos del usuario
+        let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
         let topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
 
+        // Persistencia de navegación
+        let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
+        let currentTab = localStorage.getItem('yn_current_tab') || 'flashcards';
+        let currentCardIndex = 0;
+
+        function getData() {
+            let combined = JSON.parse(JSON.stringify(baseData));
+            Object.keys(customData).forEach(sub => {
+                if (combined[sub]) {
+                    if (customData[sub].flashcards) combined[sub].flashcards.push(...customData[sub].flashcards);
+                    if (customData[sub].preguntas) combined[sub].preguntas.push(...customData[sub].preguntas);
+                    if (customData[sub].resumenes) combined[sub].resumenes.push(...customData[sub].resumenes);
+                }
+            });
+            return combined;
+        }
+
         function updateStatsDisplay() {
-            document.getElementById('stat-questions').textContent = answeredQuestions;
-            
-            let totalPossibleChecks = 0;
+            let data = getData();
+            let totalCards = 0;
+            let totalQuestions = 0;
+            let totalSummaries = 0;
+            let totalGpc = 0;
+
             Object.keys(data).forEach(s => {
-                totalPossibleChecks += data[s].temario.length * 5;
+                totalCards += (data[s].flashcards || []).length;
+                totalQuestions += (data[s].preguntas || []).length;
+                totalSummaries += (data[s].resumenes || []).length;
             });
 
-            let completedChecks = 0;
-            Object.keys(topicChecklist).forEach(k => {
-                if (topicChecklist[k]) completedChecks++;
+            Object.keys(gpcImages).forEach(s => {
+                totalGpc += (gpcImages[s] || []).length;
             });
 
+            document.getElementById('stat-cards').textContent = totalCards;
+            document.getElementById('stat-questions').textContent = totalQuestions;
+            document.getElementById('stat-summaries').textContent = totalSummaries;
+            document.getElementById('stat-gpc').textContent = totalGpc;
+
+            let totalPossibleChecks = 0;
+            Object.keys(data).forEach(s => { totalPossibleChecks += data[s].temario.length * 5; });
+            let completedChecks = Object.keys(topicChecklist).filter(k => topicChecklist[k]).length;
             let percentage = totalPossibleChecks > 0 ? Math.round((completedChecks / totalPossibleChecks) * 100) : 0;
             document.getElementById('stat-progress').textContent = percentage + '%';
         }
 
         function selectSubject(subjectKey) {
             currentSubject = subjectKey;
+            localStorage.setItem('yn_current_subject', subjectKey);
             currentCardIndex = 0;
-
+            
             const config = subjectsConfig[subjectKey];
             document.documentElement.style.setProperty('--bg-current', config.bg);
             document.documentElement.style.setProperty('--primary-color', config.color);
-
+            
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.btn-${subjectKey}`).classList.add('active');
-
             renderContent();
         }
 
         function selectTab(tabKey) {
             currentTab = tabKey;
+            localStorage.setItem('yn_current_tab', tabKey);
+            
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelector(`.btn-tab-${tabKey}`).classList.add('active');
             renderContent();
         }
 
         function renderContent() {
             const area = document.getElementById('content-area');
+            const data = getData();
             const subjectData = data[currentSubject];
 
             if (currentTab === 'flashcards') {
                 const card = subjectData.flashcards[currentCardIndex];
                 if (!card) {
-                    area.innerHTML = `<p style="text-align:center; padding: 20px;">No hay tarjetas disponibles.</p>`;
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay flashcards agregadas en esta materia.</p>`;
                     return;
                 }
-                const cardAnki = ankiReviews[card.id] || { interval: 1, nextDate: 'Hoy' };
-
+                const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
                 area.innerHTML = `
                     <div class="flashcard" onclick="this.classList.toggle('flipped')">
                         <div class="flashcard-inner">
@@ -704,7 +659,7 @@
                             <div class="flashcard-back">${card.a}</div>
                         </div>
                     </div>
-                    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Próximo repaso programado: ${cardAnki.nextDate}</p>
+                    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
                     <div class="anki-controls">
                         <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1)">Difícil (1d)</button>
                         <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3)">Bien (3d)</button>
@@ -712,6 +667,10 @@
                     </div>
                 `;
             } else if (currentTab === 'preguntas') {
+                if (subjectData.preguntas.length === 0) {
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay preguntas agregadas aún.</p>`;
+                    return;
+                }
                 const q = subjectData.preguntas[0];
                 area.innerHTML = `
                     <div class="question-card">
@@ -722,20 +681,19 @@
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
+                if (subjectData.resumenes.length === 0) {
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted);">No hay resúmenes agregados aún.</p>`;
+                    return;
+                }
                 area.innerHTML = subjectData.resumenes.map(r => `
                     <div class="info-card">
                         <h4>${r.title}</h4>
                         <div class="pearl-box">${r.pearl}</div>
                         <table class="info-table">
-                            <thead>
-                                <tr>${r.table.headers.map(h => `<th>${h}</th>`).join('')}</tr>
-                            </thead>
-                            <tbody>
-                                ${r.table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
-                            </tbody>
+                            <thead><tr>${r.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                            <tbody>${r.table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
                         </table>
                         <div style="margin-top: 10px;">
-                            <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Flujo Manejo:</strong>
                             ${r.flow.map((step, sIdx) => `
                                 <div class="flow-step">
                                     <div class="flow-badge">${sIdx + 1}</div>
@@ -748,7 +706,6 @@
             } else if (currentTab === 'temario') {
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
-
                 area.innerHTML = subjectData.temario.map((t, idx) => {
                     const topicKey = `${currentSubject}_${idx}`;
                     return `
@@ -757,11 +714,10 @@
                             <div class="topic-checklist">
                                 ${resources.map((res, rIdx) => {
                                     const checkKey = `${topicKey}_${res}`;
-                                    const isChecked = topicChecklist[checkKey] ? 'checked' : '';
                                     return `
                                         <div class="check-item">
                                             <span>${labels[rIdx]}</span>
-                                            <input type="checkbox" ${isChecked} onchange="toggleCheck('${checkKey}')">
+                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
                                         </div>
                                     `;
                                 }).join('')}
@@ -774,7 +730,6 @@
                 area.innerHTML = `
                     <div class="gpc-upload-zone" onclick="document.getElementById('gpc-input').click()">
                         <p>+ Subir Esquema de Tratamiento GPC</p>
-                        <span style="font-size: 10px; color: var(--text-muted);">Formatos aceptados: PNG, JPG, JPEG</span>
                         <input type="file" id="gpc-input" accept="image/*" style="display: none;" onchange="uploadGpcImage(event)">
                     </div>
                     <div class="gpc-gallery">
@@ -789,26 +744,103 @@
             }
         }
 
-        function uploadGpcImage(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // --- FUNCIONES DEL PANEL ADMIN ---
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('active');
+            changeAdminFields();
+        }
 
+        function changeAdminFields() {
+            const type = document.getElementById('admin-type').value;
+            const container = document.getElementById('admin-fields');
+
+            if (type === 'flashcard') {
+                container.innerHTML = `
+                    <input type="text" id="af-q" placeholder="Pregunta de la Flashcard">
+                    <textarea id="af-a" placeholder="Respuesta clave"></textarea>
+                `;
+            } else if (type === 'pregunta') {
+                container.innerHTML = `
+                    <textarea id="af-q" placeholder="Caso clínico / Pregunta"></textarea>
+                    <input type="text" id="af-o0" placeholder="Opción A (Correcta)">
+                    <input type="text" id="af-o1" placeholder="Opción B">
+                    <input type="text" id="af-o2" placeholder="Opción C">
+                    <input type="text" id="af-o3" placeholder="Opción D">
+                `;
+            } else if (type === 'resumen') {
+                container.innerHTML = `
+                    <input type="text" id="af-title" placeholder="Título del Tema">
+                    <input type="text" id="af-pearl" placeholder="Perla ENARM clave">
+                    <input type="text" id="af-t1" placeholder="Columna 1: Criterio / Entidad">
+                    <input type="text" id="af-t2" placeholder="Columna 2: Valor / Manejo">
+                    <textarea id="af-flow" placeholder="Algoritmo de flujo (separado por comas) Ej: Estabilizar, USG, Cesárea"></textarea>
+                `;
+            }
+        }
+
+        function saveAdminContent() {
+            const type = document.getElementById('admin-type').value;
+            const sub = document.getElementById('admin-subject').value;
+
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [], resumenes: [] };
+
+            if (type === 'flashcard') {
+                const q = document.getElementById('af-q').value;
+                const a = document.getElementById('af-a').value;
+                if (!q || !a) return alert('Completa los campos');
+                customData[sub].flashcards.push({ id: 'custom_' + Date.now(), q, a });
+            } else if (type === 'pregunta') {
+                const q = document.getElementById('af-q').value;
+                const o0 = document.getElementById('af-o0').value;
+                const o1 = document.getElementById('af-o1').value;
+                const o2 = document.getElementById('af-o2').value;
+                const o3 = document.getElementById('af-o3').value;
+                if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos 2 opciones');
+                customData[sub].preguntas.push({ q, options: [o0, o1, o2, o3].filter(Boolean), correct: 0 });
+            } else if (type === 'resumen') {
+                const title = document.getElementById('af-title').value;
+                const pearl = document.getElementById('af-pearl').value;
+                const t1 = document.getElementById('af-t1').value;
+                const t2 = document.getElementById('af-t2').value;
+                const flowStr = document.getElementById('af-flow').value;
+                if (!title) return alert('Ingresa un título');
+
+                customData[sub].resumenes.push({
+                    title,
+                    pearl,
+                    table: { headers: ["Criterio", "Detalle"], rows: [[t1, t2]] },
+                    flow: flowStr.split(',').map(s => s.trim())
+                });
+            }
+
+            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+            updateStatsDisplay();
+            alert('¡Guardado exitosamente!');
+            toggleAdminPanel();
+            renderContent();
+        }
+
+        // Auxiliares
+        function uploadGpcImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function(evt) {
                 if (!gpcImages[currentSubject]) gpcImages[currentSubject] = [];
-                gpcImages[currentSubject].push(e.target.result);
+                gpcImages[currentSubject].push(evt.target.result);
                 localStorage.setItem('yn_gpc_images', JSON.stringify(gpcImages));
+                updateStatsDisplay();
                 renderContent();
             };
             reader.readAsDataURL(file);
         }
 
         function deleteGpcImage(idx) {
-            if (gpcImages[currentSubject]) {
-                gpcImages[currentSubject].splice(idx, 1);
-                localStorage.setItem('yn_gpc_images', JSON.stringify(gpcImages));
-                renderContent();
-            }
+            gpcImages[currentSubject].splice(idx, 1);
+            localStorage.setItem('yn_gpc_images', JSON.stringify(gpcImages));
+            updateStatsDisplay();
+            renderContent();
         }
 
         function openImageModal(src) {
@@ -817,39 +849,29 @@
         }
 
         function checkAnswer(btn, isCorrect) {
-            const parent = btn.parentElement;
-            parent.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-            if (isCorrect) {
-                btn.classList.add('correct');
-            } else {
-                btn.classList.add('incorrect');
-            }
-            answeredQuestions++;
-            localStorage.setItem('yn_questions', answeredQuestions.toString());
-            updateStatsDisplay();
+            btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+            btn.classList.add(isCorrect ? 'correct' : 'incorrect');
         }
 
-        function toggleCheck(checkKey) {
-            topicChecklist[checkKey] = !topicChecklist[checkKey];
+        function toggleCheck(key) {
+            topicChecklist[key] = !topicChecklist[key];
             localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
             updateStatsDisplay();
         }
 
-        function processAnki(cardId, daysToAdd) {
+        function processAnki(cardId, days) {
             const nextDate = new Date();
-            nextDate.setDate(nextDate.getDate() + daysToAdd);
-            const dateStr = nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
-
-            ankiReviews[cardId] = { interval: daysToAdd, nextDate: dateStr };
+            nextDate.setDate(nextDate.getDate() + days);
+            ankiReviews[cardId] = { nextDate: nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
             localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
-
-            const subjectCards = data[currentSubject].flashcards;
-            currentCardIndex = (currentCardIndex + 1) % subjectCards.length;
+            currentCardIndex = (currentCardIndex + 1) % getData()[currentSubject].flashcards.length;
             renderContent();
         }
 
+        // Inicializar app con la sesión guardada
+        selectSubject(currentSubject);
+        selectTab(currentTab);
         updateStatsDisplay();
-        selectSubject('gineco');
     </script>
 </body>
 </html>
