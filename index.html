@@ -302,7 +302,6 @@
         .anki-hard { background-color: #E53935; }
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
-        .anki-fav { background-color: #FBC02D; color: #000; }
 
         /* Preguntas */
         .question-card {
@@ -356,9 +355,7 @@
             line-height: 1.5;
         }
 
-        .explanation-box div {
-            margin-bottom: 6px;
-        }
+        .explanation-box div { margin-bottom: 6px; }
 
         .next-q-btn {
             margin-top: 12px;
@@ -636,8 +633,8 @@
                 preguntas: [{ 
                     id: "qp_g1",
                     q: "Femenina de 32 años con dismenorrea secundaria progresiva, dispareunia e infertilidad. ¿Estándar de oro diagnóstico?", 
-                    options: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
-                    correct: 0, 
+                    rawOptions: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
+                    correctText: "Laparoscopia diagnóstica", 
                     explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
                     discardExplanation: [
                         "<b>Laparoscopia diagnóstica:</b> CORRECTA. Permite visión directa e histopatología.",
@@ -653,8 +650,8 @@
                 preguntas: [{ 
                     id: "qp_o1",
                     q: "Gestante de 34 semanas con sangrado transvaginal rojo rutilante, indoloro y sin actividad uterina. ¿Diagnóstico probable?", 
-                    options: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
-                    correct: 0, 
+                    rawOptions: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
+                    correctText: "Placenta Previa", 
                     explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
                     discardExplanation: [
                         "<b>Placenta Previa:</b> CORRECTA. Sangrado indoloro, rojo brillante y de inicio insidioso.",
@@ -700,6 +697,15 @@
             isDarkMode = !isDarkMode;
             document.body.classList.toggle('dark-mode', isDarkMode);
             localStorage.setItem('yn_dark_mode', isDarkMode.toString());
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
 
         function getData() {
@@ -788,16 +794,13 @@
                 
                 if (activeCardFilter === 'hard') {
                     cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-                } else if (activeCardFilter === 'fav') {
-                    cards = cards.filter(c => cardDifficulty[c.id] === 'fav');
                 }
 
                 if (cards.length === 0) {
                     area.innerHTML = `
                         <div class="flashcard-filter-bar">
                             <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Difíciles</button>
-                            <button class="filter-chip ${activeCardFilter==='fav'?'active':''}" onclick="setCardFilter('fav')">⭐ Favoritas</button>
+                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Solo Difíciles</button>
                         </div>
                         <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
                     `;
@@ -811,8 +814,7 @@
                 area.innerHTML = `
                     <div class="flashcard-filter-bar">
                         <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Difíciles</button>
-                        <button class="filter-chip ${activeCardFilter==='fav'?'active':''}" onclick="setCardFilter('fav')">⭐ Favoritas</button>
+                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">🔴 Solo Difíciles</button>
                     </div>
                     <div class="flashcard" onclick="this.classList.toggle('flipped')">
                         <div class="flashcard-inner">
@@ -828,7 +830,6 @@
                         <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
                         <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
                         <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
-                        <button class="anki-btn anki-fav" onclick="processAnki('${card.id}', 0, 'fav')">⭐ Favorita</button>
                     </div>
                 `;
             } else if (currentTab === 'preguntas') {
@@ -838,7 +839,6 @@
                     return;
                 }
 
-                // Priorización por repetición espaciada
                 const sortedQuestions = [...questionsList].sort((a, b) => {
                     const weightA = (questionSchedule[a.id] || {}).weight || 0;
                     const weightB = (questionSchedule[b.id] || {}).weight || 0;
@@ -848,22 +848,27 @@
                 const q = sortedQuestions[currentQuestionIndex % sortedQuestions.length];
                 const qSched = questionSchedule[q.id] || { weight: 0, status: 'Nueva' };
 
+                let rawList = q.rawOptions || q.options || [];
+                let correctValue = q.correctText || rawList[q.correct || 0];
+                let shuffledOptions = shuffleArray(rawList);
+                let correctNewIndex = shuffledOptions.indexOf(correctValue);
+
                 let discardHtml = '';
                 if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
                     discardHtml = q.discardExplanation.map(desc => `<div>• ${desc}</div>`).join('');
                 } else {
-                    discardHtml = `<div>• <b>Opción correcta:</b> ${q.options[q.correct]}</div>`;
+                    discardHtml = `<div>• <b>Opción correcta:</b> ${correctValue}</div>`;
                 }
 
                 area.innerHTML = `
                     <div class="question-card">
                         <div style="display:flex; justify-content:space-between; font-size:calc(11px * var(--font-scale)); color:var(--text-muted);">
                             <span>Pregunta ${ (currentQuestionIndex % sortedQuestions.length) + 1 } de ${sortedQuestions.length}</span>
-                            <span>Repetición: <strong>${qSched.status || 'Nueva'}</strong></span>
+                            <span>Estado: <strong>${qSched.status || 'Nueva'}</strong></span>
                         </div>
                         <div class="question-text">${q.q}</div>
-                        ${q.options.map((opt, idx) => `
-                            <button class="option-btn" onclick="checkAnswer(this, ${idx},${q.correct}, '${q.id}')">${opt}</button>
+                        ${shuffledOptions.map((opt, idx) => `
+                            <button class="option-btn" onclick="checkAnswer(this, ${idx}, ${correctNewIndex}, '${q.id}')">${String.fromCharCode(65 + idx)})${opt}</button>
                         `).join('')}
                         <div id="explanation-box" class="explanation-box">
                             <strong>💡 Retroalimentación Desglosada:</strong>
@@ -947,7 +952,6 @@
                             <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">🔴 Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
                             <p style="font-size: calc(12px * var(--font-scale));">🟡 Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
                             <p style="font-size: calc(12px * var(--font-scale));">🟢 Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">⭐ Favoritas: <strong>${Object.values(cardDifficulty).filter(v=>v==='fav').length}</strong></p>
                         </div>
                     </div>
                 `;
@@ -970,14 +974,12 @@
             if (!isCorrect) {
                 selectedBtn.classList.add('incorrect');
                 quizStats.incorrect++;
-                // Incrementar peso de repetición (aparece con más frecuencia)
                 questionSchedule[qId] = {
                     weight: ((questionSchedule[qId] || {}).weight || 0) + 5,
                     status: '🔴 Frecuente (Repasar pronto)'
                 };
             } else {
                 quizStats.correct++;
-                // Disminuir peso de repetición
                 questionSchedule[qId] = {
                     weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0),
                     status: '🟢 Dominada'
@@ -1018,10 +1020,10 @@
             } else if (type === 'pregunta') {
                 container.innerHTML = `
                     <textarea id="af-q" placeholder="Caso clínico / Pregunta"></textarea>
-                    <input type="text" id="af-o0" placeholder="Opción A (Correcta)">
-                    <input type="text" id="af-o1" placeholder="Opción B">
-                    <input type="text" id="af-o2" placeholder="Opción C">
-                    <input type="text" id="af-o3" placeholder="Opción D">
+                    <input type="text" id="af-o0" placeholder="Opción Correcta">
+                    <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
+                    <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
+                    <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
                     <textarea id="af-exp" placeholder="Explicación general"></textarea>
                     <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
                 `;
@@ -1051,12 +1053,13 @@
                 if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos 2 opciones');
                 
                 let discArr = discText ? discText.split('\n').filter(Boolean) : null;
+                let rawOptionsList = [o0, o1, o2, o3].filter(Boolean);
 
                 customData[sub].preguntas.push({
                     id: 'qcustom_' + Date.now(),
                     q,
-                    options: [o0, o1, o2, o3].filter(Boolean),
-                    correct: 0,
+                    rawOptions: rawOptionsList,
+                    correctText: o0,
                     explanation: exp,
                     discardExplanation: discArr
                 });
