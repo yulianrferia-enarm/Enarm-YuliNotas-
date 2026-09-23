@@ -1068,7 +1068,6 @@
         let currentQuestionIndex = 0;
         let activeCardFilter = 'all';
 
-        // Listas aleatorias cacheadas para la sesión actual de estudio
         let randomizedQuestions = [];
         let randomizedFlashcards = [];
 
@@ -1190,11 +1189,9 @@
             const data = getData();
             const subjectData = data[currentSubject] || { flashcards: [], preguntas: [] };
             
-            // Barajar preguntas de forma aleatoria
             randomizedQuestions = shuffleArray(subjectData.preguntas || []);
             currentQuestionIndex = 0;
 
-            // Barajar flashcards según filtro
             let cards = subjectData.flashcards || [];
             if (activeCardFilter === 'hard') {
                 cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
@@ -1700,7 +1697,6 @@
                     let countCards = 0;
 
                     importedArray.forEach((item, idx) => {
-                        // Detectar si es pregunta o flashcard
                         if (item.q && item.a && !item.rawOptions) {
                             customData[sub].flashcards.push({
                                 id: 'bulk_fc_' + Date.now() + '_' + idx,
