@@ -101,7 +101,6 @@
             font-weight: 700;
         }
 
-        /* Materias abarcando más espacio horizontal */
         .subjects-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -136,7 +135,6 @@
         .btn-cirugia { background-color: #1565C0; }
         .btn-pedia { background-color: #E53935; }
 
-        /* Navegación por pestañas */
         .tabs-nav {
             display: flex;
             background-color: var(--info-bg);
@@ -169,7 +167,6 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* Panel Principal */
         .content-panel {
             background: var(--card-bg);
             border-radius: 20px;
@@ -193,7 +190,7 @@
             font-weight: 800;
         }
 
-        /* Agrupación por Temario */
+        /* Agrupación por Temario Desplegable */
         .topic-group-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -228,6 +225,72 @@
             border-radius: 10px;
             font-weight: 700;
         }
+
+        /* Carrusel Deslizable por Tema */
+        .carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 12px;
+            padding: 8px 4px;
+            width: 100%;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .carousel-slide {
+            flex: 0 0 100%;
+            scroll-snap-align: center;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 450px;
+            object-fit: contain;
+            display: block;
+            cursor: pointer;
+        }
+
+        .carousel-btn-nav {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+            cursor: pointer;
+            position: absolute;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-btn-prev { left: 4px; }
+        .carousel-btn-next { right: 4px; }
 
         /* Flashcards */
         .flashcard-filter-bar {
@@ -400,12 +463,6 @@
         }
 
         /* YuliNotas PDF */
-        .pdf-list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
         .pdf-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -449,7 +506,7 @@
 
         .pdf-viewer-frame {
             width: 100%;
-            height: 300px;
+            height: 350px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             background: #FFFFFF;
@@ -532,7 +589,6 @@
             transition: width 0.4s ease;
         }
 
-        /* Galerías */
         .image-upload-zone {
             border: 2px dashed var(--primary-color);
             background: var(--card-bg);
@@ -549,43 +605,22 @@
             color: var(--primary-color);
         }
 
-        .image-gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .gallery-img-card {
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            background: #000;
-            aspect-ratio: 4 / 3;
-        }
-
-        .gallery-img-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .gallery-img-card .delete-btn {
+        .delete-slide-btn {
             position: absolute;
-            top: 4px;
-            right: 4px;
+            top: 8px;
+            right: 8px;
             background: rgba(229, 57, 53, 0.9);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 11px;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 5;
         }
 
         /* Temario */
@@ -754,7 +789,7 @@
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
         };
 
-        // TEMARIOS COMPLETOS DEL ÍNDICE ENARM OFICIAL (Editorial Prado / Dr. Re)
+        // TEMARIO LITERAL TEMA POR TEMA (INDICE OFICIAL ENARM)
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
@@ -772,13 +807,11 @@
                     ] 
                 }],
                 temario: [
-                    "Síndrome de ovario poliquístico", "Menopausia y climaterio", "Osteoporosis", 
-                    "Amenorrea primaria", "Amenorrea secundaria", "Metrorragias", 
-                    "Insuficiencia ovárica primaria", "Cervicovaginitis", "Candidosis vulvovaginal", 
-                    "Enfermedad pélvica inflamatoria", "Miomatosis uterina", "Endometriosis", 
-                    "Hiperplasia endometrial", "Cáncer de endometrio", "Cáncer de ovario", 
-                    "Cáncer cervicouterino (CACU)", "Cáncer de mama", "Patología benigna de mama", 
-                    "Prolapso de órganos pélvicos", "Incontinencia urinaria"
+                    "Síndrome de ovario poliquístico", "Menopausia y climaterio", "Osteoporosis", "Amenorrea primaria", 
+                    "Amenorrea secundaria", "Metrorragias", "Insuficiencia ovárica primaria", "Cervicovaginitis", 
+                    "Candidosis vulvovaginal", "Enfermedad pélvica inflamatoria", "Miomatosis uterina", "Endometriosis", 
+                    "Hiperplasia endometrial", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer cervicouterino (CACU)", 
+                    "Cáncer de mama", "Patología benigna de mama", "Prolapso de órganos pélvicos", "Incontinencia urinaria"
                 ]
             },
             obste: {
@@ -797,12 +830,10 @@
                     ] 
                 }],
                 temario: [
-                    "Control prenatal", "Amenaza de aborto", "Aborto", "Embarazo ectópico", 
-                    "Enfermedad trofoblástica gestacional", "Placenta previa", "Acretismo placentario", 
-                    "Abrupto placentario / DPPNI", "Rotura uterina", "Hemorragia postparto (HPP)", 
-                    "Atonía uterina", "Vasa previa", "Parto pretérmino", "Gestación múltiple", 
-                    "Gestación cronológicamente prolongada", "Ruptura prematura de membranas", 
-                    "Corioamnionitis", "Sepsis puerperal", "Elementos de tocología", 
+                    "Control prenatal", "Amenaza de aborto", "Aborto", "Embarazo ectópico", "Enfermedad trofoblástica gestacional", 
+                    "Placenta previa", "Acretismo", "Abrupto placentario/DPPNI", "Rotura uterina", "Hemorragia post parto (HPP)", 
+                    "Atonia uterina", "Vasa previa", "Parto pretérmino", "Gestación múltiple", "Gestación cronológicamente prolongada", 
+                    "Ruptura prematura de membranas", "Corioamnionitis", "Sepsis puerperal", "Elementos de tocología", 
                     "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
@@ -810,63 +841,101 @@
                 flashcards: [], 
                 preguntas: [], 
                 temario: [
-                    "Abdomen agudo", "Apendicitis aguda", "Colecistitis crónica litiásica", "Coledocolitiasis", 
-                    "Colangitis", "Enfermedad diverticular", "Acalasia", "Espasmo esofágico difuso", 
-                    "Enfermedad por reflujo gastroesofágico (ERGE)", "Esófago de Barrett", "Dispepsia funcional", 
-                    "Carcinoma de esófago", "Gastritis", "Úlcera péptica", "Úlcera péptica perforada", 
-                    "Síndrome de Zollinger-Ellison", "Cáncer gástrico", "Obesidad y cirugía bariátrica", 
-                    "Hernia umbilical", "Hernias inguinales y femorales", "Hernia ventral", "Esplenectomía", 
-                    "Pancreatitis aguda", "Pancreatitis crónica", "Adenocarcinoma de páncreas", 
-                    "Enfermedad arterial periférica", "Oclusión arterial aguda", "Insuficiencia venosa crónica", 
-                    "Mordeduras y picaduras (Serpientes, Arañas, Alacrán)", "Patología perianal (Hemorroides, Absceso, Fístula, Fisura)", 
-                    "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", "Cáncer de colon", 
-                    "Hepatoblastoma y Carcinoma hepatocelular", "Trasplante de hígado", "Quemaduras", 
-                    "Úlceras por presión", "Derrame pleural", "Infección y dehiscencia de herida quirúrgica", 
-                    "ATLS y Trauma (Tórax, Abdomen, Craneoencefálico)", "Hematoma epidural y subdural", 
-                    "Hipertensión intracraneal e Hidrocefalia", "Oftalmología (Conjuntivitis, Glaucoma, Catarata, Retinopatía)", 
-                    "Urología (HPB, Cáncer de Próstata, Litiasis, IVU, Cáncer Renal y Testicular)", 
-                    "Otorrinolaringología (Vértigo, Epistaxis, Sinusitis, Otitis, Rinitis)", 
-                    "Traumatología y Ortopedia (Fracturas, Artritis Séptica, Túnel del Carpo, Lesiones Ligamentarias)"
+                    "Hepatoblastoma", "Carcinoma hepatocelular", "Abdomen agudo", "Apendicitis aguda", "Patología biliar", 
+                    "Colecistitis crónica litiásica", "Coledocolitiasis", "Colangitis", "Enfermedad diverticular", 
+                    "Trastornos motores del esófago", "Acalasia", "Espasmo esofágico difuso", "Enfermedad por reflujo gastroesofágico (ERGE)", 
+                    "Esófago de Barret", "Dispepsia funcional", "Carcinoma epidermoide de esófago", "Gastritis", "Úlcera péptica", 
+                    "Enfermedad ulcerosa péptica", "Úlcera péptica perforada", "Síndrome de Zollinger Ellison", "Cáncer gástrico (adenocarcinoma)", 
+                    "Obesidad y cirugía bariátrica", "Obesidad", "Hernia umbilical", "Hernias inguinales y femorales", "Hernia ventral", 
+                    "Esplenectomía", "Pancreatitis aguda", "Pancreatitis crónica", "Adenocarcinoma de páncreas", "Enfermedad arterial periférica", 
+                    "Oclusión arterial aguda", "Insuficiencia venosa crónica", "Mordedura de serpiente", "Mordedura por arañas", 
+                    "Intoxicación por picadura de alacrán", "Picadura por himenópteros", "Patología perianal: enfermedad hemorroidal", 
+                    "Absceso anal", "Fistula anal", "Fisura anal", "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", 
+                    "Cáncer de colon", "Tumor de intestino delgado", "Trasplante de hígado", "Quemaduras", "Quemaduras por frío", 
+                    "Úlceras por presión", "Derrame pleural", "Infección de sitio quirúrgico", "Dehiscencia de herida quirúrgica", 
+                    "ATLS", "Trauma de tórax", "Trauma de abdomen", "Traumatismo craneoencefálico", "Hematoma epidural", "Hematoma subdural", 
+                    "Contusiones y hematomas intracerebrales", "Herniación uncal", "Neuralgia del trigémino", "Síndrome de hipertensión intracraneal", 
+                    "Síndrome de herniación cerebral", "Síndrome de hipertensión intracraneal benigna", "Hidrocefalia", 
+                    "Hidrocefalia crónica del adulto", "Absceso cerebral", "Tumores cerebrales", "Blefaritis", "Chalazión y orzuelo", 
+                    "Ectoprión", "Triquiasis", "Endoprión", "Síndrome de ojo seco", "Dacriocistitis", "Estenosis congénita de la vía lagrimal", 
+                    "Retinopatía diabética (RD)", "Retinopatía hipertensiva", "Oclusión venosa de la retina", 
+                    "Desprendimiento de retina regmatógeno no traumático", "Desprendimiento de retina seroso", "Ambliopía", 
+                    "Estrabismo concomitante convergente", "Parálisis oculomotoras", "Glaucoma primario de ángulo abierto", 
+                    "Glaucoma de ángulo estrecho", "Glaucoma congénito", "Uveitis", "Catarata", "Catarata congénita", "Conjuntivitis", 
+                    "Pterigión", "Queratitis infecciosa", "Queratocono", "Escleritis", "Episcleritis", "Trauma ocular", "Campimetría", 
+                    "Neuritis óptica", "Retinopatía del prematuro", "Hiperplasia prostática benigna", "Cáncer de próstata", 
+                    "Litiasis renal", "Cólico renoureteral", "Bacteriuria asintomática e infección del tracto urinario en el embarazo", 
+                    "Cáncer renal", "Cáncer de vejiga", "Infección de vías urinarias", "Cáncer de testículo", "Trasplante renal", 
+                    "Vértigo", "Vértigo postural paroxístico benigno (VPPB)", "Enfermedad de Ménière", "Neuronitis vestibular", 
+                    "Neurinoma del acústico", "Hipoacusia", "Hipoacusia del recién nacido", "Ototoxicidad", "Fracturas faciales", 
+                    "Fracturas del peñasco", "Fracturas nasales", "Fracturas mandibulares", "Parálisis facial", "Epistaxis", 
+                    "Rinitis alérgica", "Rinitis no alérgica", "Sinusitis aguda", "Pólipos nasales", "Patología maligna de senos paranasales", 
+                    "Carcinoma epidermoide de laringe", "Patología benigna de cuerdas vocales", "Papilomatosis laringea juvenil", 
+                    "Faringitis", "Absceso profundo de cuello", "Síndrome de apnea obstructiva del sueño", "Otitis externa aguda", 
+                    "Otoesclerosis", "Otitis media", "Angiofibroma juvenil", "Artritis séptica en niños y adultos", "Fracturas de miembro superior", 
+                    "Fracturas intracapsulares del extremo proximal del fémur", "Osteosarcoma", "Sarcoma de Ewing", "Codo de niñera", 
+                    "Síndrome del tunel del carpo", "Lesiones ligamentarias de rodilla", "Síndrome doloroso de hombro", 
+                    "Fracturas de miembro inferior", "Patologías de columna", "Esguince de tobillo"
                 ] 
             },
             interna: { 
                 flashcards: [], 
                 preguntas: [], 
                 temario: [
-                    "Insuficiencia cardíaca", "Arritmias (FA, Bradiarritmias, Taquiarritmias)", "Síndrome coronario agudo", 
-                    "Valvulopatías y Cardiomiopatías", "Hipertensión arterial sistémica", "Basic & Advanced Life Support (BLS/ACLS)", 
-                    "Dermatología (Micosis, Toxicodermias, Acné, Psoriasis, Melanoma, Ca Basocelular)", 
-                    "Enfermedad diarreica aguda en adultos", "Síndrome de intestino irritable", "Enfermedad inflamatoria intestinal", 
-                    "Hepatitis aguda y crónica", "Absceso hepático y Varices esofágicas", "Enfermedades tiroideas (Hiper/Hipo, Nódulo, Tiroiditis)", 
-                    "Síndrome de Cushing e Insuficiencia suprarrenal", "Diabetes mellitus", "Cetoacidosis diabética y Estado hiperosmolar", 
-                    "Pie diabético", "Anemias (Ferropénica, Megaloblástica, Hemolítica)", "Leucemias agudas y crónicas", 
-                    "Linfomas (Hodgkin y No Hodgkin)", "Mieloma múltiple", "Insuficiencia renal aguda y Enfermedad renal crónica", 
-                    "Síndrome nefrítico y nefrótico", "Nefropatía diabética y lúpica", "EPOC y Exacerbaciones", 
-                    "Enfermedad tromboembólica venosa", "Cáncer de pulmón", "Asma en el adulto", 
-                    "Lupus eritematoso sistémico", "Artritis reumatoide", "Artropatía por cristales (Gota)", 
-                    "Espondilitis anquilosante y Artrosis", "Demencias (Alzheimer)", "Enfermedad vascular cerebral (Isquémico/Hemorrágico)", 
-                    "Guillain-Barré y Miastenia gravis", "Cefaleas (Migraña, Tensional)", "Infectología (TBP, Endocarditis, VIHsida, Dengue, COVID-19)", 
-                    "Intoxicaciones (Agroquímicos, Paracetamol, Opiáceos, CO)", "Sepsis y Choque séptico", 
-                    "Psiquiatría (Depresión mayor, Ansiedad, Esquizofrenia, Trastornos alimentarios)"
+                    "Insuficiencia cardíaca", "Bradiarritmias", "Taquiarritmias", "Fibrilación auricular", "Síndrome coronario agudo", 
+                    "Valvulopatías", "Cardiomiopatías", "Pericarditis aguda", "Hipertensión arterial sistémica", "Basic Life Support", 
+                    "Advanced Cardiovascular Life Support", "Enfermedades micóticas", "Toxicodermias", "Eritema multiforme mayor o síndrome de Stevens Jonhson", 
+                    "Acné", "Alopecia androgénica", "Alopecia areata", "Psoriasis", "Tumores cutáneos benignos", "Carcinoma basocelular", 
+                    "Melanoma maligno", "Enfermedad diarreica aguda en adultos", "Síndrome de colon irritable", "Enfermedad inflamatoria intestinal", 
+                    "Alteraciones de metabolismo bilirrubina", "Abscesos hepáticos", "Absceso amebiano", "Hepatitis aguda", 
+                    "Hemorragia digestiva alta por varices esofágicas", "Hipertiroidismo o tirotoxicosis", "Nódulo tiroideo", "Tiroiditis", 
+                    "Sindrome de Cushing", "Insuficiencia suprarrenal", "Hiperaldosteronismo", "Feocromocitoma", "Diabetes mellitus", 
+                    "Cetoacidosis diabética", "Síndrome hiperglucémico hiperosmolar", "Pie diabético", "Anemia", "Leucemia mieloide crónica", 
+                    "Leucemia linfática crónica (LLC)", "Leucemias agudas", "Linfoma no Hodgkin", "Linfoma Hodgkin", "Policitemia vera", 
+                    "Trombocitemia", "Mieloma múltiple", "Alteraciones de la coagulación", "Trombocitopenia", "Insuficiencia renal prerenal", 
+                    "IRA parenquimatosa", "IRA postrenal", "Enfermedad renal crónica", "Síndrome nefrítico", "Síndrome nefrótico", 
+                    "Glomerulonefritis", "Nefropatía diabética", "Lupus eritematoso sistémico", "Vasculitis", "Enfermedad de Goodpasture", 
+                    "Trastornos tubulares", "Microangiopatías trombóticas", "Enfermedad pulmonar obstructiva crónica", "Exacerbaciones EPOC", 
+                    "Enfermedad tromboembólica venosa", "Cáncer de pulmón", "Asma en adulto", "Enfermedades intersticiales", "Sarcoidosis", 
+                    "Panarteritis nodosa clásica", "Enfermedad de Behcet", "Artropatía por cristales", "Artritis reumatoide", 
+                    "Factor reumatoide y ANA negativos", "Espondilitis anquilosante", "Artrosis", "Demencias", "Alzheimer", 
+                    "Enfermedad vascular cerebral", "Hemorragia intraparenquimatosa", "Hemorragia subaracnoidea", "Síndrome de Guillain-Barré", 
+                    "Miastenia gravis", "Crisis miasténica", "Cefaleas", "Endocarditis infecciosa", "Tuberculosis pulmonar", "Neumonía", 
+                    "Neumoconiosis", "Tétanos", "Botulismo", "Difteria", "Rabia", "Enfermedad gonocócica", "Chlamydia trachomatis", 
+                    "Sífilis", "Verrugas genitales", "Neoplasia intraepitelial anal", "Tumor de Buschke-Löwenstein", "Borreliosis de Lyme", 
+                    "Leptospirosis", "Carbunco", "Tularemia", "Erisipeloide", "Peste", "Virus de Inmunodeficiencia Humana VIH/sida", 
+                    "Paludismo", "Tripanosomiasis", "Leishmaniasis", "Rickettsia", "Brucelosis", "Nocardiosis", "Actinomicosis", 
+                    "Intoxicación por agroquímicos", "Intoxicación por opiáceos y benzodiacepinas", "Intoxicación por metales pesados", 
+                    "Intoxicación etílica", "Intoxicación por acetaminofén (paracetamol)", "Intoxicación por CO", "Fiebre reumática", 
+                    "Dengue", "Chikungunya", "Zika", "Covid-19", "Herpes zoster", "Viruela del mono", "Peritonitis infecciosa", "Lepra", 
+                    "Sepsis y choque séptico", "Dislipidemias", "Golpe de calor", "Depresión mayor", "Ansiedad", "Esquizofrenia", "Trastornos alimentarios"
                 ] 
             },
             pedia: { 
                 flashcards: [], 
                 preguntas: [], 
                 temario: [
-                    "Recién nacido sano", "Reanimación neonatal", "Patología respiratoria neonatal (SDR, TTRN, SAM)", 
-                    "Ictericia neonatal y TORCH", "Sepsis neonatal y Encefalopatía hipóxico-isquémica", 
-                    "Patología congénita (Atresia esofágica, Gastrosquisis, Onfalocele, Hernia diafragmática)", 
-                    "Control y seguimiento de la salud en <5 años", "Vacunas (Esquema nacional)", 
-                    "Desnutrición y Obesidad infantil", "Infecciones de vías respiratorias (Neumonía, Bronquiolitis, Croup, Otitis)", 
-                    "Asma pediátrica y Fibrosis quística", "Invaginación intestinal y Estenosis hipertrófica del píloro", 
-                    "Talla baja y Pubertad precoz/retardada", "Infección de vías urinarias y Reflujo vesicoureteral", 
-                    "Enfermedades exantemáticas y Enfermedad de Kawasaki", "Diarrea aguda y Deshidratación", 
-                    "Epilepsia y Crisis febriles", "Infecciones del SNC (Meningitis, Encefalitis)", 
-                    "Displasia del desarrollo de la cadera", "Legg-Calvé-Perthes y Epifisiólisis femoral", 
-                    "Oncología pediátrica (Leucemias, Tumores de Wilms, Neuroblastoma, Retinoblastoma)", 
-                    "Cardiopatías congénitas (Acianógenas y Cianógenas)", "Lactancia materna y Alimentación complementaria", 
-                    "Dermatología pediátrica (Dermatitis atópica, del pañal, Impétigo)", "TDAH y Parálisis cerebral infantil"
+                    "Recién nacido sano", "Reanimación neonatal", "Patología respiratoria neonatal", 
+                    "Síndrome de dificultad respiratoria o enfermedad membrana hialina", "Taquipnea transitoria del recién nacido", 
+                    "Síndrome de aspiración meconial", "Enfermedad hemorrágica del recién nacido", "Hipoglucemia neonatal", 
+                    "Atresia esofágica", "Atresia de coanas", "Gastrosquisis y onfalocele", "Divertículo de Meckel", "Hernia diafragmática", 
+                    "Enterocolitis necrotizante", "Sepsis neonatal", "Recién nacido con fiebre y sin evidencia de infección", 
+                    "Encefalopatía hipóxico-isquémica", "Ictericia neonatal", "TORCH", "Control y seguimiento de la salud en la niña y el niño menor de 5 años", 
+                    "Otitis media aguda", "Infección de vías respiratorias altas", "Rinosinusitis aguda", "Vacunas", "Desnutrición", 
+                    "Raquitismo carencial", "Neumonía bacteriana adquirida en la comunidad en menores de 18 Años", 
+                    "Síndrome de muerte súbita del lactante (SMSL)", "Bronquiolitis aguda", "Sibilante recurrente", "Asma", "Fibrosis quística", 
+                    "Enfermedad por reflujo gastroesofágico", "Invaginación intestinal", "Estenosis hipertrófica del píloro", "Talla baja", 
+                    "Pubertad", "Sobrepeso y obesidad", "Mal descenso testicular", "Escroto agudo", "Reflujo vesico-ureteral", 
+                    "Infección de vías urinarias <18 años", "Enfermedades exantemáticas", "Enfermedad de Kawasaki", "Diarrea aguda", 
+                    "VIH en el binomio", "Epilepsia y crisis febriles", "Parálisis braquial", "Infecciones del SNC", "Encefalitis", 
+                    "Displasia del desarrollo de la cadera", "Artritis séptica", "Sinovitis transitoria", "Enfermedad de Legg Calve-Perthes", 
+                    "Epifisiólisis femoral proximal", "Osteosarcoma", "Sarcoma de Ewing", "Osteocondroma", "Osteoma osteoide", 
+                    "Pronación dolorosa/codo de niñera", "Enfermedad Osgood Schlatter/apofisitis de tracción de rodilla", "Dermatitis atópica", 
+                    "Dermatitis seborreica", "Dermatitis del área del pañal", "Infecciones cutánea bacterianas", "Impétigo", "Escabiasis", 
+                    "Pediculosis capitis", "Maltrato infantil", "Neuroblastoma", "Tumor de Wilms", "Trastorno por déficit de atención e hiperactividad (TDAH)", 
+                    "Parálisis cerebral infantil (PCI)", "Diarrea crónica", "Alergia a la proteína de la leche de vaca", "Intolerancia a la lactosa en niños", 
+                    "Enfermedad celíaca", "Síndrome de Down", "Síndrome de Turner", "Cardiopatias congenitas", "Persistencia del conducto arterioso", 
+                    "Retinoblastoma", "Ingesta de causticos", "Metabolismo y enfermedades pediátricas", "Lactancia materna"
                 ] 
             }
         };
@@ -877,9 +946,9 @@
         let cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
         let quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
         let questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
-        let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v2') || '{}');
-        let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v2') || '{}');
-        let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v2') || '{}');
+        let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
+        let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
+        let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -1014,6 +1083,13 @@
             }
         }
 
+        function scrollCarousel(containerId, direction) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const scrollAmount = container.clientWidth;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+
         // --- SUBIR ARCHIVOS / FOTOS POR TEMA ---
         function uploadTopicFile(e, type, topicName) {
             const file = e.target.files[0];
@@ -1022,7 +1098,7 @@
             const reader = new FileReader();
             reader.onload = function(evt) {
                 let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
-                let storageKey = type === 'info' ? 'yn_info_images_v2' : (type === 'gpc' ? 'yn_gpc_images_v2' : 'yn_pdf_notes_v2');
+                let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : 'yn_pdf_notes_v3');
 
                 if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
                 if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
@@ -1045,7 +1121,7 @@
 
         function deleteTopicItem(sub, topicName, idx, type) {
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
-            let storageKey = type === 'info' ? 'yn_info_images_v2' : (type === 'gpc' ? 'yn_gpc_images_v2' : 'yn_pdf_notes_v2');
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : 'yn_pdf_notes_v3');
 
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
@@ -1061,6 +1137,7 @@
             }
         }
 
+        // NAVEGACIÓN DESLIZABLE (CARRUSEL)
         function renderTopicGroupedView(type) {
             const data = getData();
             const topics = (data[currentSubject] || {}).temario || ["General"];
@@ -1071,36 +1148,49 @@
             return topics.map((topic, tIdx) => {
                 const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
                 const inputId = `file_input_${type}_${tIdx}`;
+                const carouselId = `carousel_${type}_${tIdx}`;
 
                 let contentHtml = '';
-                if (type === 'pdf') {
-                    contentHtml = `
-                        <div class="pdf-list-container">
-                            ${items.map((pdf, pIdx) => `
-                                <div class="pdf-card">
-                                    <div class="pdf-card-header">
-                                        <div class="pdf-card-title">${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
-                                        <div class="pdf-card-actions">
-                                            <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
-                                            <button class="pdf-btn pdf-btn-delete" onclick="deleteTopicItem('${currentSubject}', '${topic}',${pIdx}, 'pdf')">✕</button>
+                if (items.length > 0) {
+                    if (type === 'pdf') {
+                        contentHtml = `
+                            <div class="carousel-wrapper">
+                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
+                                <div class="carousel-container" id="${carouselId}">
+                                    ${items.map((pdf, pIdx) => `
+                                        <div class="carousel-slide">
+                                            <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}',${pIdx}, 'pdf')">✕</button>
+                                            <div class="pdf-card" style="border:none;">
+                                                <div class="pdf-card-header">
+                                                    <div class="pdf-card-title">${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
+                                                    <div class="pdf-card-actions">
+                                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
+                                                    </div>
+                                                </div>
+                                                <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
+                                    `).join('')}
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
-                } else {
-                    contentHtml = `
-                        <div class="image-gallery">
-                            ${items.map((imgSrc, iIdx) => `
-                                <div class="gallery-img-card">
-                                    <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
-                                    <button class="delete-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${iIdx}, '${type}')">✕</button>
+                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        contentHtml = `
+                            <div class="carousel-wrapper">
+                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
+                                <div class="carousel-container" id="${carouselId}">
+                                    ${items.map((imgSrc, iIdx) => `
+                                        <div class="carousel-slide">
+                                            <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${iIdx}, '${type}')">✕</button>
+                                            <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
+                                        </div>
+                                    `).join('')}
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
+                                ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
+                            </div>
+                        `;
+                    }
                 }
 
                 return `
@@ -1419,9 +1509,9 @@
                 yn_card_diff: cardDifficulty,
                 yn_quiz_stats: quizStats,
                 yn_question_schedule: questionSchedule,
-                yn_gpc_images_v2: gpcImages,
-                yn_info_images_v2: infographicImages,
-                yn_pdf_notes_v2: pdfNotes,
+                yn_gpc_images_v3: gpcImages,
+                yn_info_images_v3: infographicImages,
+                yn_pdf_notes_v3: pdfNotes,
                 yn_font_scale: currentFontScale
             };
 
@@ -1465,9 +1555,9 @@
                     if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
                     if (imported.yn_quiz_stats) localStorage.setItem('yn_quiz_stats', JSON.stringify(imported.yn_quiz_stats));
                     if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
-                    if (imported.yn_gpc_images_v2) localStorage.setItem('yn_gpc_images_v2', JSON.stringify(imported.yn_gpc_images_v2));
-                    if (imported.yn_info_images_v2) localStorage.setItem('yn_info_images_v2', JSON.stringify(imported.yn_info_images_v2));
-                    if (imported.yn_pdf_notes_v2) localStorage.setItem('yn_pdf_notes_v2', JSON.stringify(imported.yn_pdf_notes_v2));
+                    if (imported.yn_gpc_images_v3) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.yn_gpc_images_v3));
+                    if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
+                    if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
                     if (imported.yn_font_scale) {
                         currentFontScale = imported.yn_font_scale;
                         localStorage.setItem('yn_font_scale', currentFontScale.toString());
@@ -1480,9 +1570,9 @@
                     cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
                     quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
                     questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
-                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v2') || '{}');
-                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v2') || '{}');
-                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v2') || '{}');
+                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
+                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
+                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
 
                     alert('¡Progreso importado con éxito!');
                     renderContent();
