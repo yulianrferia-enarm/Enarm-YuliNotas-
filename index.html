@@ -101,7 +101,7 @@
             font-weight: 700;
         }
 
-        /* 1. Materias abarcando más espacio horizontal */
+        /* Materias abarcando más espacio horizontal */
         .subjects-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -136,7 +136,7 @@
         .btn-cirugia { background-color: #1565C0; }
         .btn-pedia { background-color: #E53935; }
 
-        /* 2. Navegación por pestañas reordenadas y sin emojis */
+        /* Navegación por pestañas */
         .tabs-nav {
             display: flex;
             background-color: var(--info-bg);
@@ -180,7 +180,6 @@
             position: relative;
         }
 
-        /* Contador discreto en la esquina */
         .corner-badge {
             position: absolute;
             top: 12px;
@@ -192,6 +191,42 @@
             border-radius: 12px;
             font-size: calc(10px * var(--font-scale));
             font-weight: 800;
+        }
+
+        /* Agrupación por Temario */
+        .topic-group-card {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .topic-group-header {
+            padding: 12px 14px;
+            font-size: calc(13px * var(--font-scale));
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: rgba(0,0,0,0.02);
+        }
+
+        .topic-group-body {
+            padding: 12px;
+            border-top: 1px solid var(--border-color);
+            display: block;
+        }
+
+        .topic-count-badge {
+            font-size: calc(10px * var(--font-scale));
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
         }
 
         /* Flashcards */
@@ -369,11 +404,10 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding-top: 16px;
         }
 
         .pdf-card {
-            background: var(--info-bg);
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 12px;
@@ -389,7 +423,7 @@
         }
 
         .pdf-card-title {
-            font-size: calc(13px * var(--font-scale));
+            font-size: calc(12px * var(--font-scale));
             font-weight: 700;
             color: var(--primary-color);
             word-break: break-all;
@@ -401,10 +435,10 @@
         }
 
         .pdf-btn {
-            padding: 6px 12px;
+            padding: 4px 10px;
             border: none;
             border-radius: 6px;
-            font-size: calc(11px * var(--font-scale));
+            font-size: calc(10px * var(--font-scale));
             font-weight: 700;
             cursor: pointer;
             color: white;
@@ -415,7 +449,7 @@
 
         .pdf-viewer-frame {
             width: 100%;
-            height: 400px;
+            height: 300px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             background: #FFFFFF;
@@ -501,17 +535,16 @@
         /* Galerías */
         .image-upload-zone {
             border: 2px dashed var(--primary-color);
-            background: var(--info-bg);
-            border-radius: 12px;
-            padding: 14px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
-            margin-bottom: 14px;
-            margin-top: 16px;
+            margin-bottom: 10px;
         }
 
         .image-upload-zone p {
-            font-size: calc(12px * var(--font-scale));
+            font-size: calc(11px * var(--font-scale));
             font-weight: 700;
             color: var(--primary-color);
         }
@@ -519,12 +552,12 @@
         .image-gallery {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
         .gallery-img-card {
             position: relative;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             background: #000;
@@ -546,9 +579,9 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -679,7 +712,7 @@
             <button onclick="saveAdminContent()">Guardar Contenido</button>
         </div>
 
-        <!-- 1. MATERIAS (Ocupando todo el ancho) -->
+        <!-- 1. MATERIAS -->
         <div class="section-title">Materia</div>
         <div class="subjects-grid">
             <button class="subject-btn btn-gineco" onclick="selectSubject('gineco')">Ginecología</button>
@@ -689,7 +722,7 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. PESTAÑAS (Ordenadas sin emojis) -->
+        <!-- 2. PESTAÑAS -->
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
@@ -767,9 +800,9 @@
         let cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
         let quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
         let questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
-        let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
-        let infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
-        let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes') || '{}');
+        let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v2') || '{}');
+        let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v2') || '{}');
+        let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v2') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -818,6 +851,15 @@
             return combined;
         }
 
+        function countTopicItems(storageObj, subjectKey) {
+            if (!storageObj[subjectKey]) return 0;
+            let total = 0;
+            Object.values(storageObj[subjectKey]).forEach(arr => {
+                if (Array.isArray(arr)) total += arr.length;
+            });
+            return total;
+        }
+
         function updateCornerBadge() {
             const badge = document.getElementById('corner-badge');
             const data = getData();
@@ -830,14 +872,11 @@
                 const total = (subjectData.flashcards || []).length;
                 badge.textContent = total > 0 ? `${(currentCardIndex % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'resumenes') {
-                const total = (infographicImages[currentSubject] || []).length;
-                badge.textContent = `${total} Infografías`;
+                badge.textContent = `${countTopicItems(infographicImages, currentSubject)} Infografías`;
             } else if (currentTab === 'esquemas') {
-                const total = (gpcImages[currentSubject] || []).length;
-                badge.textContent = `${total} Esquemas`;
+                badge.textContent = `${countTopicItems(gpcImages, currentSubject)} Esquemas`;
             } else if (currentTab === 'yulinotas') {
-                const total = (pdfNotes[currentSubject] || []).length;
-                badge.textContent = `${total} PDF`;
+                badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 5;
                 let completedSubjectChecks = 0;
@@ -889,37 +928,53 @@
             renderContent();
         }
 
-        // --- MANEJO DE PDF (YULINOTAS) ---
-        function uploadPdfNote(e) {
+        function toggleTopicGroup(headerElem) {
+            const body = headerElem.nextElementSibling;
+            if (body.style.display === 'none') {
+                body.style.display = 'block';
+            } else {
+                body.style.display = 'none';
+            }
+        }
+
+        // --- SUBIR ARCHIVOS / FOTOS POR TEMA ---
+        function uploadTopicFile(e, type, topicName) {
             const file = e.target.files[0];
             if (!file) return;
 
-            if (file.type !== 'application/pdf') {
-                alert('Por favor selecciona un archivo PDF válido.');
-                return;
-            }
-
             const reader = new FileReader();
             reader.onload = function(evt) {
-                if (!pdfNotes[currentSubject]) pdfNotes[currentSubject] = [];
-                
-                pdfNotes[currentSubject].push({
-                    name: file.name,
-                    data: evt.target.result,
-                    date: new Date().toLocaleDateString('es-MX')
-                });
+                let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
+                let storageKey = type === 'info' ? 'yn_info_images_v2' : (type === 'gpc' ? 'yn_gpc_images_v2' : 'yn_pdf_notes_v2');
 
-                localStorage.setItem('yn_pdf_notes', JSON.stringify(pdfNotes));
+                if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
+                if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
+
+                if (type === 'pdf') {
+                    targetStorage[currentSubject][topicName].push({
+                        name: file.name,
+                        data: evt.target.result,
+                        date: new Date().toLocaleDateString('es-MX')
+                    });
+                } else {
+                    targetStorage[currentSubject][topicName].push(evt.target.result);
+                }
+
+                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
                 renderContent();
             };
             reader.readAsDataURL(file);
         }
 
-        function deletePdfNote(idx) {
-            if (!pdfNotes[currentSubject]) return;
-            pdfNotes[currentSubject].splice(idx, 1);
-            localStorage.setItem('yn_pdf_notes', JSON.stringify(pdfNotes));
-            renderContent();
+        function deleteTopicItem(sub, topicName, idx, type) {
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
+            let storageKey = type === 'info' ? 'yn_info_images_v2' : (type === 'gpc' ? 'yn_gpc_images_v2' : 'yn_pdf_notes_v2');
+
+            if (targetStorage[sub] && targetStorage[sub][topicName]) {
+                targetStorage[sub][topicName].splice(idx, 1);
+                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
+                renderContent();
+            }
         }
 
         function openPdfWindow(dataUrl) {
@@ -927,6 +982,66 @@
             if (win) {
                 win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
             }
+        }
+
+        function renderTopicGroupedView(type) {
+            const data = getData();
+            const topics = (data[currentSubject] || {}).temario || ["General"];
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : pdfNotes);
+            let inputAccept = type === 'pdf' ? 'application/pdf' : 'image/*';
+            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : '+ Subir YuliNotas (PDF)');
+
+            return topics.map((topic, tIdx) => {
+                const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
+                const inputId = `file_input_${type}_${tIdx}`;
+
+                let contentHtml = '';
+                if (type === 'pdf') {
+                    contentHtml = `
+                        <div class="pdf-list-container">
+                            ${items.map((pdf, pIdx) => `
+                                <div class="pdf-card">
+                                    <div class="pdf-card-header">
+                                        <div class="pdf-card-title">${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
+                                        <div class="pdf-card-actions">
+                                            <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
+                                            <button class="pdf-btn pdf-btn-delete" onclick="deleteTopicItem('${currentSubject}', '${topic}',${pIdx}, 'pdf')">✕</button>
+                                        </div>
+                                    </div>
+                                    <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    contentHtml = `
+                        <div class="image-gallery">
+                            ${items.map((imgSrc, iIdx) => `
+                                <div class="gallery-img-card">
+                                    <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
+                                    <button class="delete-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${iIdx}, '${type}')">✕</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="topic-group-card">
+                        <div class="topic-group-header" onclick="toggleTopicGroup(this)">
+                            <span>📌 ${topic}</span>
+                            <span class="topic-count-badge">${items.length}</span>
+                        </div>
+                        <div class="topic-group-body">
+                            <div class="image-upload-zone" onclick="document.getElementById('${inputId}').click()">
+                                <p>${labelText}</p>
+                                <input type="file" id="${inputId}" accept="${inputAccept}" style="display: none;" onchange="uploadTopicFile(event, '${type}', '${topic}')">
+                            </div>
+                            ${contentHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderContent() {
@@ -1021,60 +1136,11 @@
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
-                const list = infographicImages[currentSubject] || [];
-                area.innerHTML = `
-                    <div class="image-upload-zone" onclick="document.getElementById('info-input').click()">
-                        <p>+ Subir Foto de Infografía / Apunte</p>
-                        <input type="file" id="info-input" accept="image/*" style="display: none;" onchange="uploadImage(event, 'info')">
-                    </div>
-                    <div class="image-gallery">
-                        ${list.map((imgSrc, iIdx) => `
-                            <div class="gallery-img-card">
-                                <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
-                                <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'info')">✕</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+                area.innerHTML = renderTopicGroupedView('info');
             } else if (currentTab === 'esquemas') {
-                const list = gpcImages[currentSubject] || [];
-                area.innerHTML = `
-                    <div class="image-upload-zone" onclick="document.getElementById('gpc-input').click()">
-                        <p>+ Subir Esquema de Tratamiento GPC</p>
-                        <input type="file" id="gpc-input" accept="image/*" style="display: none;" onchange="uploadImage(event, 'gpc')">
-                    </div>
-                    <div class="image-gallery">
-                        ${list.map((imgSrc, iIdx) => `
-                            <div class="gallery-img-card">
-                                <img src="${imgSrc}" onclick="openImageModal('${imgSrc}')">
-                                <button class="delete-btn" onclick="deleteImage('${currentSubject}',${iIdx}, 'gpc')">✕</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+                area.innerHTML = renderTopicGroupedView('gpc');
             } else if (currentTab === 'yulinotas') {
-                const list = pdfNotes[currentSubject] || [];
-                area.innerHTML = `
-                    <div class="image-upload-zone" onclick="document.getElementById('pdf-input').click()">
-                        <p>+ Subir Nota en PDF (Goodnotes / Escaneado)</p>
-                        <input type="file" id="pdf-input" accept="application/pdf" style="display: none;" onchange="uploadPdfNote(event)">
-                    </div>
-                    <div class="pdf-list-container">
-                        ${list.length === 0 ? `<p style="text-align:center; font-size:calc(12px * var(--font-scale)); color:var(--text-muted); padding:10px;">No has subido notas en PDF para esta materia todavía.</p>` : ''}
-                        ${list.map((pdf, pIdx) => `
-                            <div class="pdf-card">
-                                <div class="pdf-card-header">
-                                    <div class="pdf-card-title">${pdf.name} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${pdf.date})</span></div>
-                                    <div class="pdf-card-actions">
-                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${pdf.data}')">↗ Abrir</button>
-                                        <button class="pdf-btn pdf-btn-delete" onclick="deletePdfNote(${pIdx})">✕</button>
-                                    </div>
-                                </div>
-                                <iframe class="pdf-viewer-frame" src="${pdf.data}"></iframe>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+                area.innerHTML = renderTopicGroupedView('pdf');
             } else if (currentTab === 'temario') {
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
@@ -1234,33 +1300,6 @@
             renderContent();
         }
 
-        // --- SUBIR / ELIMINAR FOTOS ---
-        function uploadImage(e, type) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                let targetStorage = type === 'info' ? infographicImages : gpcImages;
-                let storageKey = type === 'info' ? 'yn_info_images' : 'yn_gpc_images';
-
-                if (!targetStorage[currentSubject]) targetStorage[currentSubject] = [];
-                targetStorage[currentSubject].push(evt.target.result);
-                
-                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
-                renderContent();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function deleteImage(sub, idx, type) {
-            let targetStorage = type === 'info' ? infographicImages : gpcImages;
-            let storageKey = type === 'info' ? 'yn_info_images' : 'yn_gpc_images';
-
-            targetStorage[sub].splice(idx, 1);
-            localStorage.setItem(storageKey, JSON.stringify(targetStorage));
-            renderContent();
-        }
-
         function openImageModal(src) {
             const modal = document.getElementById('image-modal');
             const img = document.getElementById('modal-img-element');
@@ -1303,9 +1342,9 @@
                 yn_card_diff: cardDifficulty,
                 yn_quiz_stats: quizStats,
                 yn_question_schedule: questionSchedule,
-                yn_gpc_images: gpcImages,
-                yn_info_images: infographicImages,
-                yn_pdf_notes: pdfNotes,
+                yn_gpc_images_v2: gpcImages,
+                yn_info_images_v2: infographicImages,
+                yn_pdf_notes_v2: pdfNotes,
                 yn_font_scale: currentFontScale
             };
 
@@ -1349,9 +1388,9 @@
                     if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
                     if (imported.yn_quiz_stats) localStorage.setItem('yn_quiz_stats', JSON.stringify(imported.yn_quiz_stats));
                     if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
-                    if (imported.yn_gpc_images) localStorage.setItem('yn_gpc_images', JSON.stringify(imported.yn_gpc_images));
-                    if (imported.yn_info_images) localStorage.setItem('yn_info_images', JSON.stringify(imported.yn_info_images));
-                    if (imported.yn_pdf_notes) localStorage.setItem('yn_pdf_notes', JSON.stringify(imported.yn_pdf_notes));
+                    if (imported.yn_gpc_images_v2) localStorage.setItem('yn_gpc_images_v2', JSON.stringify(imported.yn_gpc_images_v2));
+                    if (imported.yn_info_images_v2) localStorage.setItem('yn_info_images_v2', JSON.stringify(imported.yn_info_images_v2));
+                    if (imported.yn_pdf_notes_v2) localStorage.setItem('yn_pdf_notes_v2', JSON.stringify(imported.yn_pdf_notes_v2));
                     if (imported.yn_font_scale) {
                         currentFontScale = imported.yn_font_scale;
                         localStorage.setItem('yn_font_scale', currentFontScale.toString());
@@ -1364,9 +1403,9 @@
                     cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
                     quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
                     questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
-                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images') || '{}');
-                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images') || '{}');
-                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes') || '{}');
+                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v2') || '{}');
+                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v2') || '{}');
+                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v2') || '{}');
 
                     alert('¡Progreso importado con éxito!');
                     renderContent();
