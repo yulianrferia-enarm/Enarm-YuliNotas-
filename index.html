@@ -831,7 +831,7 @@
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="pregunta">Pregunta Caso Clínico</option>
                 <option value="flashcard">Flashcard</option>
-                <option value="pdfextractor">📄 Importar desde PDF / Texto Estructurado</option>
+                <option value="textprocessor">✨ Pegar y Ordenar Texto (Auto-Extractor)</option>
             </select>
 
             <select id="admin-subject">
@@ -1073,14 +1073,7 @@
         let currentModalList = [];
         let currentModalIndex = 0;
 
-        // Variables de Control para Zoom Táctil (Pinch-to-zoom & Pan con dos dedos)
-        let scale = 1;
-        let pointX = 0;
-        let pointY = 0;
-        let startX = 0;
-        let startY = 0;
-        let initialDistance = 0;
-        let isPanning = false;
+        let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, initialDistance = 0, isPanning = false;
 
         if (isDarkMode) document.body.classList.add('dark-mode');
         document.documentElement.style.setProperty('--font-scale', currentFontScale);
@@ -1094,22 +1087,14 @@
             }
         });
 
-        // Configuración de Eventos Touch para Pinch-to-Zoom y Desplazamiento Fluido en Pantalla Completa
         const modalOverlay = document.getElementById('image-modal');
-        
         modalOverlay.addEventListener('touchstart', (e) => {
             const img = document.getElementById('modal-active-img');
             if (!img) return;
-
             if (e.touches.length === 2) {
-                // Dos dedos (índice y medio): Iniciar Pinch Zoom
                 isPanning = false;
-                initialDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
+                initialDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
             } else if (e.touches.length === 1 && scale > 1) {
-                // Un dedo para arrastrar (pan) solo si se hizo zoom previamente
                 isPanning = true;
                 startX = e.touches[0].clientX - pointX;
                 startY = e.touches[0].clientY - pointY;
@@ -1119,16 +1104,12 @@
         modalOverlay.addEventListener('touchmove', (e) => {
             const img = document.getElementById('modal-active-img');
             if (!img) return;
-
             if (e.touches.length === 2) {
                 e.preventDefault();
-                const currentDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
+                const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
                 if (initialDistance > 0) {
                     let factor = currentDistance / initialDistance;
-                    scale = Math.min(Math.max(1, scale * factor), 5); // Zoom entre 1x y 5x
+                    scale = Math.min(Math.max(1, scale * factor), 5);
                     initialDistance = currentDistance;
                     updateImageTransform(img);
                 }
@@ -1151,9 +1132,7 @@
 
         function resetZoom(e) {
             if (e) e.stopPropagation();
-            scale = 1;
-            pointX = 0;
-            pointY = 0;
+            scale = 1; pointX = 0; pointY = 0;
             const img = document.getElementById('modal-active-img');
             if (img) updateImageTransform(img);
         }
@@ -1368,9 +1347,7 @@
             const currentItem = currentModalList[currentModalIndex];
             const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
 
-            scale = 1;
-            pointX = 0;
-            pointY = 0;
+            scale = 1; pointX = 0; pointY = 0;
 
             if (isPdfObj) {
                 container.innerHTML = `<iframe src="${currentItem.data}"></iframe>`;
@@ -1666,37 +1643,30 @@
                     <textarea id="af-exp" placeholder="Explicación general"></textarea>
                     <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
                 `;
-            } else if (type === 'pdfextractor') {
+            } else if (type === 'textprocessor') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Sube un documento de texto/PDF organizado o pega el contenido estructurado abajo para extraer preguntas y flashcards automáticamente:</p>
-                    <input type="file" id="pdf-import-file" accept=".txt,.md,.json,.csv" style="margin-bottom: 10px;" onchange="handlePdfExtractionFile(event)">
-                    <textarea id="pdf-raw-text" rows="6" placeholder="O pega aquí el texto estructurado con formato:
-Pregunta: [texto]
-A) ... B) ... C) ... D) ...
+                    <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Pega tu texto abajo. La aplicación detectará automáticamente y ordenará las preguntas o flashcards:</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="Pega aquí tu contenido organizado, por ejemplo:
+
+Pregunta: Femenina con...
+A) Opción 1
+B) Opción 2
+C) Opción 3
+D) Opción 4
 Correcta: A
 Explicación: ...
 
 O para Flashcards:
-FC: [Pregunta] | [Respuesta]"></textarea>
-                    <button type="button" onclick="processStructuredText()" style="background: #2E7D32; margin-top: 8px;">⚙️ Extraer y Agregar a la Materia</button>
+FC: ¿Pregunta? | Respuesta clave"></textarea>
+                    <button type="button" onclick="processPastedText()" style="background: #2E7D32; margin-top: 8px;">✨ Procesar y Ordenar Texto</button>
                 `;
             }
         }
 
-        function handlePdfExtractionFile(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                document.getElementById('pdf-raw-text').value = evt.target.result;
-            };
-            reader.readAsText(file);
-        }
-
-        function processStructuredText() {
-            const text = document.getElementById('pdf-raw-text').value;
-            if (!text.trim()) return alert('Por favor ingresa o sube texto estructurado.');
+        function processPastedText() {
+            const text = document.getElementById('paste-raw-text').value;
+            if (!text.trim()) return alert('Por favor pega algún texto estructurado.');
             const sub = document.getElementById('admin-subject').value;
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
@@ -1713,10 +1683,10 @@ FC: [Pregunta] | [Respuesta]"></textarea>
                     let parts = clean.split('|');
                     if (parts.length >= 2) {
                         customData[sub].flashcards.push({
-                            id: 'fc_pdf_' + Math.random().toString(36).substring(2, 9),
+                            id: 'fc_paste_' + Math.random().toString(36).substring(2, 9),
                             q: parts[0].trim(),
                             a: parts[1].trim(),
-                            tag: 'pdf'
+                            tag: 'texto'
                         });
                         addedFC++;
                     }
@@ -1725,7 +1695,7 @@ FC: [Pregunta] | [Respuesta]"></textarea>
                     let qText = "";
                     let options = [];
                     let correctOpt = "";
-                    let explanation = "Extraído automáticamente desde documento.";
+                    let explanation = "Procesado automáticamente desde texto pegado.";
 
                     lines.forEach(line => {
                         if (line.toLowerCase().startsWith('pregunta:')) {
@@ -1750,7 +1720,7 @@ FC: [Pregunta] | [Respuesta]"></textarea>
                         }
 
                         customData[sub].preguntas.push({
-                            id: 'qp_pdf_' + Math.random().toString(36).substring(2, 9),
+                            id: 'qp_paste_' + Math.random().toString(36).substring(2, 9),
                             q: qText,
                             rawOptions: options,
                             correctText: correctTextVal,
@@ -1764,11 +1734,11 @@ FC: [Pregunta] | [Respuesta]"></textarea>
 
             if (addedQ > 0 || addedFC > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Proceso exitoso!\nSe agregaron ${addedQ} preguntas y ${addedFC} flashcards a ${subjectsConfig[sub].title}.`);
+                alert(`¡Texto ordenado y guardado con éxito!\nSe añadieron ${addedQ} preguntas y ${addedFC} flashcards a ${subjectsConfig[sub].title}.`);
                 toggleAdminPanel();
                 renderContent();
             } else {
-                alert('No se detectó un formato claro. Asegúrate de usar "Pregunta: ..." con opciones o "Pregunta | Respuesta" para flashcards.');
+                alert('No se detectó un formato claro. Revisa que uses "Pregunta: ..." con opciones o "Pregunta | Respuesta" para flashcards.');
             }
         }
 
