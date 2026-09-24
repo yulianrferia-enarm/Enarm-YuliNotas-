@@ -839,11 +839,12 @@
     <div class="container">
 
         <div id="admin-panel" class="admin-panel">
-            <h3>⚡ Agregar Contenido & Importación Masiva</h3>
+            <h3>⚡ Agregar Contenido & Gestión de Archivos</h3>
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="pregunta">Banco de Preguntas (1x1)</option>
                 <option value="flashcard">Flashcards de Memoria (1x1)</option>
-                <option value="bulk">📂 Importación Masiva Ampliada (.json, .pdf, .docx, múltiples archivos)</option>
+                <option value="upload_preguntas">📂 Subir Archivos para Preguntas (JSON, Múltiples)</option>
+                <option value="upload_flashcards">⚡ Subir Archivos para Flashcards (JSON, Múltiples)</option>
             </select>
 
             <select id="admin-subject">
@@ -1618,16 +1619,22 @@
                     <textarea id="af-exp" placeholder="Explicación clínica general"></textarea>
                     <textarea id="af-disc" placeholder="Descarte de opciones independientes (A:..., B:...)"></textarea>
                 `;
-            } else if (type === 'bulk') {
+            } else if (type === 'upload_preguntas') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Selecciona o arrastra múltiples archivos de tipo documento y PDF (.json, .pdf, .docx):</p>
-                    <input type="file" id="bulk-file-input" accept=".json,.pdf,.docx" multiple onchange="processBulkImport(event)">
+                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube uno o varios archivos JSON con reactivos de preguntas:</p>
+                    <input type="file" id="bulk-preguntas-input" accept=".json" multiple onchange="processFileUpload(event, 'preguntas')">
+                `;
+            } else if (type === 'upload_flashcards') {
+                saveBtn.style.display = 'none';
+                container.innerHTML = `
+                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube uno o varios archivos JSON con flashcards:</p>
+                    <input type="file" id="bulk-flashcards-input" accept=".json" multiple onchange="processFileUpload(event, 'flashcards')">
                 `;
             }
         }
 
-        function processBulkImport(e) {
+        function processFileUpload(e, targetCategory) {
             const files = e.target.files;
             if (!files || files.length === 0) return;
 
@@ -1640,63 +1647,43 @@
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     try {
-                        if (file.name.endsWith('.json')) {
-                            const importedArray = JSON.parse(evt.target.result);
-                            if (Array.isArray(importedArray)) {
-                                importedArray.forEach((item, idx) => {
-                                    if (item.q && item.a && !item.rawOptions) {
-                                        customData[sub].flashcards.push({
-                                            id: 'bulk_fc_' + Date.now() + '_' + fIdx + '_' + idx,
-                                            q: item.q,
-                                            a: item.a,
-                                            tag: item.tag || 'normal'
-                                        });
-                                    } else if (item.q && (item.rawOptions || item.options)) {
-                                        let opts = item.rawOptions || item.options;
-                                        customData[sub].preguntas.push({
-                                            id: 'bulk_q_' + Date.now() + '_' + fIdx + '_' + idx,
-                                            q: item.q,
-                                            rawOptions: opts,
-                                            correctText: item.correctText || opts[0],
-                                            explanation: item.explanation || '',
-                                            discardExplanation: item.discardExplanation || null
-                                        });
-                                    }
-                                });
-                            }
-                        } else {
-                            // Procesamiento de documentos individuales (.pdf, .docx) hacia YuliNotas / Material clínico
-                            const topicName = file.name.replace(/\.[^/.]+$/, "");
-                            if (!pdfNotes[sub]) pdfNotes[sub] = {};
-                            if (!pdfNotes[sub][topicName]) pdfNotes[sub][topicName] = [];
-                            
-                            pdfNotes[sub][topicName].push({
-                                isPdf: true,
-                                name: file.name,
-                                data: evt.target.result,
-                                date: new Date().toLocaleDateString('es-MX')
+                        const importedArray = JSON.parse(evt.target.result);
+                        if (Array.isArray(importedArray)) {
+                            importedArray.forEach((item, idx) => {
+                                if (targetCategory === 'flashcards' && item.q && item.a) {
+                                    customData[sub].flashcards.push({
+                                        id: 'upload_fc_' + Date.now() + '_' + fIdx + '_' + idx,
+                                        q: item.q,
+                                        a: item.a,
+                                        tag: item.tag || 'normal'
+                                    });
+                                } else if (targetCategory === 'preguntas' && item.q && (item.rawOptions || item.options)) {
+                                    let opts = item.rawOptions || item.options;
+                                    customData[sub].preguntas.push({
+                                        id: 'upload_q_' + Date.now() + '_' + fIdx + '_' + idx,
+                                        q: item.q,
+                                        rawOptions: opts,
+                                        correctText: item.correctText || opts[0],
+                                        explanation: item.explanation || '',
+                                        discardExplanation: item.discardExplanation || null
+                                    });
+                                }
                             });
-                            localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
                         }
                     } catch (err) {
-                        console.error("Error procesando archivo individual", err);
+                        console.error("Error leyendo archivo JSON", err);
                     }
 
                     processedCount++;
                     if (processedCount === files.length) {
                         localStorage.setItem('yn_custom_data', JSON.stringify(customData));
                         prepareRandomizedLists();
-                        alert(`¡Importación masiva ampliada completada con éxito para ${files.length} archivo(s)!`);
+                        alert(`¡Se han cargado con éxito los archivos en ${targetCategory.toUpperCase()}!`);
                         toggleAdminPanel();
                         renderContent();
                     }
                 };
-                
-                if (file.name.endsWith('.json')) {
-                    reader.readAsText(file);
-                } else {
-                    reader.readAsDataURL(file);
-                }
+                reader.readAsText(file);
             });
         }
 
