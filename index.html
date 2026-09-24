@@ -5,13 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="apple-touch-icon" href="IMG_4385.jpeg">
     <title>YuliNotas ENARM</title>
-    <!-- PDF.js para leer y extraer texto de PDFs directamente en el navegador -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        if (window.pdfjsLib) {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        }
-    </script>
     <style>
         :root {
             --bg-current: #F3E5F5;
@@ -197,27 +190,7 @@
             font-weight: 800;
         }
 
-        .ga-card {
-            background: var(--info-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 12px;
-        }
-
-        .ga-title {
-            font-size: calc(13px * var(--font-scale));
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 6px;
-        }
-
-        .ga-body {
-            font-size: calc(12px * var(--font-scale));
-            line-height: 1.5;
-            color: var(--text-dark);
-        }
-
+        /* Agrupación por Temario Desplegable */
         .topic-group-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -274,6 +247,7 @@
             font-weight: 700;
         }
 
+        /* Carrusel Deslizable por Tema */
         .carousel-wrapper {
             position: relative;
             display: flex;
@@ -339,6 +313,7 @@
         .carousel-btn-prev { left: 4px; }
         .carousel-btn-next { right: 4px; }
 
+        /* Flashcards */
         .flashcard-filter-bar {
             display: flex;
             gap: 6px;
@@ -440,6 +415,7 @@
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
+        /* Preguntas */
         .question-card {
             display: flex;
             flex-direction: column;
@@ -507,6 +483,7 @@
             width: 100%;
         }
 
+        /* PDF Cards */
         .pdf-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -556,6 +533,7 @@
             cursor: pointer;
         }
 
+        /* Modal visor de imagen / PDF en pantalla completa con Pinch-to-Zoom fluido */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -568,7 +546,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            touch-action: none;
+            touch-action: none; /* Desactiva gestos predeterminados del navegador para controlar el zoom personalizado */
         }
 
         .image-modal-overlay.active { display: flex; }
@@ -674,6 +652,7 @@
             z-index: 1003;
         }
 
+        /* Estadísticas */
         .stats-dashboard {
             display: flex;
             flex-direction: column;
@@ -743,6 +722,7 @@
             z-index: 5;
         }
 
+        /* Temario */
         .topic-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -785,6 +765,7 @@
             cursor: pointer;
         }
 
+        /* Admin Panel */
         .admin-panel {
             display: none;
             background: var(--card-bg);
@@ -822,7 +803,6 @@
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            margin-bottom: 6px;
         }
     </style>
 </head>
@@ -845,14 +825,12 @@
 
     <div class="container">
 
+        <!-- Panel Creador -->
         <div id="admin-panel" class="admin-panel">
-            <h3>⚡ Agregar Contenido & Gestión de Archivos</h3>
+            <h3>⚡ Agregar Nuevo Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
-                <option value="pregunta">Banco de Preguntas (1x1)</option>
-                <option value="flashcard">Flashcards de Memoria (1x1)</option>
-                <option value="upload_preguntas">📂 Subir Preguntas (JSON o PDF, Múltiples)</option>
-                <option value="upload_flashcards">⚡ Subir Flashcards (JSON o PDF, Múltiples)</option>
-                <option value="upload_pdf_general">📄 Subir PDF a YuliNotas (Temario general)</option>
+                <option value="pregunta">Pregunta Caso Clínico</option>
+                <option value="flashcard">Flashcard</option>
             </select>
 
             <select id="admin-subject">
@@ -865,9 +843,10 @@
 
             <div id="admin-fields"></div>
 
-            <button id="admin-save-btn" onclick="saveAdminContent()">Guardar Contenido</button>
+            <button onclick="saveAdminContent()">Guardar Contenido</button>
         </div>
 
+        <!-- 1. MATERIAS -->
         <div class="section-title">Materia</div>
         <div class="subjects-grid">
             <button class="subject-btn btn-gineco" onclick="selectSubject('gineco')">Ginecología</button>
@@ -877,14 +856,14 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
+        <!-- 2. PESTAÑAS (Madera ubicada después de Infografías) -->
         <div class="tabs-nav">
-            <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Banco de Preguntas</button>
+            <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
             <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
             <button class="tab-btn btn-tab-madera" onclick="selectTab('madera')">Madera</button>
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
             <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
-            <button class="tab-btn btn-tab-ga" onclick="selectTab('ga')">GA</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
             <button class="tab-btn btn-tab-stats" onclick="selectTab('stats')">Métricas</button>
         </div>
@@ -895,6 +874,7 @@
         </div>
     </div>
 
+    <!-- Modal Visor Pantalla Completa con Pinch-to-Zoom y Pan (Desplazamiento) -->
     <div id="image-modal" class="image-modal-overlay">
         <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
         <button class="modal-reset-zoom-btn" onclick="resetZoom(event)">↺ Tamaño Normal</button>
@@ -902,7 +882,9 @@
         
         <button class="modal-nav-btn modal-nav-prev" onclick="prevModalItem(event)">◄</button>
         
-        <div class="modal-content-container" id="modal-content-container"></div>
+        <div class="modal-content-container" id="modal-content-container">
+            <!-- Contenido dinámico con soporte multitáctil -->
+        </div>
         
         <button class="modal-nav-btn modal-nav-next" onclick="nextModalItem(event)">►</button>
     </div>
@@ -916,29 +898,7 @@
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
         };
 
-        const gaData = {
-            gineco: [
-                { title: "Manejo inicial de SUA (Sangrado Uterino Anormal)", desc: "Descartar embarazo con fracción beta. Evaluar estructurales mediante ECO pélvico (Palpación/USG). Primera línea no hormonal: AINES (ácido mefenámico) o antifibrinolíticos (ácido tranexámico)." },
-                { title: "Diagnóstico diferencial de Amenorrea Secundaria", desc: "1. Prueba de embarazo. 2. Perfil hormonal (TSH y Prolactina). 3. Prueba de deprivación con acetato de medroxiprogesterona. Si hay sangrado = anovulación; si no hay sangrado = evaluar estrógenos/progestágenos o alteración anatómica." }
-            ],
-            obste: [
-                { title: "Clasificación y Manejo de Trastornos Hipertensivos del Embarazo", desc: "HTA gestacional vs Preeclampsia (≥140/90 mmHg posterior a la semana 20 + proteinuria o daño a órgano blanco). Criterios de severidad: ≥160/110 mmHg, síntomas vasomotores, elevación de transaminasas o trombocitopenia. Tratamiento de primera línea crisis: Hidralazina IV, Labetalol o Nifedipina VO. Profilaxis convulsiva: Sulfato de Magnesio (Esquema Zuspan o Pritchard)." },
-                { title: "Manejo de Hemorragia Postparto (HPP)", desc: "Causas (Las 4 T): Tono (atonía uterina, 70%), Trauma (laceraciones), Tijera/Tejido (retención placentaria), Trombina (coagulopatía). Primera línea: Masaje uterino bimanual + Oxiocina IV/IM + vaciamiento vesical." }
-            ],
-            interna: [
-                { title: "Abordaje del Síndrome Coronario Agudo (SCA)", desc: "Realizar EKG en los primeros 10 minutos. Evaluar elevación del segmento ST (IAMCEST vs IAMSEST). Manejo inicial antiisquémico y doble antiagregación (Aspirina + Clopidogrel / Ticagrelor) a menos que esté contraindicado." },
-                { title: "Criterios Diagnósticos Cetoacidosis Diabética", desc: "Glucemia > 250 mg/dL, pH venoso/arterial < 7.3, Bicarbonato sérico < 15 mEq/L, Anión gap elevado y presencia de cetonemia/cetonuria positiva. Pilar del manejo: Hidratación agresiva con solución salina 0.9% e Insulina rápida en infusión continua." }
-            ],
-            cirugia: [
-                { title: "Escala de Alvarado para Apendicitis Aguda", desc: "Migración del dolor (1), Anorexia (1), Náusea/Vómita (1), Dolor en fosa ilíaca derecha (2), Rebote positivo (1), Elevación térmica (1), Leucocitosis (2), Desviación izquierda (1). Puntaje ≥ 7 sugiere alta probabilidad quirúrgica." },
-                { title: "Manejo de Abdomen Agudo / Perforación", desc: "Ayuno, sonda nasogástrica a derivación, reposición hidroelectrolítica agresiva, analgesia normada y cobertura antibiótica de amplio espectro de origen empírico enfocada a flora mixta entérica." }
-            ],
-            pedia: [
-                { title: "Reanimación Neonatal Básica", desc: "Pasos iniciales en los primeros 30 segundos: Proveer calor, despejar vía aérea si es necesario (aspirar boca antes que nariz), secar y estimular. Evaluar frecuencia cardiaca y respiración. Si FC < 100 lpm o respiración ineficaz: iniciar VPP con aire ambiental o FiO2 adecuada." },
-                { title: "Deshidratación en EDA (Plan A, B y C)", desc: "Plan A (sin deshidratación): continuar alimentación habitual, líquidos a libre demanda y Vida Suero Oral posterior a cada evacuación. Plan B (deshidratación moderada): VSO 50-100 ml/kg fraccionado en 4 horas. Plan C (deshidratación grave con choque): Carga con solución fisiológica 0.9% a 20-30 ml/kg en etapa inicial." }
-            ]
-        };
-
+        // TEMARIO LITERAL COMPLETO ORIGINAL TEMA POR TEMA
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
@@ -986,9 +946,107 @@
                     "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
-            cirugia: { flashcards: [], preguntas: [], temario: ["Abdomen agudo", "Apendicitis aguda", "Patología biliar"] },
-            interna: { flashcards: [], preguntas: [], temario: ["Insuficiencia cardíaca", "Hipertensión arterial sistémica", "Diabetes mellitus"] },
-            pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "Bronquiolitis aguda", "Deshidratación en EDA"] }
+            cirugia: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Hepatoblastoma", "Carcinoma hepatocelular", "Abdomen agudo", "Apendicitis aguda", "Patología biliar", 
+                    "Colecistitis crónica litiásica", "Coledocolitiasis", "Colangitis", "Enfermedad diverticular", 
+                    "Trastornos motores del esófago", "Acalasia", "Espasmo esofágico difuso", "Enfermedad por reflujo gastroesofágico (ERGE)", 
+                    "Esófago de Barret", "Dispepsia funcional", "Carcinoma epidermoide de esófago", "Gastritis", "Úlcera péptica", 
+                    "Enfermedad ulcerosa péptica", "Úlcera péptica perforada", "Síndrome de Zollinger Ellison", "Cáncer gástrico (adenocarcinoma)", 
+                    "Obesidad y cirugía bariátrica", "Obesidad", "Hernia umbilical", "Hernias inguinales y femorales", "Hernia ventral", 
+                    "Esplenectomía", "Pancreatitis aguda", "Pancreatitis crónica", "Adenocarcinoma de páncreas", "Enfermedad arterial periférica", 
+                    "Oclusión arterial aguda", "Insuficiencia venosa crónica", "Mordedura de serpiente", "Mordedura por arañas", 
+                    "Intoxicación por picadura de alacrán", "Picadura por himenópteros", "Patología perianal: enfermedad hemorroidal", 
+                    "Absceso anal", "Fistula anal", "Fisura anal", "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", 
+                    "Cáncer de colon", "Tumor de intestino delgado", "Trasplante de hígado", "Quemaduras", "Quemaduras por frío", 
+                    "Úlceras por presión", "Derrame pleural", "Infección de sitio quirúrgico", "Dehiscencia de herida quirúrgica", 
+                    "ATLS", "Trauma de tórax", "Trauma de abdomen", "Traumatismo craneoencefálico", "Hematoma epidural", "Hematoma subdural", 
+                    "Contusiones y hematomas intracerebrales", "Herniación uncal", "Neuralgia del trigémino", "Síndrome de hipertensión intracraneal", 
+                    "Síndrome de herniación cerebral", "Síndrome de hipertensión intracraneal benigna", "Hidrocefalia", 
+                    "Hidrocefalia crónica del adulto", "Absceso cerebral", "Tumores cerebrales", "Blefaritis", "Chalazión y orzuelo", 
+                    "Ectoprión", "Triquiasis", "Endoprión", "Síndrome de ojo seco", "Dacriocistitis", "Estenosis congénita de la vía lagrimal", 
+                    "Retinopatía diabética (RD)", "Retinopatía hipertensiva", "Oclusión venosa de la retina", 
+                    "Desprendimiento de retina regmatógeno no traumático", "Desprendimiento de retina seroso", "Ambliopía", 
+                    "Estrabismo concomitante convergente", "Parálisis oculomotoras", "Glaucoma primario de ángulo abierto", 
+                    "Glaucoma de ángulo estrecho", "Glaucoma congénito", "Uveitis", "Catarata", "Catarata congénita", "Conjuntivitis", 
+                    "Pterigión", "Queratitis infecciosa", "Queratocono", "Escleritis", "Episcleritis", "Trauma ocular", "Campimetría", 
+                    "Neuritis óptica", "Retinopatía del prematuro", "Hiperplasia prostática benigna", "Cáncer de próstata", 
+                    "Litiasis renal", "Cólico renoureteral", "Bacteriuria asintomática e infección del tracto urinario en el embarazo", 
+                    "Cáncer renal", "Cáncer de vejiga", "Infección de vías urinarias", "Cáncer de testículo", "Trasplante renal", 
+                    "Vértigo", "Vértigo postural paroxístico benigno (VPPB)", "Enfermedad de Ménière", "Neuronitis vestibular", 
+                    "Neurinoma del acústico", "Hipoacusia", "Hipoacusia del recién nacido", "Ototoxicidad", "Fracturas faciales", 
+                    "Fracturas del peñasco", "Fracturas nasales", "Fracturas mandibulares", "Parálisis facial", "Epistaxis", 
+                    "Rinitis alérgica", "Rinitis no alérgica", "Sinusitis aguda", "Pólipos nasales", "Patología maligna de senos paranasales", 
+                    "Carcinoma epidermoide de laringe", "Patología benigna de cuerdas vocales", "Papilomatosis laringea juvenil", 
+                    "Faringitis", "Absceso profundo de cuello", "Síndrome de apnea obstructiva del sueño", "Otitis externa aguda", 
+                    "Otoesclerosis", "Otitis media", "Angiofibroma juvenil", "Artritis séptica en niños y adultos", "Fracturas de miembro superior", 
+                    "Fracturas intracapsulares del extremo proximal del fémur", "Osteosarcoma", "Sarcoma de Ewing", "Codo de niñera", 
+                    "Síndrome del tunel del carpo", "Lesiones ligamentarias de rodilla", "Síndrome doloroso de hombro", 
+                    "Fracturas de miembro inferior", "Patologías de columna", "Esguince de tobillo"
+                ] 
+            },
+            interna: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Insuficiencia cardíaca", "Bradiarritmias", "Taquiarritmias", "Fibrilación auricular", "Síndrome coronario agudo", 
+                    "Valvulopatías", "Cardiomiopatías", "Pericarditis aguda", "Hipertensión arterial sistémica", "Basic Life Support", 
+                    "Advanced Cardiovascular Life Support", "Enfermedades micóticas", "Toxicodermias", "Eritema multiforme mayor o síndrome de Stevens Jonhson", 
+                    "Acné", "Alopecia androgénica", "Alopecia areata", "Psoriasis", "Tumores cutáneos benignos", "Carcinoma basocelular", 
+                    "Melanoma maligno", "Enfermedad diarreica aguda en adultos", "Síndrome de colon irritable", "Enfermedad inflamatoria intestinal", 
+                    "Alteraciones de metabolismo bilirrubina", "Abscesos hepáticos", "Absceso amebiano", "Hepatitis aguda", 
+                    "Hemorragia digestiva alta por varices esofágicas", "Hipertiroidismo o tirotoxicosis", "Nódulo tiroideo", "Tiroiditis", 
+                    "Sindrome de Cushing", "Insuficiencia suprarrenal", "Hiperaldosteronismo", "Feocromocitoma", "Diabetes mellitus", 
+                    "Cetoacidosis diabética", "Síndrome hiperglucémico hiperosmolar", "Pie diabético", "Anemia", "Leucemia mieloide crónica", 
+                    "Leucemia linfática crónica (LLC)", "Leucemias agudas", "Linfoma no Hodgkin", "Linfoma Hodgkin", "Policitemia vera", 
+                    "Trombocitemia", "Mieloma múltiple", "Alteraciones de la coagulación", "Trombocitopenia", "Insuficiencia renal prerenal", 
+                    "IRA parenquimatosa", "IRA postrenal", "Enfermedad renal crónica", "Síndrome nefrítico", "Síndrome nefrótico", 
+                    "Glomerulonefritis", "Nefropatía diabética", "Lupus eritematoso sistémico", "Vasculitis", "Enfermedad de Goodpasture", 
+                    "Trastornos tubulares", "Microangiopatías trombóticas", "Enfermedad pulmonar obstructiva crónica", "Exacerbaciones EPOC", 
+                    "Enfermedad tromboembólica venosa", "Cáncer de pulmón", "Asma en adulto", "Enfermedades intersticiales", "Sarcoidosis", 
+                    "Panarteritis nodosa clásica", "Enfermedad de Behcet", "Artropatía por cristales", "Artritis reumatoide", 
+                    "Factor reumatoide y ANA negativos", "Espondilitis anquilosante", "Artrosis", "Demencias", "Alzheimer", 
+                    "Enfermedad vascular cerebral", "Hemorragia intraparenquimatosa", "Hemorragia subaracnoidea", "Síndrome de Guillain-Barré", 
+                    "Miastenia gravis", "Crisis miasténica", "Cefaleas", "Endocarditis infecciosa", "Tuberculosis pulmonar", "Neumonía", 
+                    "Neumoconiosis", "Tétanos", "Botulismo", "Difteria", "Rabia", "Enfermedad gonocócica", "Chlamydia trachomatis", 
+                    "Sífilis", "Verrugas genitales", "Neoplasia intraepitelial anal", "Tumor de Buschke-Löwenstein", "Borreliosis de Lyme", 
+                    "Leptospirosis", "Carbunco", "Tularemia", "Erisipeloide", "Peste", "Virus de Inmunodeficiencia Humana VIH/sida", 
+                    "Paludismo", "Tripanosomiasis", "Leishmaniasis", "Rickettsia", "Brucelosis", "Nocardiosis", "Actinomicosis", 
+                    "Intoxicación por agroquímicos", "Intoxicación por opiáceos y benzodiacepinas", "Intoxicación por metales pesados", 
+                    "Intoxicación etílica", "Intoxicación por acetaminofén (paracetamol)", "Intoxicación por CO", "Fiebre reumática", 
+                    "Dengue", "Chikungunya", "Zika", "Covid-19", "Herpes zoster", "Viruela del mono", "Peritonitis infecciosa", "Lepra", 
+                    "Sepsis y choque séptico", "Dislipidemias", "Golpe de calor", "Depresión mayor", "Ansiedad", "Esquizofrenia", "Trastornos alimentarios"
+                ] 
+            },
+            pedia: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Recién nacido sano", "Reanimación neonatal", "Patología respiratoria neonatal", 
+                    "Síndrome de dificultad respiratoria o enfermedad membrana hialina", "Taquipnea transitoria del recién nacido", 
+                    "Síndrome de aspiración meconial", "Enfermedad hemorrágica del recién nacido", "Hipoglucemia neonatal", 
+                    "Atresia esofágica", "Atresia de coanas", "Gastrosquisis y onfalocele", "Divertículo de Meckel", "Hernia diafragmática", 
+                    "Enterocolitis necrotizante", "Sepsis neonatal", "Recién nacido con fiebre y sin evidencia de infección", 
+                    "Encefalopatía hipóxico-isquémica", "Ictericia neonatal", "TORCH", "Control y seguimiento de la salud en la niña y el niño menor de 5 años", 
+                    "Otitis media aguda", "Infección de vías respiratorias altas", "Rinosinusitis aguda", "Vacunas", "Desnutrición", 
+                    "Raquitismo carencial", "Neumonía bacteriana adquirida en la comunidad en menores de 18 Años", 
+                    "Síndrome de muerte súbita del lactante (SMSL)", "Bronquiolitis aguda", "Sibilante recurrente", "Asma", "Fibrosis quística", 
+                    "Enfermedad por reflujo gastroesofágico", "Invaginación intestinal", "Estenosis hipertrófica del píloro", "Talla baja", 
+                    "Pubertad", "Sobrepeso y obesidad", "Mal descenso testicular", "Escroto agudo", "Reflujo vesico-ureteral", 
+                    "Infección de vías urinarias <18 años", "Enfermedades exantemáticas", "Enfermedad de Kawasaki", "Diarrea aguda", 
+                    "VIH en el binomio", "Epilepsia y crisis febriles", "Parálisis braquial", "Infecciones del SNC", "Encefalitis", 
+                    "Displasia del desarrollo de la cadera", "Artritis séptica", "Sinovitis transitoria", "Enfermedad de Legg Calve-Perthes", 
+                    "Epifisiólisis femoral proximal", "Osteosarcoma", "Sarcoma de Ewing", "Osteocondroma", "Osteoma osteoide", 
+                    "Pronación dolorosa/codo de niñera", "Enfermedad Osgood Schlatter/apofisitis de tracción de rodilla", "Dermatitis atópica", 
+                    "Dermatitis seborreica", "Dermatitis del área del pañal", "Infecciones cutánea bacterianas", "Impétigo", "Escabiasis", 
+                    "Pediculosis capitis", "Maltrato infantil", "Neuroblastoma", "Tumor de Wilms", "Trastorno por déficit de atención e hiperactividad (TDAH)", 
+                    "Parálisis cerebral infantil (PCI)", "Diarrea crónica", "Alergia a la proteína de la leche de vaca", "Intolerancia a la lactosa en niños", 
+                    "Enfermedad celíaca", "Síndrome de Down", "Síndrome de Turner", "Cardiopatias congenitas", "Persistencia del conducto arterioso", 
+                    "Retinoblastoma", "Ingesta de causticos", "Metabolismo y enfermedades pediátricas", "Lactancia materna"
+                ] 
+            }
         };
 
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
@@ -1011,11 +1069,10 @@
         let currentQuestionIndex = 0;
         let activeCardFilter = 'all';
 
-        let randomizedQuestions = [];
-        let randomizedFlashcards = [];
-
         let currentModalList = [];
         let currentModalIndex = 0;
+
+        // Variables de Control para Zoom Táctil (Pinch-to-zoom & Pan con dos dedos)
         let scale = 1;
         let pointX = 0;
         let pointY = 0;
@@ -1030,60 +1087,62 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeImageModal();
             const modal = document.getElementById('image-modal');
-            if (modal && modal.classList.contains('active')) {
+            if (modal.classList.contains('active')) {
                 if (e.key === 'ArrowRight') nextModalItem();
                 if (e.key === 'ArrowLeft') prevModalItem();
             }
         });
 
+        // Configuración de Eventos Touch para Pinch-to-Zoom y Desplazamiento Fluido en Pantalla Completa
         const modalOverlay = document.getElementById('image-modal');
-        if (modalOverlay) {
-            modalOverlay.addEventListener('touchstart', (e) => {
-                const img = document.getElementById('modal-active-img');
-                if (!img) return;
+        
+        modalOverlay.addEventListener('touchstart', (e) => {
+            const img = document.getElementById('modal-active-img');
+            if (!img) return;
 
-                if (e.touches.length === 2) {
-                    isPanning = false;
-                    initialDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                } else if (e.touches.length === 1 && scale > 1) {
-                    isPanning = true;
-                    startX = e.touches[0].clientX - pointX;
-                    startY = e.touches[0].clientY - pointY;
-                }
-            }, { passive: false });
+            if (e.touches.length === 2) {
+                // Dos dedos (índice y medio): Iniciar Pinch Zoom
+                isPanning = false;
+                initialDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            } else if (e.touches.length === 1 && scale > 1) {
+                // Un dedo para arrastrar (pan) solo si se hizo zoom previamente
+                isPanning = true;
+                startX = e.touches[0].clientX - pointX;
+                startY = e.touches[0].clientY - pointY;
+            }
+        }, { passive: false });
 
-            modalOverlay.addEventListener('touchmove', (e) => {
-                const img = document.getElementById('modal-active-img');
-                if (!img) return;
+        modalOverlay.addEventListener('touchmove', (e) => {
+            const img = document.getElementById('modal-active-img');
+            if (!img) return;
 
-                if (e.touches.length === 2) {
-                    e.preventDefault();
-                    const currentDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    if (initialDistance > 0) {
-                        let factor = currentDistance / initialDistance;
-                        scale = Math.min(Math.max(1, scale * factor), 5);
-                        initialDistance = currentDistance;
-                        updateImageTransform(img);
-                    }
-                } else if (e.touches.length === 1 && isPanning && scale > 1) {
-                    e.preventDefault();
-                    pointX = e.touches[0].clientX - startX;
-                    pointY = e.touches[0].clientY - startY;
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const currentDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                if (initialDistance > 0) {
+                    let factor = currentDistance / initialDistance;
+                    scale = Math.min(Math.max(1, scale * factor), 5); // Zoom entre 1x y 5x
+                    initialDistance = currentDistance;
                     updateImageTransform(img);
                 }
-            }, { passive: false });
+            } else if (e.touches.length === 1 && isPanning && scale > 1) {
+                e.preventDefault();
+                pointX = e.touches[0].clientX - startX;
+                pointY = e.touches[0].clientY - startY;
+                updateImageTransform(img);
+            }
+        }, { passive: false });
 
-            modalOverlay.addEventListener('touchend', (e) => {
-                if (e.touches.length < 2) initialDistance = 0;
-                if (e.touches.length === 0) isPanning = false;
-            });
-        }
+        modalOverlay.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) initialDistance = 0;
+            if (e.touches.length === 0) isPanning = false;
+        });
 
         function updateImageTransform(img) {
             img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
@@ -1130,21 +1189,6 @@
             return combined;
         }
 
-        function prepareRandomizedLists() {
-            const data = getData();
-            const subjectData = data[currentSubject] || { flashcards: [], preguntas: [] };
-            
-            randomizedQuestions = shuffleArray(subjectData.preguntas || []);
-            currentQuestionIndex = 0;
-
-            let cards = subjectData.flashcards || [];
-            if (activeCardFilter === 'hard') {
-                cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-            }
-            randomizedFlashcards = shuffleArray(cards);
-            currentCardIndex = 0;
-        }
-
         function getActiveTopicsForCurrentTab() {
             const data = getData();
             const rawTopics = (data[currentSubject] || {}).temario || ["General"];
@@ -1165,17 +1209,16 @@
 
         function updateCornerBadge() {
             const badge = document.getElementById('corner-badge');
-            if (!badge) return;
             const data = getData();
             const subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [] };
 
             if (currentTab === 'preguntas') {
-                const total = randomizedQuestions.length;
+                const total = (subjectData.preguntas || []).length;
                 badge.textContent = total > 0 ? `${(currentQuestionIndex % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'madera') {
                 badge.textContent = `${countTopicItems(maderaFiles, currentSubject)} Madera`;
             } else if (currentTab === 'flashcards') {
-                const total = randomizedFlashcards.length;
+                const total = (subjectData.flashcards || []).length;
                 badge.textContent = total > 0 ? `${(currentCardIndex % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'resumenes') {
                 badge.textContent = `${countTopicItems(infographicImages, currentSubject)} Infografías`;
@@ -1183,9 +1226,6 @@
                 badge.textContent = `${countTopicItems(gpcImages, currentSubject)} Esquemas`;
             } else if (currentTab === 'yulinotas') {
                 badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
-            } else if (currentTab === 'ga') {
-                const list = gaData[currentSubject] || [];
-                badge.textContent = `${list.length} GA`;
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 5;
                 let completedSubjectChecks = 0;
@@ -1207,16 +1247,16 @@
         function selectSubject(subjectKey) {
             currentSubject = subjectKey;
             localStorage.setItem('yn_current_subject', subjectKey);
+            currentCardIndex = 0;
+            currentQuestionIndex = 0;
             
             const config = subjectsConfig[subjectKey];
             if (!isDarkMode) document.documentElement.style.setProperty('--bg-current', config.bg);
             document.documentElement.style.setProperty('--primary-color', config.color);
             
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.querySelector(`.btn-${subjectKey}`);
-            if (activeBtn) activeBtn.classList.add('active');
+            document.querySelector(`.btn-${subjectKey}`).classList.add('active');
             
-            prepareRandomizedLists();
             renderContent();
         }
 
@@ -1225,24 +1265,18 @@
             localStorage.setItem('yn_current_tab', tabKey);
             
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            const activeTabBtn = document.querySelector(`.btn-tab-${tabKey}`);
-            if (activeTabBtn) activeTabBtn.classList.add('active');
-            
-            if (tabKey === 'preguntas' || tabKey === 'flashcards') {
-                prepareRandomizedLists();
-            }
+            document.querySelector(`.btn-tab-${tabKey}`).classList.add('active');
             renderContent();
         }
 
         function setCardFilter(filter) {
             activeCardFilter = filter;
-            prepareRandomizedLists();
+            currentCardIndex = 0;
             renderContent();
         }
 
         function toggleTopicGroup(headerElem) {
             const body = headerElem.nextElementSibling;
-            if (!body) return;
             if (body.style.display === 'none' || body.style.display === '') body.style.display = 'block';
             else body.style.display = 'none';
         }
@@ -1277,7 +1311,7 @@
                 if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
                 if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
 
-                if (file.type === 'application/pdf' || file.name.endsWith('.docx') || file.name.endsWith('.pdf')) {
+                if (file.type === 'application/pdf') {
                     targetStorage[currentSubject][topicName].push({
                         isPdf: true,
                         name: file.name,
@@ -1317,21 +1351,19 @@
             currentModalList = itemsList;
             currentModalIndex = startIndex;
             renderModalContent();
-            const modal = document.getElementById('image-modal');
-            if (modal) modal.classList.add('active');
+            document.getElementById('image-modal').classList.add('active');
         }
 
         function renderModalContent() {
             const container = document.getElementById('modal-content-container');
             const badge = document.getElementById('modal-counter-badge');
-            if (!container) return;
             
             if (currentModalList.length === 0) {
                 closeImageModal();
                 return;
             }
 
-            if (badge) badge.textContent = `${currentModalIndex + 1} / ${currentModalList.length}`;
+            badge.textContent = `${currentModalIndex + 1} / ${currentModalList.length}`;
             const currentItem = currentModalList[currentModalIndex];
             const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
 
@@ -1362,15 +1394,14 @@
         }
 
         function closeImageModal() {
-            const modal = document.getElementById('image-modal');
-            if (modal) modal.classList.remove('active');
+            document.getElementById('image-modal').classList.remove('active');
         }
 
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-            let inputAccept = type === 'pdf' ? 'application/pdf,.docx' : (type === 'madera' ? 'application/pdf,.docx,image/*' : 'image/*');
-            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / DOCX / Imagen)' : '+ Subir YuliNotas (PDF / DOCX)'));
+            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
+            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : '+ Subir YuliNotas (PDF)'));
 
             return topics.map((topic, tIdx) => {
                 const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
@@ -1391,7 +1422,7 @@
                                                 <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
                                                 <div class="pdf-card" style="border:none;">
                                                     <div class="pdf-card-header">
-                                                        <div class="pdf-card-title">${item.name || 'Documento PDF/DOCX'} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${item.date || ''})</span></div>
+                                                        <div class="pdf-card-title">${item.name || 'Documento PDF'} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${item.date || ''})</span></div>
                                                         <div class="pdf-card-actions">
                                                             <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${item.data}')">↗ Abrir</button>
                                                             <button class="pdf-btn pdf-btn-open" style="background:#2E7D32;" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Max</button>
@@ -1441,15 +1472,23 @@
         function renderContent() {
             updateCornerBadge();
             const area = document.getElementById('content-area');
-            if (!area) return;
+            const data = getData();
+            const subjectData = data[currentSubject];
 
             if (currentTab === 'preguntas') {
-                if (randomizedQuestions.length === 0) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas de simulación o casos clínicos en esta materia. Usa el botón "+ Creador" para agregarlas.</p>`;
+                const questionsList = subjectData.preguntas || [];
+                if (questionsList.length === 0) {
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas registradas en esta materia.</p>`;
                     return;
                 }
 
-                const q = randomizedQuestions[currentQuestionIndex % randomizedQuestions.length];
+                const sortedQuestions = [...questionsList].sort((a, b) => {
+                    const weightA = (questionSchedule[a.id] || {}).weight || 0;
+                    const weightB = (questionSchedule[b.id] || {}).weight || 0;
+                    return weightB - weightA;
+                });
+
+                const q = sortedQuestions[currentQuestionIndex % sortedQuestions.length];
                 let rawList = q.rawOptions || q.options || [];
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
@@ -1466,29 +1505,32 @@
                             <button class="option-btn" onclick="checkAnswer(this, ${idx}, ${correctNewIndex}, '${q.id}')">${String.fromCharCode(65 + idx)})${opt}</button>
                         `).join('')}
                         <div id="explanation-box" class="explanation-box">
-                            <strong>Retroalimentación del Caso Clínico:</strong>
+                            <strong>Retroalimentación Desglosada:</strong>
                             <div style="margin-bottom:8px;">${q.explanation || ''}</div>
-                            <strong style="display:block; margin-top:8px;">Descarte Independiente de Reactivos:</strong>
+                            <strong style="display:block; margin-top:8px;">Descarte de Opciones:</strong>
                             ${discardHtml}
-                            <button class="next-q-btn" onclick="nextQuestion()">Siguiente Reactivo ➔</button>
+                            <button class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                         </div>
                     </div>
                 `;
             } else if (currentTab === 'madera') {
                 area.innerHTML = renderTopicGroupedView('madera');
             } else if (currentTab === 'flashcards') {
-                if (randomizedFlashcards.length === 0) {
+                let cards = subjectData.flashcards || [];
+                if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
+
+                if (cards.length === 0) {
                     area.innerHTML = `
                         <div class="flashcard-filter-bar">
                             <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
                             <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
                         </div>
-                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay tarjetas de memorización activa (high-yield) registradas bajo este filtro.</p>
+                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
                     `;
                     return;
                 }
 
-                const card = randomizedFlashcards[currentCardIndex % randomizedFlashcards.length];
+                const card = cards[currentCardIndex % cards.length];
                 const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
                 const currentDiff = cardDifficulty[card.id] || 'normal';
 
@@ -1506,7 +1548,7 @@
                             <div class="flashcard-back">${card.a}</div>
                         </div>
                     </div>
-                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso activo: ${cardAnki.nextDate}</p>
+                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
                     <div class="anki-controls">
                         <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
                         <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
@@ -1519,21 +1561,7 @@
                 area.innerHTML = renderTopicGroupedView('gpc');
             } else if (currentTab === 'yulinotas') {
                 area.innerHTML = renderTopicGroupedView('pdf');
-            } else if (currentTab === 'ga') {
-                const list = gaData[currentSubject] || [];
-                area.innerHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 4px;">
-                        ${list.map(item => `
-                            <div class="ga-card">
-                                <div class="ga-title">💡 ${item.title}</div>
-                                <div class="ga-body">${item.desc}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
             } else if (currentTab === 'temario') {
-                const data = getData();
-                const subjectData = data[currentSubject];
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
                 area.innerHTML = subjectData.temario.map((t, idx) => {
@@ -1562,7 +1590,7 @@
                 area.innerHTML = `
                     <div class="stats-dashboard">
                         <div class="stat-card-box">
-                            <h4>Precisión en Banco de Preguntas</h4>
+                            <h4>Precisión en Preguntas</h4>
                             <p style="font-size: calc(20px * var(--font-scale)); font-weight: 800; margin: 4px 0;">${quizAccuracy}% Correctas</p>
                             <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted);">${quizStats.correct} aciertos | ${quizStats.incorrect} fallos (${totalQuiz} respondidas)</p>
                             <div class="progress-bar-container">
@@ -1570,10 +1598,10 @@
                             </div>
                         </div>
                         <div class="stat-card-box">
-                            <h4>Distribución de Repetición Espaciada (Flashcards)</h4>
-                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">Tarjetas Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Tarjetas Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Tarjetas Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
+                            <h4>Distribución de Dificultad (Flashcards)</h4>
+                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
+                            <p style="font-size: calc(12px * var(--font-scale));">Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
+                            <p style="font-size: calc(12px * var(--font-scale));">Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
                         </div>
                     </div>
                 `;
@@ -1611,255 +1639,30 @@
 
         function toggleAdminPanel() {
             const panel = document.getElementById('admin-panel');
-            if (panel) {
-                panel.classList.toggle('active');
-                changeAdminFields();
-            }
+            panel.classList.toggle('active');
+            changeAdminFields();
         }
 
         function changeAdminFields() {
-            const typeElem = document.getElementById('admin-type');
+            const type = document.getElementById('admin-type').value;
             const container = document.getElementById('admin-fields');
-            const saveBtn = document.getElementById('admin-save-btn');
-            if (!typeElem || !container) return;
-
-            const type = typeElem.value;
 
             if (type === 'flashcard') {
-                if (saveBtn) saveBtn.style.display = 'block';
                 container.innerHTML = `
-                    <input type="text" id="af-q" placeholder="Término / Pregunta (High-Yield)">
-                    <textarea id="af-a" placeholder="Respuesta / Explicación de alta rendimiento"></textarea>
+                    <input type="text" id="af-q" placeholder="Pregunta de la Flashcard">
+                    <textarea id="af-a" placeholder="Respuesta clave"></textarea>
                 `;
             } else if (type === 'pregunta') {
-                if (saveBtn) saveBtn.style.display = 'block';
                 container.innerHTML = `
-                    <textarea id="af-q" placeholder="Caso clínico / Reactivo tipo ENARM"></textarea>
+                    <textarea id="af-q" placeholder="Caso clínico / Pregunta"></textarea>
                     <input type="text" id="af-o0" placeholder="Opción Correcta">
                     <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
                     <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
                     <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" placeholder="Explicación clínica general"></textarea>
-                    <textarea id="af-disc" placeholder="Descarte de opciones independientes (A:..., B:...)"></textarea>
-                `;
-            } else if (type === 'upload_preguntas' || type === 'upload_flashcards') {
-                if (saveBtn) saveBtn.style.display = 'none';
-                container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube tus archivos en formato JSON o PDF:</p>
-                    <input type="file" id="bulk-file-input" accept=".json,application/pdf" multiple onchange="processFileUpload(event, '${type === 'upload_preguntas' ? 'preguntas' : 'flashcards'}')">
-                `;
-            } else if (type === 'upload_pdf_general') {
-                if (saveBtn) saveBtn.style.display = 'none';
-                container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube tu archivo PDF directamente a la pestaña YuliNotas de la materia seleccionada:</p>
-                    <input type="file" id="bulk-pdf-input" accept="application/pdf,.docx" onchange="processGeneralPdfUpload(event)">
+                    <textarea id="af-exp" placeholder="Explicación general"></textarea>
+                    <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
                 `;
             }
-        }
-
-        async function extractTextFromPdf(file) {
-            try {
-                if (typeof pdfjsLib === 'undefined') return "";
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                let fullText = "";
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(" ");
-                    fullText += pageText + "\n";
-                }
-                return fullText;
-            } catch (err) {
-                console.error("Error al extraer texto del PDF:", err);
-                return "";
-            }
-        }
-
-        function parseTextToFlashcards(text) {
-            let results = [];
-            let lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-            let currentQ = "";
-            let currentA = "";
-
-            lines.forEach(line => {
-                if (line.includes('?') || line.toLowerCase().startsWith('¿')) {
-                    if (currentQ && currentA) {
-                        results.push({ q: currentQ, a: currentA, tag: 'normal' });
-                        currentA = "";
-                    }
-                    currentQ = line;
-                } else if (currentQ) {
-                    currentA += (currentA ? " " : "") + line;
-                }
-            });
-            if (currentQ && currentA) {
-                results.push({ q: currentQ, a: currentA, tag: 'normal' });
-            }
-
-            if (results.length === 0 && lines.length >= 2) {
-                for (let i = 0; i < lines.length - 1; i += 2) {
-                    results.push({ q: lines[i], a: lines[i+1], tag: 'normal' });
-                }
-            }
-            return results;
-        }
-
-        function parseTextToQuestions(text) {
-            let results = [];
-            let blocks = text.split(/(?=Pregunta|\d+\.\s+[A-ZÁÉÍÓÚ])/i);
-            
-            blocks.forEach((block) => {
-                if (!block.trim()) return;
-                let lines = block.split('\n').map(l => l.trim()).filter(Boolean);
-                if (lines.length < 3) return;
-
-                let qText = lines[0];
-                let options = [];
-                let explanation = "Extraído automáticamente desde PDF.";
-
-                for (let i = 1; i < lines.length; i++) {
-                    let l = lines[i];
-                    if (/^[a-d\)\.-]\s+/i.test(l) || /^[A-D]\s/.test(l)) {
-                        options.push(l.replace(/^[a-d\)\.-]\s*/i, ''));
-                    } else if (l.toLowerCase().includes('resp') || l.toLowerCase().includes('explica')) {
-                        explanation = l;
-                    }
-                }
-
-                if (options.length < 2) {
-                    options = lines.slice(1, 5);
-                }
-
-                if (qText && options.length >= 2) {
-                    results.push({
-                        q: qText,
-                        rawOptions: options.slice(0, 4),
-                        correctText: options[0],
-                        explanation: explanation,
-                        discardExplanation: options.map(opt => `<b>Opción:</b> ${opt}`)
-                    });
-                }
-            });
-
-            return results;
-        }
-
-        async function processFileUpload(e, targetCategory) {
-            const files = e.target.files;
-            if (!files || files.length === 0) return;
-
-            const subjectElem = document.getElementById('admin-subject');
-            const sub = subjectElem ? subjectElem.value : 'gineco';
-            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
-
-            let processedCount = 0;
-
-            for (let fIdx = 0; fIdx < files.length; fIdx++) {
-                const file = files[fIdx];
-                
-                if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-                    const extractedText = await extractTextFromPdf(file);
-                    if (targetCategory === 'flashcards') {
-                        const parsedCards = parseTextToFlashcards(extractedText);
-                        parsedCards.forEach((item, idx) => {
-                            customData[sub].flashcards.push({
-                                id: 'upload_pdf_fc_' + Date.now() + '_' + fIdx + '_' + idx,
-                                q: item.q,
-                                a: item.a,
-                                tag: item.tag || 'normal'
-                            });
-                        });
-                    } else {
-                        const parsedQuestions = parseTextToQuestions(extractedText);
-                        parsedQuestions.forEach((item, idx) => {
-                            customData[sub].preguntas.push({
-                                id: 'upload_pdf_q_' + Date.now() + '_' + fIdx + '_' + idx,
-                                q: item.q,
-                                rawOptions: item.rawOptions,
-                                correctText: item.correctText,
-                                explanation: item.explanation,
-                                discardExplanation: item.discardExplanation
-                            });
-                        });
-                    }
-                    processedCount++;
-                } else {
-                    await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = function(evt) {
-                            try {
-                                const importedArray = JSON.parse(evt.target.result);
-                                if (Array.isArray(importedArray)) {
-                                    importedArray.forEach((item, idx) => {
-                                        if (targetCategory === 'flashcards' && item.q && item.a) {
-                                            customData[sub].flashcards.push({
-                                                id: 'upload_fc_' + Date.now() + '_' + fIdx + '_' + idx,
-                                                q: item.q,
-                                                a: item.a,
-                                                tag: item.tag || 'normal'
-                                            });
-                                        } else if (targetCategory === 'preguntas' && item.q && (item.rawOptions || item.options)) {
-                                            let opts = item.rawOptions || item.options;
-                                            customData[sub].preguntas.push({
-                                                id: 'upload_q_' + Date.now() + '_' + fIdx + '_' + idx,
-                                                q: item.q,
-                                                rawOptions: opts,
-                                                correctText: item.correctText || opts[0],
-                                                explanation: item.explanation || '',
-                                                discardExplanation: item.discardExplanation || null
-                                            });
-                                        }
-                                    });
-                                }
-                            } catch (err) {
-                                console.error("Error leyendo archivo JSON", err);
-                            }
-                            processedCount++;
-                            resolve();
-                        };
-                        reader.readAsText(file);
-                    });
-                }
-            }
-
-            if (processedCount === files.length) {
-                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                prepareRandomizedLists();
-                alert(`¡Se han cargado y adaptado con éxito los archivos en ${targetCategory.toUpperCase()}!`);
-                toggleAdminPanel();
-                renderContent();
-            }
-        }
-
-        function processGeneralPdfUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const subjectElem = document.getElementById('admin-subject');
-            const sub = subjectElem ? subjectElem.value.trim() : 'gineco';
-            const reader = new FileReader();
-            
-            reader.onload = function(evt) {
-                if (!pdfNotes[sub]) pdfNotes[sub] = {};
-                const defaultTopic = "General / Documentos";
-                if (!pdfNotes[sub][defaultTopic]) pdfNotes[sub][defaultTopic] = [];
-
-                pdfNotes[sub][defaultTopic].push({
-                    isPdf: true,
-                    name: file.name,
-                    data: evt.target.result,
-                    date: new Date().toLocaleDateString('es-MX')
-                });
-
-                localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
-                alert(`¡PDF "${file.name}" subido con éxito a YuliNotas!`);
-                toggleAdminPanel();
-                if (typeof currentTab !== 'undefined' && currentTab === 'yulinotas' && typeof renderContent === 'function') {
-                    renderContent();
-                }
-            };
-            reader.readAsDataURL(file);
         }
 
         function saveAdminContent() {
@@ -1870,7 +1673,7 @@
             if (type === 'flashcard') {
                 const q = document.getElementById('af-q').value;
                 const a = document.getElementById('af-a').value;
-                if (!q || !a) return alert('Completa los campos de la tarjeta');
+                if (!q || !a) return alert('Completa los campos');
                 customData[sub].flashcards.push({ id: 'custom_' + Date.now(), q, a });
             } else if (type === 'pregunta') {
                 const q = document.getElementById('af-q').value;
@@ -1894,8 +1697,7 @@
             }
 
             localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-            prepareRandomizedLists();
-            alert('¡Contenido guardado exitosamente!');
+            alert('¡Guardado exitosamente!');
             toggleAdminPanel();
             renderContent();
         }
@@ -1995,7 +1797,6 @@
                     pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
                     maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
 
-                    prepareRandomizedLists();
                     alert('¡Progreso importado con éxito!');
                     renderContent();
                 } catch (err) {
