@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="apple-touch-icon" href="IMG_4385.jpeg">
     <title>YuliNotas ENARM</title>
+    <!-- PDF.js para leer y extraer texto de PDFs directamente en el navegador -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
     <style>
         :root {
             --bg-current: #F3E5F5;
@@ -843,8 +848,8 @@
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="pregunta">Banco de Preguntas (1x1)</option>
                 <option value="flashcard">Flashcards de Memoria (1x1)</option>
-                <option value="upload_preguntas">📂 Subir Preguntas (JSON, Múltiples)</option>
-                <option value="upload_flashcards">⚡ Subir Flashcards (JSON, Múltiples)</option>
+                <option value="upload_preguntas">📂 Subir Preguntas (JSON o PDF, Múltiples)</option>
+                <option value="upload_flashcards">⚡ Subir Flashcards (JSON o PDF, Múltiples)</option>
                 <option value="upload_pdf_general">📄 Subir PDF a YuliNotas (Temario general)</option>
             </select>
 
@@ -1623,8 +1628,8 @@
             } else if (type === 'upload_preguntas' || type === 'upload_flashcards') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube uno o varios archivos JSON:</p>
-                    <input type="file" id="bulk-file-input" accept=".json" multiple onchange="processFileUpload(event, '${type === 'upload_preguntas' ? 'preguntas' : 'flashcards'}')">
+                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube tus archivos en formato JSON o PDF:</p>
+                    <input type="file" id="bulk-file-input" accept=".json,application/pdf" multiple onchange="processFileUpload(event, '${type === 'upload_preguntas' ? 'preguntas' : 'flashcards'}')">
                 `;
             } else if (type === 'upload_pdf_general') {
                 saveBtn.style.display = 'none';
@@ -1635,7 +1640,93 @@
             }
         }
 
-        function processFileUpload(e, targetCategory) {
+        async function extractTextFromPdf(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(" ");
+                fullText += pageText + "\n";
+            }
+            return fullText;
+        }
+
+        function parseTextToFlashcards(text) {
+            let results = [];
+            // Intenta detectar líneas con formato de pregunta y respuesta separadas por signos o etiquetas
+            let lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+            let currentQ = "";
+            let currentA = "";
+
+            lines.forEach(line => {
+                if (line.includes('?') || line.toLowerCase().startsWith('¿')) {
+                    if (currentQ && currentA) {
+                        results.push({ q: currentQ, a: currentA, tag: 'normal' });
+                        currentA = "";
+                    }
+                    currentQ = line;
+                } else if (currentQ) {
+                    currentA += (currentA ? " " : "") + line;
+                }
+            });
+            if (currentQ && currentA) {
+                results.push({ q: currentQ, a: currentA, tag: 'normal' });
+            }
+
+            // Si no detectó por preguntas directas, toma bloques de párrafos
+            if (results.length === 0 && lines.length >= 2) {
+                for (let i = 0; i < lines.length - 1; i += 2) {
+                    results.push({ q: lines[i], a: lines[i+1], tag: 'normal' });
+                }
+            }
+            return results;
+        }
+
+        function parseTextToQuestions(text) {
+            let results = [];
+            // Separa bloques basados en números o la palabra pregunta/caso
+            let blocks = text.split(/(?=Pregunta|\d+\.\s+[A-ZÁÉÍÓÚ])/i);
+            
+            blocks.forEach((block, idx) => {
+                if (!block.trim()) return;
+                let lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                if (lines.length < 3) return;
+
+                let qText = lines[0];
+                let options = [];
+                let explanation = "Extraído automáticamente desde PDF.";
+
+                for (let i = 1; i < lines.length; i++) {
+                    let l = lines[i];
+                    if (/^[a-d\)\.-]\s+/i.test(l) || /^[A-D]\s/.test(l)) {
+                        options.push(l.replace(/^[a-d\)\.-]\s*/i, ''));
+                    } else if (l.toLowerCase().includes('resp') || l.toLowerCase().includes('explica')) {
+                        explanation = l;
+                    }
+                }
+
+                if (options.length < 2) {
+                    // Tomar las siguientes líneas como opciones simuladas si no tienen viñetas A/B/C/D
+                    options = lines.slice(1, 5);
+                }
+
+                if (qText && options.length >= 2) {
+                    results.push({
+                        q: qText,
+                        rawOptions: options.slice(0, 4),
+                        correctText: options[0],
+                        explanation: explanation,
+                        discardExplanation: options.map(opt => `<b>Opción:</b> ${opt}`)
+                    });
+                }
+            });
+
+            return results;
+        }
+
+        async function processFileUpload(e, targetCategory) {
             const files = e.target.files;
             if (!files || files.length === 0) return;
 
@@ -1644,48 +1735,86 @@
 
             let processedCount = 0;
 
-            Array.from(files).forEach((file, fIdx) => {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
+            for (let fIdx = 0; fIdx < files.length; fIdx++) {
+                const file = files[fIdx];
+                
+                if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
                     try {
-                        const importedArray = JSON.parse(evt.target.result);
-                        if (Array.isArray(importedArray)) {
-                            importedArray.forEach((item, idx) => {
-                                if (targetCategory === 'flashcards' && item.q && item.a) {
-                                    customData[sub].flashcards.push({
-                                        id: 'upload_fc_' + Date.now() + '_' + fIdx + '_' + idx,
-                                        q: item.q,
-                                        a: item.a,
-                                        tag: item.tag || 'normal'
-                                    });
-                                } else if (targetCategory === 'preguntas' && item.q && (item.rawOptions || item.options)) {
-                                    let opts = item.rawOptions || item.options;
-                                    customData[sub].preguntas.push({
-                                        id: 'upload_q_' + Date.now() + '_' + fIdx + '_' + idx,
-                                        q: item.q,
-                                        rawOptions: opts,
-                                        correctText: item.correctText || opts[0],
-                                        explanation: item.explanation || '',
-                                        discardExplanation: item.discardExplanation || null
-                                    });
-                                }
+                        const extractedText = await extractTextFromPdf(file);
+                        if (targetCategory === 'flashcards') {
+                            const parsedCards = parseTextToFlashcards(extractedText);
+                            parsedCards.forEach((item, idx) => {
+                                customData[sub].flashcards.push({
+                                    id: 'upload_pdf_fc_' + Date.now() + '_' + fIdx + '_' + idx,
+                                    q: item.q,
+                                    a: item.a,
+                                    tag: item.tag || 'normal'
+                                });
+                            });
+                        } else {
+                            const parsedQuestions = parseTextToQuestions(extractedText);
+                            parsedQuestions.forEach((item, idx) => {
+                                customData[sub].preguntas.push({
+                                    id: 'upload_pdf_q_' + Date.now() + '_' + fIdx + '_' + idx,
+                                    q: item.q,
+                                    rawOptions: item.rawOptions,
+                                    correctText: item.correctText,
+                                    explanation: item.explanation,
+                                    discardExplanation: item.discardExplanation
+                                });
                             });
                         }
                     } catch (err) {
-                        console.error("Error leyendo archivo JSON", err);
+                        console.error("Error procesando PDF:", err);
                     }
-
                     processedCount++;
-                    if (processedCount === files.length) {
-                        localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                        prepareRandomizedLists();
-                        alert(`¡Se han cargado con éxito los archivos en ${targetCategory.toUpperCase()}!`);
-                        toggleAdminPanel();
-                        renderContent();
-                    }
-                };
-                reader.readAsText(file);
-            });
+                } else {
+                    // Procesamiento JSON clásico
+                    await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            try {
+                                const importedArray = JSON.parse(evt.target.result);
+                                if (Array.isArray(importedArray)) {
+                                    importedArray.forEach((item, idx) => {
+                                        if (targetCategory === 'flashcards' && item.q && item.a) {
+                                            customData[sub].flashcards.push({
+                                                id: 'upload_fc_' + Date.now() + '_' + fIdx + '_' + idx,
+                                                q: item.q,
+                                                a: item.a,
+                                                tag: item.tag || 'normal'
+                                            });
+                                        } else if (targetCategory === 'preguntas' && item.q && (item.rawOptions || item.options)) {
+                                            let opts = item.rawOptions || item.options;
+                                            customData[sub].preguntas.push({
+                                                id: 'upload_q_' + Date.now() + '_' + fIdx + '_' + idx,
+                                                q: item.q,
+                                                rawOptions: opts,
+                                                correctText: item.correctText || opts[0],
+                                                explanation: item.explanation || '',
+                                                discardExplanation: item.discardExplanation || null
+                                            });
+                                        }
+                                    });
+                                }
+                            } catch (err) {
+                                console.error("Error leyendo archivo JSON", err);
+                            }
+                            processedCount++;
+                            resolve();
+                        };
+                        reader.readAsText(file);
+                    });
+                }
+            }
+
+            if (processedCount === files.length) {
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                prepareRandomizedLists();
+                alert(`¡Se han cargado y adaptado con éxito los archivos en ${targetCategory.toUpperCase()!}`);
+                toggleAdminPanel();
+                renderContent();
+            }
         }
 
         function processGeneralPdfUpload(e) {
