@@ -804,6 +804,36 @@
             font-weight: 700;
             cursor: pointer;
         }
+
+        .delete-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--info-bg);
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 6px;
+            font-size: calc(11px * var(--font-scale));
+        }
+
+        .delete-item-row span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 70%;
+        }
+
+        .btn-mini-delete {
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -827,14 +857,16 @@
 
         <!-- Panel Creador -->
         <div id="admin-panel" class="admin-panel">
-            <h3>⚡ Agregar Nuevo Contenido</h3>
+            <h3>⚡ Agregar / Administrar Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
-                <option value="pregunta">Pregunta Caso Clínico</option>
-                <option value="flashcard">Flashcard</option>
-                <option value="textprocessor">✨ Pegar y Ordenar Texto (Auto-Extractor)</option>
+                <option value="pregunta_1x1">Pregunta (1x1)</option>
+                <option value="preguntas_paste">Preguntas (Pegar y Ordenar)</option>
+                <option value="flashcard_1x1">Flashcard (1x1)</option>
+                <option value="flashcards_paste">Flashcards (Pegar y Ordenar)</option>
+                <option value="delete_content">🗑️ Eliminar Contenido (Movido por error)</option>
             </select>
 
-            <select id="admin-subject">
+            <select id="admin-subject" onchange="changeAdminFields()">
                 <option value="gineco">Ginecología</option>
                 <option value="obste">Obstetricia</option>
                 <option value="interna">Medicina Interna</option>
@@ -1238,6 +1270,9 @@
             document.querySelector(`.btn-${subjectKey}`).classList.add('active');
             
             renderContent();
+            if (document.getElementById('admin-panel').classList.contains('active')) {
+                changeAdminFields();
+            }
         }
 
         function selectTab(tabKey) {
@@ -1625,58 +1660,168 @@
             const type = document.getElementById('admin-type').value;
             const container = document.getElementById('admin-fields');
             const saveBtn = document.getElementById('admin-save-btn');
+            const sub = document.getElementById('admin-subject').value;
 
-            if (type === 'flashcard') {
+            if (type === 'flashcard_1x1') {
                 saveBtn.style.display = 'block';
+                saveBtn.textContent = 'Guardar Flashcard';
                 container.innerHTML = `
-                    <input type="text" id="af-q" placeholder="Pregunta (Frente)">
-                    <textarea id="af-a" placeholder="Respuesta clave (Reverso)"></textarea>
+                    <input type="text" id="af-q" placeholder="Frente (¿...?)">
+                    <textarea id="af-a" rows="3" placeholder="Reverso (Respuesta)"></textarea>
                 `;
-            } else if (type === 'pregunta') {
+            } else if (type === 'pregunta_1x1') {
                 saveBtn.style.display = 'block';
+                saveBtn.textContent = 'Guardar Pregunta';
                 container.innerHTML = `
-                    <textarea id="af-q" placeholder="Caso clínico / Pregunta"></textarea>
+                    <textarea id="af-q" rows="3" placeholder="Caso clínico / Pregunta"></textarea>
                     <input type="text" id="af-o0" placeholder="Opción Correcta">
                     <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
                     <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
                     <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" placeholder="Explicación general"></textarea>
-                    <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
+                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación (Correcto / Explicación general)"></textarea>
+                    <textarea id="af-disc" rows="2" placeholder="Retroalimentación (Incorrecto / Descarte)"></textarea>
                 `;
-            } else if (type === 'textprocessor') {
+            } else if (type === 'preguntas_paste') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Pega tu lista de Flashcards con formato * Frente: ... y * Reverso: ... (o casos clínicos):</p>
-                    <textarea id="paste-raw-text" rows="10" placeholder="Ejemplo:
-* Frente: ¿...?
-* Reverso: ..."></textarea>
-                    <button type="button" onclick="processPastedText()" style="background: #2E7D32; margin-top: 8px;">✨ Procesar y Ordenar Texto</button>
+                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus casos clínicos estructurados:</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="Caso Clínico: ...
+* Caso clínico / Pregunta: ...
+* Opción Correcta: ...
+* Opción Incorrecta 1: ...
+* Correcto: ...
+* Incorrecto: ..."></textarea>
+                    <button type="button" onclick="processPastedPreguntas()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Preguntas</button>
                 `;
+            } else if (type === 'flashcards_paste') {
+                saveBtn.style.display = 'none';
+                container.innerHTML = `
+                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tu lista de flashcards (Frente / Reverso):</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="* Frente: ¿...?
+* Reverso: ..."></textarea>
+                    <button type="button" onclick="processPastedFlashcards()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Flashcards</button>
+                `;
+            } else if (type === 'delete_content') {
+                saveBtn.style.display = 'none';
+                let subCustom = customData[sub] || { flashcards: [], preguntas: [] };
+                let fcList = subCustom.flashcards || [];
+                let qList = subCustom.preguntas || [];
+
+                let html = `<p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Contenido personalizado en ${subjectsConfig[sub].title}:</p>`;
+                
+                if (fcList.length === 0 && qList.length === 0) {
+                    html += `<p style="font-size: calc(11px * var(--font-scale)); font-style:italic;">No hay contenido personalizado en esta materia para eliminar.</p>`;
+                } else {
+                    fcList.forEach((fc, idx) => {
+                        html += `
+                            <div class="delete-item-row">
+                                <span>[FC] ${fc.q}</span>
+                                <button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'flashcards', ${idx})">Eliminar</button>
+                            </div>
+                        `;
+                    });
+                    qList.forEach((q, idx) => {
+                        html += `
+                            <div class="delete-item-row">
+                                <span>[Pregunta] ${q.q}</span>
+                                <button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'preguntas', ${idx})">Eliminar</button>
+                            </div>
+                        `;
+                    });
+                }
+                container.innerHTML = html;
             }
         }
 
-        function processPastedText() {
+        function processPastedPreguntas() {
             const text = document.getElementById('paste-raw-text').value;
             if (!text.trim()) return alert('Por favor pega algún texto.');
             const sub = document.getElementById('admin-subject').value;
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            let addedFC = 0;
+            const caseBlocks = text.split(/(?=Caso Clínico|\*?\s*Caso clínico \/ Pregunta:)/i);
+            
+            caseBlocks.forEach(block => {
+                const trimmed = block.trim();
+                if (!trimmed) return;
 
+                if (trimmed.toLowerCase().includes('caso clínico / pregunta:') || trimmed.toLowerCase().includes('opción correcta:') || trimmed.toLowerCase().includes('caso clínico:')) {
+                    let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+                    let qText = "";
+                    let correctOpt = "";
+                    let incorrectOpts = [];
+                    let retroCorrect = "";
+                    let retroIncorrect = "";
+
+                    lines.forEach(line => {
+                        let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
+                        if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
+                            qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
+                        } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
+                            correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '').trim();
+                        } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
+                            let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
+                            if (optVal) incorrectOpts.push(optVal);
+                        } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
+                            retroCorrect = cleanLine;
+                        } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
+                            retroIncorrect = cleanLine;
+                        } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
+                            qText += " " + cleanLine;
+                        }
+                    });
+
+                    if (qText && correctOpt) {
+                        let allOptions = [correctOpt, ...incorrectOpts];
+                        let explanation = (retroCorrect || retroIncorrect) ? `${retroCorrect}<br>${retroIncorrect}` : "Caso clínico procesado correctamente.";
+                        let discardList = [];
+                        if (retroCorrect) discardList.push(`<b>Correcto:</b> ${retroCorrect.replace(/^correcto:\s*/i, '')}`);
+                        if (retroIncorrect) discardList.push(`<b>Incorrecto:</b> ${retroIncorrect.replace(/^incorrecto:\s*/i, '')}`);
+
+                        customData[sub].preguntas.push({
+                            id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
+                            q: qText.trim(),
+                            rawOptions: allOptions,
+                            correctText: correctOpt,
+                            explanation: explanation,
+                            discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
+                        });
+                        addedQ++;
+                    }
+                }
+            });
+
+            if (addedQ > 0) {
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                alert(`¡Se agregaron ${addedQ} preguntas a ${subjectsConfig[sub].title}!`);
+                toggleAdminPanel();
+                renderContent();
+            } else {
+                alert('No se pudieron interpretar las preguntas. Revisa el formato.');
+            }
+        }
+
+        function processPastedFlashcards() {
+            const text = document.getElementById('paste-raw-text').value;
+            if (!text.trim()) return alert('Por favor pega algún texto.');
+            const sub = document.getElementById('admin-subject').value;
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
+
+            let addedFC = 0;
+            let lines = text.replace(/\r\n/g, '\n').split('\n').map(l => l.trim()).filter(Boolean);
             let currentFront = null;
-            let lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
             lines.forEach(line => {
-                let clean = line.replace(/^[\*\-\•]\s*/, '');
-                let lower = clean.toLowerCase();
+                let cleanLine = line.replace(/^[\*\-\•]\s*/, '').trim();
+                let lower = cleanLine.toLowerCase();
 
                 if (lower.startsWith('frente:')) {
-                    currentFront = clean.replace(/^frente:\s*/i, '').trim();
+                    currentFront = cleanLine.replace(/^frente\s*[:\-]\s*/i, '').trim();
                 } else if (lower.startsWith('reverso:') && currentFront) {
-                    let backText = clean.replace(/^reverso:\s*/i, '').trim();
+                    let backText = cleanLine.replace(/^reverso\s*[:\-]\s*/i, '').trim();
                     customData[sub].flashcards.push({
-                        id: 'fc_pasted_' + Math.random().toString(36).substring(2, 9),
+                        id: 'fc_parsed_' + Math.random().toString(36).substring(2, 9),
                         q: currentFront,
                         a: backText,
                         tag: 'texto'
@@ -1687,65 +1832,33 @@
             });
 
             if (addedFC === 0) {
-                const caseBlocks = text.split(/(?=Caso Clínico|\*?\s*Caso clínico \/ Pregunta:)/i);
-                caseBlocks.forEach(block => {
-                    const trimmed = block.trim();
-                    if (!trimmed) return;
-
-                    if (trimmed.toLowerCase().includes('caso clínico / pregunta:') || trimmed.toLowerCase().includes('opción correcta:')) {
-                        let bLines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
-                        let qText = "";
-                        let correctOpt = "";
-                        let incorrectOpts = [];
-                        let retroCorrect = "";
-                        let retroIncorrect = "";
-
-                        bLines.forEach(line => {
-                            let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
-                            if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
-                                qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
-                            } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
-                                correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '').trim();
-                            } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
-                                let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
-                                if (optVal) incorrectOpts.push(optVal);
-                            } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
-                                retroCorrect = cleanLine;
-                            } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
-                                retroIncorrect = cleanLine;
-                            } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
-                                qText += " " + cleanLine;
-                            }
-                        });
-
-                        if (qText && correctOpt) {
-                            let allOptions = [correctOpt, ...incorrectOpts];
-                            let explanation = (retroCorrect || retroIncorrect) ? `${retroCorrect}<br>${retroIncorrect}` : "Caso clínico procesado correctamente.";
-                            let discardList = [];
-                            if (retroCorrect) discardList.push(`<b>Correcto:</b> ${retroCorrect.replace(/^correcto:\s*/i, '')}`);
-                            if (retroIncorrect) discardList.push(`<b>Incorrecto:</b> ${retroIncorrect.replace(/^incorrecto:\s*/i, '')}`);
-
-                            customData[sub].preguntas.push({
-                                id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
-                                q: qText.trim(),
-                                rawOptions: allOptions,
-                                correctText: correctOpt,
-                                explanation: explanation,
-                                discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
+                let parts = text.split(/frente\s*[:\-]/i);
+                parts.forEach(part => {
+                    if (!part.trim()) return;
+                    let subParts = part.split(/reverso\s*[:\-]/i);
+                    if (subParts.length >= 2) {
+                        let f = subParts[0].replace(/^[\*\-\•]\s*/, '').trim();
+                        let r = subParts[1].split(/frente\s*[:\-]/i)[0].replace(/^[\*\-\•]\s*/, '').trim();
+                        if (f && r) {
+                            customData[sub].flashcards.push({
+                                id: 'fc_pasted_' + Math.random().toString(36).substring(2, 9),
+                                q: f,
+                                a: r,
+                                tag: 'texto'
                             });
-                            addedQ++;
+                            addedFC++;
                         }
                     }
                 });
             }
 
-            if (addedQ > 0 || addedFC > 0) {
+            if (addedFC > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Texto procesado y ordenado con éxito!\nSe agregaron ${addedFC} flashcards y ${addedQ} preguntas de casos clínicos a ${subjectsConfig[sub].title}.`);
+                alert(`¡Se agregaron ${addedFC} flashcards a ${subjectsConfig[sub].title}!`);
                 toggleAdminPanel();
                 renderContent();
             } else {
-                alert('No se pudo interpretar el formato. Asegúrate de que las flashcards comiencen con "* Frente:" y "* Reverso:".');
+                alert('No se detectaron flashcards con formato Frente / Reverso.');
             }
         }
 
@@ -1754,12 +1867,12 @@
             const sub = document.getElementById('admin-subject').value;
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
-            if (type === 'flashcard') {
+            if (type === 'flashcard_1x1') {
                 const q = document.getElementById('af-q').value;
                 const a = document.getElementById('af-a').value;
-                if (!q || !a) return alert('Completa los campos');
-                customData[sub].flashcards.push({ id: 'custom_' + Date.now(), q, a });
-            } else if (type === 'pregunta') {
+                if (!q || !a) return alert('Completa los campos de Frente y Reverso.');
+                customData[sub].flashcards.push({ id: 'custom_fc_' + Date.now(), q, a });
+            } else if (type === 'pregunta_1x1') {
                 const q = document.getElementById('af-q').value;
                 const o0 = document.getElementById('af-o0').value;
                 const o1 = document.getElementById('af-o1').value;
@@ -1768,15 +1881,15 @@
                 const exp = document.getElementById('af-exp').value;
                 const discText = document.getElementById('af-disc').value;
 
-                if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos 2 opciones');
+                if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos la opción correcta y una incorrecta.');
                 
                 customData[sub].preguntas.push({
                     id: 'qcustom_' + Date.now(),
                     q,
                     rawOptions: [o0, o1, o2, o3].filter(Boolean),
                     correctText: o0,
-                    explanation: exp,
-                    discardExplanation: discText ? discText.split('\n').filter(Boolean) : null
+                    explanation: exp || "Respuesta guardada correctamente.",
+                    discardExplanation: discText ? [discText] : [`<b>Opción correcta:</b> ${o0}`]
                 });
             }
 
@@ -1784,6 +1897,16 @@
             alert('¡Guardado exitosamente!');
             toggleAdminPanel();
             renderContent();
+        }
+
+        function deleteCustomItem(sub, category, idx) {
+            if (!confirm('¿Estás segura de eliminar este elemento?')) return;
+            if (customData[sub] && customData[sub][category]) {
+                customData[sub][category].splice(idx, 1);
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                changeAdminFields(); // Refrescar la lista en el panel
+                renderContent();
+            }
         }
 
         function toggleCheck(key) {
