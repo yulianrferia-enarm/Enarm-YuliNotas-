@@ -1664,7 +1664,6 @@
             let addedQ = 0;
             let addedFC = 0;
 
-            // Detección secuencial de pares Frente / Reverso (Flashcards)
             let currentFront = null;
             let lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
@@ -1687,7 +1686,6 @@
                 }
             });
 
-            // Si no se detectaron flashcards por Frente/Reverso, intentar procesar como bloques de casos clínicos
             if (addedFC === 0) {
                 const caseBlocks = text.split(/(?=Caso Clínico|\*?\s*Caso clínico \/ Pregunta:)/i);
                 caseBlocks.forEach(block => {
