@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -545,7 +546,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            touch-action: none; /* Desactiva gestos predeterminados del navegador para controlar el zoom personalizado */
+            touch-action: none;
         }
 
         .image-modal-overlay.active { display: flex; }
@@ -830,6 +831,7 @@
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="pregunta">Pregunta Caso Clínico</option>
                 <option value="flashcard">Flashcard</option>
+                <option value="pdfextractor">📄 Importar desde PDF / Texto Estructurado</option>
             </select>
 
             <select id="admin-subject">
@@ -842,7 +844,7 @@
 
             <div id="admin-fields"></div>
 
-            <button onclick="saveAdminContent()">Guardar Contenido</button>
+            <button id="admin-save-btn" onclick="saveAdminContent()">Guardar Contenido</button>
         </div>
 
         <!-- 1. MATERIAS -->
@@ -1645,13 +1647,16 @@
         function changeAdminFields() {
             const type = document.getElementById('admin-type').value;
             const container = document.getElementById('admin-fields');
+            const saveBtn = document.getElementById('admin-save-btn');
 
             if (type === 'flashcard') {
+                saveBtn.style.display = 'block';
                 container.innerHTML = `
                     <input type="text" id="af-q" placeholder="Pregunta de la Flashcard">
                     <textarea id="af-a" placeholder="Respuesta clave"></textarea>
                 `;
             } else if (type === 'pregunta') {
+                saveBtn.style.display = 'block';
                 container.innerHTML = `
                     <textarea id="af-q" placeholder="Caso clínico / Pregunta"></textarea>
                     <input type="text" id="af-o0" placeholder="Opción Correcta">
@@ -1661,6 +1666,109 @@
                     <textarea id="af-exp" placeholder="Explicación general"></textarea>
                     <textarea id="af-disc" placeholder="Descarte de opciones (A: razón..., B: razón...)"></textarea>
                 `;
+            } else if (type === 'pdfextractor') {
+                saveBtn.style.display = 'none';
+                container.innerHTML = `
+                    <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Sube un documento de texto/PDF organizado o pega el contenido estructurado abajo para extraer preguntas y flashcards automáticamente:</p>
+                    <input type="file" id="pdf-import-file" accept=".txt,.md,.json,.csv" style="margin-bottom: 10px;" onchange="handlePdfExtractionFile(event)">
+                    <textarea id="pdf-raw-text" rows="6" placeholder="O pega aquí el texto estructurado con formato:
+Pregunta: [texto]
+A) ... B) ... C) ... D) ...
+Correcta: A
+Explicación: ...
+
+O para Flashcards:
+FC: [Pregunta] | [Respuesta]"></textarea>
+                    <button type="button" onclick="processStructuredText()" style="background: #2E7D32; margin-top: 8px;">⚙️ Extraer y Agregar a la Materia</button>
+                `;
+            }
+        }
+
+        function handlePdfExtractionFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                document.getElementById('pdf-raw-text').value = evt.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        function processStructuredText() {
+            const text = document.getElementById('pdf-raw-text').value;
+            if (!text.trim()) return alert('Por favor ingresa o sube texto estructurado.');
+            const sub = document.getElementById('admin-subject').value;
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
+
+            let addedQ = 0;
+            let addedFC = 0;
+
+            const blocks = text.split(/(?=Pregunta:|FC:|\n\n)/i);
+            blocks.forEach(block => {
+                const trimmed = block.trim();
+                if (!trimmed) return;
+
+                if (trimmed.startsWith('FC:') || trimmed.includes('|')) {
+                    let clean = trimmed.replace(/^FC:\s*/i, '');
+                    let parts = clean.split('|');
+                    if (parts.length >= 2) {
+                        customData[sub].flashcards.push({
+                            id: 'fc_pdf_' + Math.random().toString(36).substring(2, 9),
+                            q: parts[0].trim(),
+                            a: parts[1].trim(),
+                            tag: 'pdf'
+                        });
+                        addedFC++;
+                    }
+                } else if (trimmed.toLowerCase().includes('pregunta:') || trimmed.includes('?')) {
+                    let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+                    let qText = "";
+                    let options = [];
+                    let correctOpt = "";
+                    let explanation = "Extraído automáticamente desde documento.";
+
+                    lines.forEach(line => {
+                        if (line.toLowerCase().startsWith('pregunta:')) {
+                            qText = line.replace(/^pregunta:\s*/i, '');
+                        } else if (/^[a-d]\)/i.test(line) || /^[1-4]\./.test(line)) {
+                            options.push(line.replace(/^[a-d]\)\s*|^[1-4]\.\s*/i, ''));
+                        } else if (line.toLowerCase().startsWith('correcta:')) {
+                            correctOpt = line.replace(/^correcta:\s*/i, '').trim();
+                        } else if (line.toLowerCase().startsWith('explicación:') || line.toLowerCase().startsWith('explicacion:')) {
+                            explanation = line.replace(/^explicaci[oó]n:\s*/i, '');
+                        } else if (!qText && !options.length) {
+                            qText = line;
+                        }
+                    });
+
+                    if (qText && options.length >= 2) {
+                        let correctTextVal = options[0];
+                        if (correctOpt) {
+                            let idxMatch = correctOpt.toUpperCase().charCodeAt(0) - 65;
+                            if (idxMatch >= 0 && idxMatch < options.length) correctTextVal = options[idxMatch];
+                            else correctTextVal = correctOpt;
+                        }
+
+                        customData[sub].preguntas.push({
+                            id: 'qp_pdf_' + Math.random().toString(36).substring(2, 9),
+                            q: qText,
+                            rawOptions: options,
+                            correctText: correctTextVal,
+                            explanation: explanation,
+                            discardExplanation: [`<b>Respuesta correcta:</b> ${correctTextVal}`]
+                        });
+                        addedQ++;
+                    }
+                }
+            });
+
+            if (addedQ > 0 || addedFC > 0) {
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                alert(`¡Proceso exitoso!\nSe agregaron ${addedQ} preguntas y ${addedFC} flashcards a ${subjectsConfig[sub].title}.`);
+                toggleAdminPanel();
+                renderContent();
+            } else {
+                alert('No se detectó un formato claro. Asegúrate de usar "Pregunta: ..." con opciones o "Pregunta | Respuesta" para flashcards.');
             }
         }
 
@@ -1809,4 +1917,4 @@
         selectTab(currentTab);
     </script>
 </body>
-</html
+</html>
