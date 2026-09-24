@@ -1629,8 +1629,8 @@
             if (type === 'flashcard') {
                 saveBtn.style.display = 'block';
                 container.innerHTML = `
-                    <input type="text" id="af-q" placeholder="Pregunta de la Flashcard">
-                    <textarea id="af-a" placeholder="Respuesta clave"></textarea>
+                    <input type="text" id="af-q" placeholder="Pregunta (Frente)">
+                    <textarea id="af-a" placeholder="Respuesta clave (Reverso)"></textarea>
                 `;
             } else if (type === 'pregunta') {
                 saveBtn.style.display = 'block';
@@ -1646,19 +1646,22 @@
             } else if (type === 'textprocessor') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Pega tu texto abajo. La aplicación detectará automáticamente y ordenará las preguntas o flashcards:</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="Pega aquí tu contenido organizado, por ejemplo:
+                    <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Pega tu texto estructurado (con formato de casos clínicos, opciones y retroalimentación o Flashcards con Frente / Reverso):</p>
+                    <textarea id="paste-raw-text" rows="10" placeholder="Ejemplo de formato admitido:
 
-Pregunta: Femenina con...
-A) Opción 1
-B) Opción 2
-C) Opción 3
-D) Opción 4
-Correcta: A
-Explicación: ...
+Caso Clínico 1: ...
+ * Caso clínico / Pregunta: ...
+ * Opción Correcta: ...
+ * Opción Incorrecta 1: ...
+ * Opción Incorrecta 2: ...
+ * Opción Incorrecta 3: ...
+ * Retroalimentación:
+   * Correcto: ...
+   * Incorrecto: ...
 
-O para Flashcards:
-FC: ¿Pregunta? | Respuesta clave"></textarea>
+O para Flashcards (Frente / Reverso):
+Frente: ¿...?
+Reverso: ..."></textarea>
                     <button type="button" onclick="processPastedText()" style="background: #2E7D32; margin-top: 8px;">✨ Procesar y Ordenar Texto</button>
                 `;
             }
@@ -1666,79 +1669,100 @@ FC: ¿Pregunta? | Respuesta clave"></textarea>
 
         function processPastedText() {
             const text = document.getElementById('paste-raw-text').value;
-            if (!text.trim()) return alert('Por favor pega algún texto estructurado.');
+            if (!text.trim()) return alert('Por favor pega algún texto.');
             const sub = document.getElementById('admin-subject').value;
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
             let addedFC = 0;
 
-            const blocks = text.split(/(?=Pregunta:|FC:|\n\n)/i);
-            blocks.forEach(block => {
+            // Detectar bloques de Casos Clínicos / Preguntas
+            const caseBlocks = text.split(/(?=Caso Clínico|\*?\s*Caso clínico \/ Pregunta:)/i);
+            
+            caseBlocks.forEach(block => {
                 const trimmed = block.trim();
                 if (!trimmed) return;
 
-                if (trimmed.startsWith('FC:') || trimmed.includes('|')) {
-                    let clean = trimmed.replace(/^FC:\s*/i, '');
-                    let parts = clean.split('|');
-                    if (parts.length >= 2) {
-                        customData[sub].flashcards.push({
-                            id: 'fc_paste_' + Math.random().toString(36).substring(2, 9),
-                            q: parts[0].trim(),
-                            a: parts[1].trim(),
-                            tag: 'texto'
-                        });
-                        addedFC++;
-                    }
-                } else if (trimmed.toLowerCase().includes('pregunta:') || trimmed.includes('?')) {
+                if (trimmed.toLowerCase().includes('caso clínico / pregunta:') || trimmed.toLowerCase().includes('opción correcta:')) {
                     let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
                     let qText = "";
-                    let options = [];
                     let correctOpt = "";
-                    let explanation = "Procesado automáticamente desde texto pegado.";
+                    let incorrectOpts = [];
+                    let retroCorrect = "";
+                    let retroIncorrect = "";
 
                     lines.forEach(line => {
-                        if (line.toLowerCase().startsWith('pregunta:')) {
-                            qText = line.replace(/^pregunta:\s*/i, '');
-                        } else if (/^[a-d]\)/i.test(line) || /^[1-4]\./.test(line)) {
-                            options.push(line.replace(/^[a-d]\)\s*|^[1-4]\.\s*/i, ''));
-                        } else if (line.toLowerCase().startsWith('correcta:')) {
-                            correctOpt = line.replace(/^correcta:\s*/i, '').trim();
-                        } else if (line.toLowerCase().startsWith('explicación:') || line.toLowerCase().startsWith('explicacion:')) {
-                            explanation = line.replace(/^explicaci[oó]n:\s*/i, '');
-                        } else if (!qText && !options.length) {
-                            qText = line;
+                        let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
+                        if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
+                            qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
+                        } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
+                            correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '').trim();
+                        } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
+                            let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
+                            if (optVal) incorrectOpts.push(optVal);
+                        } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
+                            retroCorrect = cleanLine;
+                        } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
+                            retroIncorrect = cleanLine;
+                        } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
+                            qText += " " + cleanLine;
                         }
                     });
 
-                    if (qText && options.length >= 2) {
-                        let correctTextVal = options[0];
-                        if (correctOpt) {
-                            let idxMatch = correctOpt.toUpperCase().charCodeAt(0) - 65;
-                            if (idxMatch >= 0 && idxMatch < options.length) correctTextVal = options[idxMatch];
-                            else correctTextVal = correctOpt;
-                        }
+                    if (qText && correctOpt) {
+                        let allOptions = [correctOpt, ...incorrectOpts];
+                        let explanation = (retroCorrect || retroIncorrect) ? `${retroCorrect}<br>${retroIncorrect}` : "Caso clínico procesado correctamente.";
+                        let discardList = [];
+                        if (retroCorrect) discardList.push(`<b>Correcto:</b> ${retroCorrect.replace(/^correcto:\s*/i, '')}`);
+                        if (retroIncorrect) discardList.push(`<b>Incorrecto:</b> ${retroIncorrect.replace(/^incorrecto:\s*/i, '')}`);
 
                         customData[sub].preguntas.push({
-                            id: 'qp_paste_' + Math.random().toString(36).substring(2, 9),
-                            q: qText,
-                            rawOptions: options,
-                            correctText: correctTextVal,
+                            id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
+                            q: qText.trim(),
+                            rawOptions: allOptions,
+                            correctText: correctOpt,
                             explanation: explanation,
-                            discardExplanation: [`<b>Respuesta correcta:</b> ${correctTextVal}`]
+                            discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
                         });
                         addedQ++;
+                    }
+                } 
+                // Detección de Flashcards (Frente / Reverso o formato con |)
+                else if (trimmed.toLowerCase().includes('frente:') || trimmed.includes('|') || trimmed.toLowerCase().includes('fc:')) {
+                    let front = "";
+                    let back = "";
+                    if (trimmed.includes('|')) {
+                        let parts = trimmed.split('|');
+                        front = parts[0].replace(/^fc:\s*/i, '').trim();
+                        back = parts[1].trim();
+                    } else {
+                        let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+                        lines.forEach(l => {
+                            let clean = l.replace(/^[\*\-\•]\s*/, '');
+                            if (clean.toLowerCase().startsWith('frente:')) front = clean.replace(/^frente:\s*/i, '').trim();
+                            else if (clean.toLowerCase().startsWith('reverso:')) back = clean.replace(/^reverso:\s*/i, '').trim();
+                        });
+                    }
+
+                    if (front && back) {
+                        customData[sub].flashcards.push({
+                            id: 'fc_parsed_' + Math.random().toString(36).substring(2, 9),
+                            q: front,
+                            a: back,
+                            tag: 'texto'
+                        });
+                        addedFC++;
                     }
                 }
             });
 
             if (addedQ > 0 || addedFC > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Texto ordenado y guardado con éxito!\nSe añadieron ${addedQ} preguntas y ${addedFC} flashcards a ${subjectsConfig[sub].title}.`);
+                alert(`¡Texto procesado y ordenado con éxito!\nSe agregaron ${addedQ} preguntas de casos clínicos y ${addedFC} flashcards (frente/reverso) a ${subjectsConfig[sub].title}.`);
                 toggleAdminPanel();
                 renderContent();
             } else {
-                alert('No se detectó un formato claro. Revisa que uses "Pregunta: ..." con opciones o "Pregunta | Respuesta" para flashcards.');
+                alert('No se pudo interpretar automáticamente el formato. Asegúrate de incluir "* Caso clínico / Pregunta:" y "* Opción Correcta:" o formato de frente/reverso.');
             }
         }
 
