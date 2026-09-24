@@ -8,7 +8,9 @@
     <!-- PDF.js para leer y extraer texto de PDFs directamente en el navegador -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
     </script>
     <style>
         :root {
@@ -1028,58 +1030,60 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeImageModal();
             const modal = document.getElementById('image-modal');
-            if (modal.classList.contains('active')) {
+            if (modal && modal.classList.contains('active')) {
                 if (e.key === 'ArrowRight') nextModalItem();
                 if (e.key === 'ArrowLeft') prevModalItem();
             }
         });
 
         const modalOverlay = document.getElementById('image-modal');
-        modalOverlay.addEventListener('touchstart', (e) => {
-            const img = document.getElementById('modal-active-img');
-            if (!img) return;
+        if (modalOverlay) {
+            modalOverlay.addEventListener('touchstart', (e) => {
+                const img = document.getElementById('modal-active-img');
+                if (!img) return;
 
-            if (e.touches.length === 2) {
-                isPanning = false;
-                initialDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-            } else if (e.touches.length === 1 && scale > 1) {
-                isPanning = true;
-                startX = e.touches[0].clientX - pointX;
-                startY = e.touches[0].clientY - pointY;
-            }
-        }, { passive: false });
+                if (e.touches.length === 2) {
+                    isPanning = false;
+                    initialDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                } else if (e.touches.length === 1 && scale > 1) {
+                    isPanning = true;
+                    startX = e.touches[0].clientX - pointX;
+                    startY = e.touches[0].clientY - pointY;
+                }
+            }, { passive: false });
 
-        modalOverlay.addEventListener('touchmove', (e) => {
-            const img = document.getElementById('modal-active-img');
-            if (!img) return;
+            modalOverlay.addEventListener('touchmove', (e) => {
+                const img = document.getElementById('modal-active-img');
+                if (!img) return;
 
-            if (e.touches.length === 2) {
-                e.preventDefault();
-                const currentDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                if (initialDistance > 0) {
-                    let factor = currentDistance / initialDistance;
-                    scale = Math.min(Math.max(1, scale * factor), 5);
-                    initialDistance = currentDistance;
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const currentDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    if (initialDistance > 0) {
+                        let factor = currentDistance / initialDistance;
+                        scale = Math.min(Math.max(1, scale * factor), 5);
+                        initialDistance = currentDistance;
+                        updateImageTransform(img);
+                    }
+                } else if (e.touches.length === 1 && isPanning && scale > 1) {
+                    e.preventDefault();
+                    pointX = e.touches[0].clientX - startX;
+                    pointY = e.touches[0].clientY - startY;
                     updateImageTransform(img);
                 }
-            } else if (e.touches.length === 1 && isPanning && scale > 1) {
-                e.preventDefault();
-                pointX = e.touches[0].clientX - startX;
-                pointY = e.touches[0].clientY - startY;
-                updateImageTransform(img);
-            }
-        }, { passive: false });
+            }, { passive: false });
 
-        modalOverlay.addEventListener('touchend', (e) => {
-            if (e.touches.length < 2) initialDistance = 0;
-            if (e.touches.length === 0) isPanning = false;
-        });
+            modalOverlay.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) initialDistance = 0;
+                if (e.touches.length === 0) isPanning = false;
+            });
+        }
 
         function updateImageTransform(img) {
             img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
@@ -1161,6 +1165,7 @@
 
         function updateCornerBadge() {
             const badge = document.getElementById('corner-badge');
+            if (!badge) return;
             const data = getData();
             const subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [] };
 
@@ -1208,7 +1213,8 @@
             document.documentElement.style.setProperty('--primary-color', config.color);
             
             document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.btn-${subjectKey}`).classList.add('active');
+            const activeBtn = document.querySelector(`.btn-${subjectKey}`);
+            if (activeBtn) activeBtn.classList.add('active');
             
             prepareRandomizedLists();
             renderContent();
@@ -1219,7 +1225,8 @@
             localStorage.setItem('yn_current_tab', tabKey);
             
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.btn-tab-${tabKey}`).classList.add('active');
+            const activeTabBtn = document.querySelector(`.btn-tab-${tabKey}`);
+            if (activeTabBtn) activeTabBtn.classList.add('active');
             
             if (tabKey === 'preguntas' || tabKey === 'flashcards') {
                 prepareRandomizedLists();
@@ -1235,6 +1242,7 @@
 
         function toggleTopicGroup(headerElem) {
             const body = headerElem.nextElementSibling;
+            if (!body) return;
             if (body.style.display === 'none' || body.style.display === '') body.style.display = 'block';
             else body.style.display = 'none';
         }
@@ -1309,19 +1317,21 @@
             currentModalList = itemsList;
             currentModalIndex = startIndex;
             renderModalContent();
-            document.getElementById('image-modal').classList.add('active');
+            const modal = document.getElementById('image-modal');
+            if (modal) modal.classList.add('active');
         }
 
         function renderModalContent() {
             const container = document.getElementById('modal-content-container');
             const badge = document.getElementById('modal-counter-badge');
+            if (!container) return;
             
             if (currentModalList.length === 0) {
                 closeImageModal();
                 return;
             }
 
-            badge.textContent = `${currentModalIndex + 1} / ${currentModalList.length}`;
+            if (badge) badge.textContent = `${currentModalIndex + 1} / ${currentModalList.length}`;
             const currentItem = currentModalList[currentModalIndex];
             const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
 
@@ -1352,7 +1362,8 @@
         }
 
         function closeImageModal() {
-            document.getElementById('image-modal').classList.remove('active');
+            const modal = document.getElementById('image-modal');
+            if (modal) modal.classList.remove('active');
         }
 
         function renderTopicGroupedView(type) {
@@ -1430,6 +1441,7 @@
         function renderContent() {
             updateCornerBadge();
             const area = document.getElementById('content-area');
+            if (!area) return;
 
             if (currentTab === 'preguntas') {
                 if (randomizedQuestions.length === 0) {
@@ -1599,23 +1611,28 @@
 
         function toggleAdminPanel() {
             const panel = document.getElementById('admin-panel');
-            panel.classList.toggle('active');
-            changeAdminFields();
+            if (panel) {
+                panel.classList.toggle('active');
+                changeAdminFields();
+            }
         }
 
         function changeAdminFields() {
-            const type = document.getElementById('admin-type').value;
+            const typeElem = document.getElementById('admin-type');
             const container = document.getElementById('admin-fields');
             const saveBtn = document.getElementById('admin-save-btn');
+            if (!typeElem || !container) return;
+
+            const type = typeElem.value;
 
             if (type === 'flashcard') {
-                saveBtn.style.display = 'block';
+                if (saveBtn) saveBtn.style.display = 'block';
                 container.innerHTML = `
                     <input type="text" id="af-q" placeholder="Término / Pregunta (High-Yield)">
                     <textarea id="af-a" placeholder="Respuesta / Explicación de alta rendimiento"></textarea>
                 `;
             } else if (type === 'pregunta') {
-                saveBtn.style.display = 'block';
+                if (saveBtn) saveBtn.style.display = 'block';
                 container.innerHTML = `
                     <textarea id="af-q" placeholder="Caso clínico / Reactivo tipo ENARM"></textarea>
                     <input type="text" id="af-o0" placeholder="Opción Correcta">
@@ -1626,13 +1643,13 @@
                     <textarea id="af-disc" placeholder="Descarte de opciones independientes (A:..., B:...)"></textarea>
                 `;
             } else if (type === 'upload_preguntas' || type === 'upload_flashcards') {
-                saveBtn.style.display = 'none';
+                if (saveBtn) saveBtn.style.display = 'none';
                 container.innerHTML = `
                     <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube tus archivos en formato JSON o PDF:</p>
                     <input type="file" id="bulk-file-input" accept=".json,application/pdf" multiple onchange="processFileUpload(event, '${type === 'upload_preguntas' ? 'preguntas' : 'flashcards'}')">
                 `;
             } else if (type === 'upload_pdf_general') {
-                saveBtn.style.display = 'none';
+                if (saveBtn) saveBtn.style.display = 'none';
                 container.innerHTML = `
                     <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube tu archivo PDF directamente a la pestaña YuliNotas de la materia seleccionada:</p>
                     <input type="file" id="bulk-pdf-input" accept="application/pdf,.docx" onchange="processGeneralPdfUpload(event)">
@@ -1641,21 +1658,26 @@
         }
 
         async function extractTextFromPdf(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            let fullText = "";
-            for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const textContent = await page.getTextContent();
-                const pageText = textContent.items.map(item => item.str).join(" ");
-                fullText += pageText + "\n";
+            try {
+                if (typeof pdfjsLib === 'undefined') return "";
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(" ");
+                    fullText += pageText + "\n";
+                }
+                return fullText;
+            } catch (err) {
+                console.error("Error al extraer texto del PDF:", err);
+                return "";
             }
-            return fullText;
         }
 
         function parseTextToFlashcards(text) {
             let results = [];
-            // Intenta detectar líneas con formato de pregunta y respuesta separadas por signos o etiquetas
             let lines = text.split('\n').map(l => l.trim()).filter(Boolean);
             let currentQ = "";
             let currentA = "";
@@ -1675,7 +1697,6 @@
                 results.push({ q: currentQ, a: currentA, tag: 'normal' });
             }
 
-            // Si no detectó por preguntas directas, toma bloques de párrafos
             if (results.length === 0 && lines.length >= 2) {
                 for (let i = 0; i < lines.length - 1; i += 2) {
                     results.push({ q: lines[i], a: lines[i+1], tag: 'normal' });
@@ -1686,10 +1707,9 @@
 
         function parseTextToQuestions(text) {
             let results = [];
-            // Separa bloques basados en números o la palabra pregunta/caso
             let blocks = text.split(/(?=Pregunta|\d+\.\s+[A-ZÁÉÍÓÚ])/i);
             
-            blocks.forEach((block, idx) => {
+            blocks.forEach((block) => {
                 if (!block.trim()) return;
                 let lines = block.split('\n').map(l => l.trim()).filter(Boolean);
                 if (lines.length < 3) return;
@@ -1708,7 +1728,6 @@
                 }
 
                 if (options.length < 2) {
-                    // Tomar las siguientes líneas como opciones simuladas si no tienen viñetas A/B/C/D
                     options = lines.slice(1, 5);
                 }
 
@@ -1730,7 +1749,8 @@
             const files = e.target.files;
             if (!files || files.length === 0) return;
 
-            const sub = document.getElementById('admin-subject').value;
+            const subjectElem = document.getElementById('admin-subject');
+            const sub = subjectElem ? subjectElem.value : 'gineco';
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let processedCount = 0;
@@ -1739,37 +1759,32 @@
                 const file = files[fIdx];
                 
                 if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-                    try {
-                        const extractedText = await extractTextFromPdf(file);
-                        if (targetCategory === 'flashcards') {
-                            const parsedCards = parseTextToFlashcards(extractedText);
-                            parsedCards.forEach((item, idx) => {
-                                customData[sub].flashcards.push({
-                                    id: 'upload_pdf_fc_' + Date.now() + '_' + fIdx + '_' + idx,
-                                    q: item.q,
-                                    a: item.a,
-                                    tag: item.tag || 'normal'
-                                });
+                    const extractedText = await extractTextFromPdf(file);
+                    if (targetCategory === 'flashcards') {
+                        const parsedCards = parseTextToFlashcards(extractedText);
+                        parsedCards.forEach((item, idx) => {
+                            customData[sub].flashcards.push({
+                                id: 'upload_pdf_fc_' + Date.now() + '_' + fIdx + '_' + idx,
+                                q: item.q,
+                                a: item.a,
+                                tag: item.tag || 'normal'
                             });
-                        } else {
-                            const parsedQuestions = parseTextToQuestions(extractedText);
-                            parsedQuestions.forEach((item, idx) => {
-                                customData[sub].preguntas.push({
-                                    id: 'upload_pdf_q_' + Date.now() + '_' + fIdx + '_' + idx,
-                                    q: item.q,
-                                    rawOptions: item.rawOptions,
-                                    correctText: item.correctText,
-                                    explanation: item.explanation,
-                                    discardExplanation: item.discardExplanation
-                                });
+                        });
+                    } else {
+                        const parsedQuestions = parseTextToQuestions(extractedText);
+                        parsedQuestions.forEach((item, idx) => {
+                            customData[sub].preguntas.push({
+                                id: 'upload_pdf_q_' + Date.now() + '_' + fIdx + '_' + idx,
+                                q: item.q,
+                                rawOptions: item.rawOptions,
+                                correctText: item.correctText,
+                                explanation: item.explanation,
+                                discardExplanation: item.discardExplanation
                             });
-                        }
-                    } catch (err) {
-                        console.error("Error procesando PDF:", err);
+                        });
                     }
                     processedCount++;
                 } else {
-                    // Procesamiento JSON clásico
                     await new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = function(evt) {
@@ -1811,7 +1826,7 @@
             if (processedCount === files.length) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
                 prepareRandomizedLists();
-                alert(`¡Se han cargado y adaptado con éxito los archivos en ${targetCategory.toUpperCase()!}`);
+                alert(`¡Se han cargado y adaptado con éxito los archivos en ${targetCategory.toUpperCase()}!`);
                 toggleAdminPanel();
                 renderContent();
             }
@@ -1821,7 +1836,8 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            const sub = document.getElementById('admin-subject').value.trim() || 'General';
+            const subjectElem = document.getElementById('admin-subject');
+            const sub = subjectElem ? subjectElem.value.trim() : 'gineco';
             const reader = new FileReader();
             
             reader.onload = function(evt) {
