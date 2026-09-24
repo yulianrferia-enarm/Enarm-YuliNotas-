@@ -843,8 +843,9 @@
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="pregunta">Banco de Preguntas (1x1)</option>
                 <option value="flashcard">Flashcards de Memoria (1x1)</option>
-                <option value="upload_preguntas">📂 Subir Archivos para Preguntas (JSON, Múltiples)</option>
-                <option value="upload_flashcards">⚡ Subir Archivos para Flashcards (JSON, Múltiples)</option>
+                <option value="upload_preguntas">📂 Subir Preguntas (JSON, Múltiples)</option>
+                <option value="upload_flashcards">⚡ Subir Flashcards (JSON, Múltiples)</option>
+                <option value="upload_pdf_general">📄 Subir PDF a YuliNotas (Temario general)</option>
             </select>
 
             <select id="admin-subject">
@@ -1619,17 +1620,17 @@
                     <textarea id="af-exp" placeholder="Explicación clínica general"></textarea>
                     <textarea id="af-disc" placeholder="Descarte de opciones independientes (A:..., B:...)"></textarea>
                 `;
-            } else if (type === 'upload_preguntas') {
+            } else if (type === 'upload_preguntas' || type === 'upload_flashcards') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube uno o varios archivos JSON con reactivos de preguntas:</p>
-                    <input type="file" id="bulk-preguntas-input" accept=".json" multiple onchange="processFileUpload(event, 'preguntas')">
+                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube uno o varios archivos JSON:</p>
+                    <input type="file" id="bulk-file-input" accept=".json" multiple onchange="processFileUpload(event, '${type === 'upload_preguntas' ? 'preguntas' : 'flashcards'}')">
                 `;
-            } else if (type === 'upload_flashcards') {
+            } else if (type === 'upload_pdf_general') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube uno o varios archivos JSON con flashcards:</p>
-                    <input type="file" id="bulk-flashcards-input" accept=".json" multiple onchange="processFileUpload(event, 'flashcards')">
+                    <p style="font-size: calc(11px * var(--font-scale)); margin-bottom: 8px; color: var(--text-muted);">Sube tu archivo PDF directamente a la pestaña YuliNotas de la materia seleccionada:</p>
+                    <input type="file" id="bulk-pdf-input" accept="application/pdf,.docx" onchange="processGeneralPdfUpload(event)">
                 `;
             }
         }
@@ -1685,6 +1686,35 @@
                 };
                 reader.readAsText(file);
             });
+        }
+
+        function processGeneralPdfUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const sub = document.getElementById('admin-subject').value.trim() || 'General';
+            const reader = new FileReader();
+            
+            reader.onload = function(evt) {
+                if (!pdfNotes[sub]) pdfNotes[sub] = {};
+                const defaultTopic = "General / Documentos";
+                if (!pdfNotes[sub][defaultTopic]) pdfNotes[sub][defaultTopic] = [];
+
+                pdfNotes[sub][defaultTopic].push({
+                    isPdf: true,
+                    name: file.name,
+                    data: evt.target.result,
+                    date: new Date().toLocaleDateString('es-MX')
+                });
+
+                localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
+                alert(`¡PDF "${file.name}" subido con éxito a YuliNotas!`);
+                toggleAdminPanel();
+                if (typeof currentTab !== 'undefined' && currentTab === 'yulinotas' && typeof renderContent === 'function') {
+                    renderContent();
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
         function saveAdminContent() {
