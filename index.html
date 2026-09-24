@@ -889,7 +889,7 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. PESTAÑAS (Madera ubicada después de Infografías) -->
+        <!-- 2. PESTAÑAS -->
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
@@ -907,7 +907,7 @@
         </div>
     </div>
 
-    <!-- Modal Visor Pantalla Completa con Pinch-to-Zoom y Pan (Desplazamiento) -->
+    <!-- Modal Visor Pantalla Completa -->
     <div id="image-modal" class="image-modal-overlay">
         <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
         <button class="modal-reset-zoom-btn" onclick="resetZoom(event)">↺ Tamaño Normal</button>
@@ -915,9 +915,7 @@
         
         <button class="modal-nav-btn modal-nav-prev" onclick="prevModalItem(event)">◄</button>
         
-        <div class="modal-content-container" id="modal-content-container">
-            <!-- Contenido dinámico con soporte multitáctil -->
-        </div>
+        <div class="modal-content-container" id="modal-content-container"></div>
         
         <button class="modal-nav-btn modal-nav-next" onclick="nextModalItem(event)">►</button>
     </div>
@@ -931,7 +929,6 @@
             pedia: { title: "Pediatría", color: "#E53935", bg: "#FFEBEE" }
         };
 
-        // TEMARIO LITERAL COMPLETO ORIGINAL TEMA POR TEMA
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
@@ -1089,6 +1086,7 @@
         let cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
         let quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
         let questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
+        let questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
         let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
@@ -1099,7 +1097,6 @@
         let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
         let currentTab = localStorage.getItem('yn_current_tab') || 'preguntas';
         let currentCardIndex = 0;
-        let currentQuestionIndex = 0;
         let activeCardFilter = 'all';
 
         let currentModalList = [];
@@ -1226,7 +1223,8 @@
 
             if (currentTab === 'preguntas') {
                 const total = (subjectData.preguntas || []).length;
-                badge.textContent = total > 0 ? `${(currentQuestionIndex % total) + 1}/${total}` : '0/0';
+                let currentQIdx = questionIndices[currentSubject] || 0;
+                badge.textContent = total > 0 ? `${(currentQIdx % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'madera') {
                 badge.textContent = `${countTopicItems(maderaFiles, currentSubject)} Madera`;
             } else if (currentTab === 'flashcards') {
@@ -1260,7 +1258,6 @@
             currentSubject = subjectKey;
             localStorage.setItem('yn_current_subject', subjectKey);
             currentCardIndex = 0;
-            currentQuestionIndex = 0;
             
             const config = subjectsConfig[subjectKey];
             if (!isDarkMode) document.documentElement.style.setProperty('--bg-current', config.bg);
@@ -1501,7 +1498,8 @@
                     return weightB - weightA;
                 });
 
-                const q = sortedQuestions[currentQuestionIndex % sortedQuestions.length];
+                let currentQIdx = questionIndices[currentSubject] || 0;
+                const q = sortedQuestions[currentQIdx % sortedQuestions.length];
                 let rawList = q.rawOptions || q.options || [];
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
@@ -1646,7 +1644,9 @@
         }
 
         function nextQuestion() {
-            currentQuestionIndex++;
+            if (!questionIndices[currentSubject]) questionIndices[currentSubject] = 0;
+            questionIndices[currentSubject]++;
+            localStorage.setItem('yn_question_indices', JSON.stringify(questionIndices));
             renderContent();
         }
 
@@ -1904,7 +1904,7 @@
             if (customData[sub] && customData[sub][category]) {
                 customData[sub][category].splice(idx, 1);
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                changeAdminFields(); // Refrescar la lista en el panel
+                changeAdminFields();
                 renderContent();
             }
         }
@@ -1938,6 +1938,7 @@
                 yn_card_diff: cardDifficulty,
                 yn_quiz_stats: quizStats,
                 yn_question_schedule: questionSchedule,
+                yn_question_indices: questionIndices,
                 yn_gpc_images_v3: gpcImages,
                 yn_info_images_v3: infographicImages,
                 yn_pdf_notes_v3: pdfNotes,
@@ -1982,6 +1983,7 @@
                     if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
                     if (imported.yn_quiz_stats) localStorage.setItem('yn_quiz_stats', JSON.stringify(imported.yn_quiz_stats));
                     if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
+                    if (imported.yn_question_indices) localStorage.setItem('yn_question_indices', JSON.stringify(imported.yn_question_indices));
                     if (imported.yn_gpc_images_v3) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.yn_gpc_images_v3));
                     if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
                     if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
@@ -1999,6 +2001,7 @@
                     cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
                     quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
                     questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
+                    questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
                     gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
                     infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
                     pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
