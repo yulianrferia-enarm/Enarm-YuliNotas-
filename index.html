@@ -283,15 +283,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .carousel-slide img {
-            width: 100%;
-            height: auto;
-            max-height: 450px;
-            object-fit: contain;
-            display: block;
-            cursor: pointer;
-        }
-
         .carousel-btn-nav {
             background: rgba(0, 0, 0, 0.5);
             color: white;
@@ -483,20 +474,22 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 12px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
+            text-align: center;
         }
 
         .pdf-card-header {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 8px;
             align-items: center;
         }
 
         .pdf-card-title {
-            font-size: calc(12px * var(--font-scale));
+            font-size: calc(14px * var(--font-scale));
             font-weight: 700;
             color: var(--primary-color);
             word-break: break-all;
@@ -504,29 +497,23 @@
 
         .pdf-card-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
+            justify-content: center;
+            width: 100%;
         }
 
         .pdf-btn {
-            padding: 4px 10px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 6px;
-            font-size: calc(10px * var(--font-scale));
+            border-radius: 8px;
+            font-size: calc(12px * var(--font-scale));
             font-weight: 700;
             cursor: pointer;
             color: white;
         }
 
         .pdf-btn-open { background: var(--primary-color); }
-
-        .pdf-viewer-frame {
-            width: 100%;
-            height: 350px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: #FFFFFF;
-            cursor: pointer;
-        }
+        .pdf-btn-fullscreen { background: #2E7D32; }
 
         /* Modal visor de pantalla completa */
         .image-modal-overlay {
@@ -541,7 +528,6 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            touch-action: none;
         }
 
         .image-modal-overlay.active { display: flex; }
@@ -553,18 +539,6 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        .modal-content-container img {
-            max-width: 90vw;
-            max-height: 85vh;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            transform-origin: center center;
-            will-change: transform;
-            cursor: grab;
         }
 
         .modal-content-container iframe {
@@ -581,10 +555,10 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             z-index: 1002;
@@ -595,8 +569,8 @@
         }
 
         .modal-nav-btn:hover { background: rgba(255, 255, 255, 0.4); }
-        .modal-nav-prev { left: 10px; }
-        .modal-nav-next { right: 10px; }
+        .modal-nav-prev { left: 16px; }
+        .modal-nav-next { right: 16px; }
 
         .image-modal-close-btn {
             position: absolute;
@@ -605,7 +579,7 @@
             background: #E53935;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 800;
@@ -614,31 +588,15 @@
             z-index: 1003;
         }
 
-        .modal-reset-zoom-btn {
-            position: absolute;
-            top: 20px;
-            right: 110px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            z-index: 1003;
-            backdrop-filter: blur(5px);
-        }
-
         .modal-counter-badge {
             position: absolute;
             top: 20px;
             left: 20px;
             background: rgba(255,255,255,0.2);
             color: white;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             z-index: 1003;
         }
@@ -647,7 +605,7 @@
             border: 2px dashed var(--primary-color);
             background: var(--card-bg);
             border-radius: 10px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
             margin-bottom: 10px;
@@ -667,9 +625,9 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
+            width: 28px;
+            height: 28px;
+            font-size: 13px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -860,10 +818,9 @@
         </div>
     </div>
 
-    <!-- Modal Visor Pantalla Completa -->
+    <!-- Modal Visor Pantalla Completa con Navegación -->
     <div id="image-modal" class="image-modal-overlay">
-        <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
-        <button class="modal-reset-zoom-btn" onclick="resetZoom(event)">↺ Tamaño Normal</button>
+        <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Salir</button>
         <div id="modal-counter-badge" class="modal-counter-badge">1 / 1</div>
         
         <button class="modal-nav-btn modal-nav-prev" onclick="prevModalItem(event)">◄</button>
@@ -1046,7 +1003,7 @@
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
         let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
         let maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
-        let diaposFiles = JSON.parse(localStorage.getItem('yn_diapos_files_v4') || '{}');
+        let diaposFiles = JSON.parse(localStorage.getItem('yn_diapos_files_v5') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -1056,8 +1013,6 @@
 
         let currentModalList = [];
         let currentModalIndex = 0;
-
-        let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, initialDistance = 0, isPanning = false;
 
         if (isDarkMode) document.body.classList.add('dark-mode');
         document.documentElement.style.setProperty('--font-scale', currentFontScale);
@@ -1070,56 +1025,6 @@
                 if (e.key === 'ArrowLeft') prevModalItem();
             }
         });
-
-        const modalOverlay = document.getElementById('image-modal');
-        modalOverlay.addEventListener('touchstart', (e) => {
-            const img = document.getElementById('modal-active-img');
-            if (!img) return;
-            if (e.touches.length === 2) {
-                isPanning = false;
-                initialDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-            } else if (e.touches.length === 1 && scale > 1) {
-                isPanning = true;
-                startX = e.touches[0].clientX - pointX;
-                startY = e.touches[0].clientY - pointY;
-            }
-        }, { passive: false });
-
-        modalOverlay.addEventListener('touchmove', (e) => {
-            const img = document.getElementById('modal-active-img');
-            if (!img) return;
-            if (e.touches.length === 2) {
-                e.preventDefault();
-                const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-                if (initialDistance > 0) {
-                    let factor = currentDistance / initialDistance;
-                    scale = Math.min(Math.max(1, scale * factor), 5);
-                    initialDistance = currentDistance;
-                    updateImageTransform(img);
-                }
-            } else if (e.touches.length === 1 && isPanning && scale > 1) {
-                e.preventDefault();
-                pointX = e.touches[0].clientX - startX;
-                pointY = e.touches[0].clientY - startY;
-                updateImageTransform(img);
-            }
-        }, { passive: false });
-
-        modalOverlay.addEventListener('touchend', (e) => {
-            if (e.touches.length < 2) initialDistance = 0;
-            if (e.touches.length === 0) isPanning = false;
-        });
-
-        function updateImageTransform(img) {
-            img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-        }
-
-        function resetZoom(e) {
-            if (e) e.stopPropagation();
-            scale = 1; pointX = 0; pointY = 0;
-            const img = document.getElementById('modal-active-img');
-            if (img) updateImageTransform(img);
-        }
 
         function changeFontSize(delta) {
             currentFontScale = Math.min(Math.max(currentFontScale + delta, 0.8), 1.6);
@@ -1270,32 +1175,33 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            const objectUrl = URL.createObjectURL(file);
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
-            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v4' : 'yn_pdf_notes_v3')));
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                let targetStorage = type === 'diapos' ? diaposFiles : pdfNotes;
+                let storageKey = type === 'diapos' ? 'yn_diapos_files_v5' : 'yn_pdf_notes_v3';
 
-            if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
-            if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
+                if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
+                if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
 
-            targetStorage[currentSubject][topicName].push({
-                isPdf: true,
-                name: file.name,
-                data: objectUrl,
-                date: new Date().toLocaleDateString('es-MX')
-            });
+                targetStorage[currentSubject][topicName].push({
+                    name: file.name,
+                    data: evt.target.result,
+                    date: new Date().toLocaleDateString('es-MX')
+                });
 
-            try {
-                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
-                renderContent();
-            } catch (err) {
-                alert('Se ha guardado la referencia al archivo correctamente en tu sesión.');
-                renderContent();
-            }
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify(targetStorage));
+                    renderContent();
+                } catch (err) {
+                    alert('El archivo es demasiado pesado para guardarse en la memoria del navegador. Intenta con un PDF más ligero.');
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
         function deleteTopicItem(sub, topicName, idx, type) {
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
-            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v4' : 'yn_pdf_notes_v3')));
+            let targetStorage = type === 'diapos' ? diaposFiles : pdfNotes;
+            let storageKey = type === 'diapos' ? 'yn_diapos_files_v5' : 'yn_pdf_notes_v3';
 
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
@@ -1306,7 +1212,11 @@
 
         function openPdfWindow(dataUrl) {
             const win = window.open();
-            if (win) win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+            if (win) {
+                win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+            } else {
+                window.location.href = dataUrl;
+            }
         }
 
         function openFullscreenModal(itemsList, startIndex) {
@@ -1329,13 +1239,7 @@
             const currentItem = currentModalList[currentModalIndex];
             const dataUrl = (typeof currentItem === 'object' && currentItem.data) ? currentItem.data : currentItem;
 
-            scale = 1; pointX = 0; pointY = 0;
-
-            if (typeof currentItem === 'object' && currentItem.isPdf) {
-                container.innerHTML = `<iframe src="${dataUrl}"></iframe>`;
-            } else {
-                container.innerHTML = `<iframe src="${dataUrl}"></iframe>`;
-            }
+            container.innerHTML = `<iframe src="${dataUrl}"></iframe>`;
         }
 
         function nextModalItem(e) {
@@ -1358,8 +1262,8 @@
 
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
-            let inputAccept = type === 'diapos' ? 'application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,.ppt,.pptx' : 'application/pdf';
+            let targetStorage = type === 'diapos' ? diaposFiles : pdfNotes;
+            let inputAccept = 'application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,.ppt,.pptx';
             let labelText = type === 'diapos' ? '+ Subir Diapositiva / Presentación (PDF)' : '+ Subir Archivo PDF';
 
             return topics.map((topic, tIdx) => {
@@ -1380,15 +1284,14 @@
                                     return `
                                         <div class="carousel-slide">
                                             <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
-                                            <div class="pdf-card" style="border:none;">
+                                            <div class="pdf-card">
                                                 <div class="pdf-card-header">
-                                                    <div class="pdf-card-title">${itemName} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${itemDate})</span></div>
-                                                    <div class="pdf-card-actions">
-                                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${itemData}')">↗ Abrir</button>
-                                                        <button class="pdf-btn pdf-btn-open" style="background:#2E7D32;" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Pantalla Completa</button>
-                                                    </div>
+                                                    <div class="pdf-card-title">📄 ${itemName} <span style="font-weight:400; font-size:11px; color:var(--text-muted);">(${itemDate})</span></div>
                                                 </div>
-                                                <iframe class="pdf-viewer-frame" src="${itemData}"></iframe>
+                                                <div class="pdf-card-actions">
+                                                    <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${itemData}')">↗ Abrir Archivo</button>
+                                                    <button class="pdf-btn pdf-btn-fullscreen" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Pantalla Completa</button>
+                                                </div>
                                             </div>
                                         </div>
                                     `;
@@ -1907,7 +1810,7 @@
                     localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
                     localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
                     localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
-                    localStorage.setItem('yn_diapos_files_v4', JSON.stringify(diaposFiles));
+                    localStorage.setItem('yn_diapos_files_v5', JSON.stringify(diaposFiles));
 
                     selectSubject(currentSubject);
                     selectTab(currentTab);
