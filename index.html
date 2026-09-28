@@ -652,42 +652,6 @@
             z-index: 1003;
         }
 
-        /* Estadísticas */
-        .stats-dashboard {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-top: 16px;
-        }
-
-        .stat-card-box {
-            background: var(--info-bg);
-            border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 12px;
-        }
-
-        .stat-card-box h4 {
-            font-size: calc(13px * var(--font-scale));
-            color: var(--primary-color);
-            margin-bottom: 8px;
-        }
-
-        .progress-bar-container {
-            background: var(--border-color);
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 6px 0;
-        }
-
-        .progress-fill {
-            background: var(--primary-color);
-            height: 100%;
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-
         .image-upload-zone {
             border: 2px dashed var(--primary-color);
             background: var(--card-bg);
@@ -893,12 +857,12 @@
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
-            <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
+            <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografia</button>
             <button class="tab-btn btn-tab-madera" onclick="selectTab('madera')">Madera</button>
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
             <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
+            <button class="tab-btn btn-tab-diapos" onclick="selectTab('diapos')">Diapos</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
-            <button class="tab-btn btn-tab-stats" onclick="selectTab('stats')">Métricas</button>
         </div>
 
         <div class="content-panel">
@@ -1084,10 +1048,8 @@
         let deletedTopics = JSON.parse(localStorage.getItem('yn_deleted_topics_v1') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
         let cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
-        let quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
         let questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
         
-        // Almacenamiento independiente por materia para preguntas y flashcards
         let questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
         let cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
 
@@ -1095,6 +1057,7 @@
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
         let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
         let maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
+        let diaposFiles = JSON.parse(localStorage.getItem('yn_diapos_files_v1') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -1240,6 +1203,8 @@
                 badge.textContent = `${countTopicItems(gpcImages, currentSubject)} Esquemas`;
             } else if (currentTab === 'yulinotas') {
                 badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
+            } else if (currentTab === 'diapos') {
+                badge.textContent = `${countTopicItems(diaposFiles, currentSubject)} Diapos`;
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 5;
                 let completedSubjectChecks = 0;
@@ -1251,10 +1216,6 @@
                 });
                 let percentage = totalPossibleSubjectChecks > 0 ? Math.round((completedSubjectChecks / totalPossibleSubjectChecks) * 100) : 0;
                 badge.textContent = `${percentage}%`;
-            } else if (currentTab === 'stats') {
-                const totalQuiz = quizStats.correct + quizStats.incorrect;
-                const quizAccuracy = totalQuiz > 0 ? Math.round((quizStats.correct / totalQuiz) * 100) : 0;
-                badge.textContent = `${quizAccuracy}%`;
             }
         }
 
@@ -1322,8 +1283,8 @@
 
             const reader = new FileReader();
             reader.onload = function(evt) {
-                let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-                let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
+                let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
+                let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v1' : 'yn_pdf_notes_v3')));
 
                 if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
                 if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
@@ -1349,8 +1310,8 @@
         }
 
         function deleteTopicItem(sub, topicName, idx, type) {
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v1' : 'yn_pdf_notes_v3')));
 
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
@@ -1414,9 +1375,9 @@
 
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
-            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : '+ Subir YuliNotas (PDF)'));
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
+            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : (type === 'diapos' ? 'application/pdf,image/*' : 'image/*'));
+            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : (type === 'diapos' ? '+ Subir Diapo (PDF / Imagen)' : '+ Subir YuliNotas (PDF)')));
 
             return topics.map((topic, tIdx) => {
                 const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
@@ -1583,6 +1544,8 @@
                 area.innerHTML = renderTopicGroupedView('gpc');
             } else if (currentTab === 'yulinotas') {
                 area.innerHTML = renderTopicGroupedView('pdf');
+            } else if (currentTab === 'diapos') {
+                area.innerHTML = renderTopicGroupedView('diapos');
             } else if (currentTab === 'temario') {
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
@@ -1605,28 +1568,6 @@
                         </div>
                     `;
                 }).join('');
-            } else if (currentTab === 'stats') {
-                const totalQuiz = quizStats.correct + quizStats.incorrect;
-                const quizAccuracy = totalQuiz > 0 ? Math.round((quizStats.correct / totalQuiz) * 100) : 0;
-                
-                area.innerHTML = `
-                    <div class="stats-dashboard">
-                        <div class="stat-card-box">
-                            <h4>Precisión en Preguntas</h4>
-                            <p style="font-size: calc(20px * var(--font-scale)); font-weight: 800; margin: 4px 0;">${quizAccuracy}% Correctas</p>
-                            <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted);">${quizStats.correct} aciertos | ${quizStats.incorrect} fallos (${totalQuiz} respondidas)</p>
-                            <div class="progress-bar-container">
-                                <div class="progress-fill" style="width: ${quizAccuracy}%;"></div>
-                            </div>
-                        </div>
-                        <div class="stat-card-box">
-                            <h4>Distribución de Dificultad (Flashcards)</h4>
-                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
-                        </div>
-                    </div>
-                `;
             }
         }
 
@@ -1640,14 +1581,11 @@
             const isCorrect = selectedIdx === correctIdx;
             if (!isCorrect) {
                 selectedBtn.classList.add('incorrect');
-                quizStats.incorrect++;
                 questionSchedule[qId] = { weight: ((questionSchedule[qId] || {}).weight || 0) + 5, status: 'Frecuente (Repasar pronto)' };
             } else {
-                quizStats.correct++;
                 questionSchedule[qId] = { weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0), status: 'Dominada' };
             }
 
-            localStorage.setItem('yn_quiz_stats', JSON.stringify(quizStats));
             localStorage.setItem('yn_question_schedule', JSON.stringify(questionSchedule));
 
             const expBox = document.getElementById('explanation-box');
@@ -1835,33 +1773,12 @@
                         id: 'fc_parsed_' + Math.random().toString(36).substring(2, 9),
                         q: currentFront,
                         a: backText,
-                        tag: 'texto'
+                        tag: 'normal'
                     });
                     addedFC++;
                     currentFront = null;
                 }
             });
-
-            if (addedFC === 0) {
-                let parts = text.split(/frente\s*[:\-]/i);
-                parts.forEach(part => {
-                    if (!part.trim()) return;
-                    let subParts = part.split(/reverso\s*[:\-]/i);
-                    if (subParts.length >= 2) {
-                        let f = subParts[0].replace(/^[\*\-\•]\s*/, '').trim();
-                        let r = subParts[1].split(/frente\s*[:\-]/i)[0].replace(/^[\*\-\•]\s*/, '').trim();
-                        if (f && r) {
-                            customData[sub].flashcards.push({
-                                id: 'fc_pasted_' + Math.random().toString(36).substring(2, 9),
-                                q: f,
-                                a: r,
-                                tag: 'texto'
-                            });
-                            addedFC++;
-                        }
-                    }
-                });
-            }
 
             if (addedFC > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
@@ -1869,7 +1786,7 @@
                 toggleAdminPanel();
                 renderContent();
             } else {
-                alert('No se detectaron flashcards con formato Frente / Reverso.');
+                alert('No se pudieron interpretar las flashcards. Usa el formato "Frente:" y "Reverso:".');
             }
         }
 
@@ -1879,63 +1796,77 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             if (type === 'flashcard_1x1') {
-                const q = document.getElementById('af-q').value;
-                const a = document.getElementById('af-a').value;
-                if (!q || !a) return alert('Completa los campos de Frente y Reverso.');
-                customData[sub].flashcards.push({ id: 'custom_fc_' + Date.now(), q, a });
-            } else if (type === 'pregunta_1x1') {
-                const q = document.getElementById('af-q').value;
-                const o0 = document.getElementById('af-o0').value;
-                const o1 = document.getElementById('af-o1').value;
-                const o2 = document.getElementById('af-o2').value;
-                const o3 = document.getElementById('af-o3').value;
-                const exp = document.getElementById('af-exp').value;
-                const discText = document.getElementById('af-disc').value;
-
-                if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos la opción correcta y una incorrecta.');
+                const q = document.getElementById('af-q').value.trim();
+                const a = document.getElementById('af-a').value.trim();
+                if (!q || !a) return alert('Completa ambos campos.');
                 
-                customData[sub].preguntas.push({
-                    id: 'qcustom_' + Date.now(),
-                    q,
-                    rawOptions: [o0, o1, o2, o3].filter(Boolean),
-                    correctText: o0,
-                    explanation: exp || "Respuesta guardada correctamente.",
-                    discardExplanation: discText ? [discText] : [`<b>Opción correcta:</b> ${o0}`]
+                customData[sub].flashcards.push({
+                    id: 'fc_custom_' + Math.random().toString(36).substring(2, 9),
+                    q, a, tag: 'normal'
                 });
-            }
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                alert('Flashcard guardada correctamente.');
+                document.getElementById('af-q').value = '';
+                document.getElementById('af-a').value = '';
+                renderContent();
+            } else if (type === 'pregunta_1x1') {
+                const q = document.getElementById('af-q').value.trim();
+                const o0 = document.getElementById('af-o0').value.trim();
+                const o1 = document.getElementById('af-o1').value.trim();
+                const o2 = document.getElementById('af-o2').value.trim();
+                const o3 = document.getElementById('af-o3').value.trim();
+                const exp = document.getElementById('af-exp').value.trim();
+                const disc = document.getElementById('af-disc').value.trim();
 
-            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-            alert('¡Guardado exitosamente!');
-            toggleAdminPanel();
-            renderContent();
+                if (!q || !o0) return alert('La pregunta y la opción correcta son obligatorias.');
+
+                let rawOpts = [o0];
+                if (o1) rawOpts.push(o1);
+                if (o2) rawOpts.push(o2);
+                if (o3) rawOpts.push(o3);
+
+                customData[sub].preguntas.push({
+                    id: 'qp_custom_' + Math.random().toString(36).substring(2, 9),
+                    q,
+                    rawOptions: rawOpts,
+                    correctText: o0,
+                    explanation: exp || 'Sin explicación detallada.',
+                    discardExplanation: disc ? [disc] : [`<b>Respuesta correcta:</b> ${o0}`]
+                });
+
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                alert('Pregunta guardada correctamente.');
+                document.getElementById('af-q').value = '';
+                document.getElementById('af-o0').value = '';
+                document.getElementById('af-o1').value = '';
+                document.getElementById('af-o2').value = '';
+                document.getElementById('af-o3').value = '';
+                document.getElementById('af-exp').value = '';
+                document.getElementById('af-disc').value = '';
+                renderContent();
+            }
         }
 
-        function deleteCustomItem(sub, category, idx) {
-            if (!confirm('¿Estás segura de eliminar este elemento?')) return;
+        function deleteCustomItem(sub, category, index) {
+            if (!confirm('¿Estás segura de eliminar este elemento personalizado?')) return;
             if (customData[sub] && customData[sub][category]) {
-                customData[sub][category].splice(idx, 1);
+                customData[sub][category].splice(index, 1);
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
                 changeAdminFields();
                 renderContent();
             }
         }
 
-        function toggleCheck(key) {
-            topicChecklist[key] = !topicChecklist[key];
-            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
-            renderContent();
-        }
-
-        function processAnki(cardId, days, diffTag) {
-            if (days > 0) {
-                const nextDate = new Date();
-                nextDate.setDate(nextDate.getDate() + days);
-                ankiReviews[cardId] = { nextDate: nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
-                localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
-            }
-            
-            cardDifficulty[cardId] = diffTag;
+        function processAnki(cardId, daysToAdd, diff) {
+            cardDifficulty[cardId] = diff;
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
+
+            let nextDateObj = new Date();
+            nextDateObj.setDate(nextDateObj.getDate() + daysToAdd);
+            let dateStr = nextDateObj.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+
+            ankiReviews[cardId] = { nextDate: dateStr };
+            localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
 
             if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
             if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
@@ -1945,96 +1876,75 @@
             renderContent();
         }
 
+        function toggleCheck(key) {
+            topicChecklist[key] = !topicChecklist[key];
+            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+            updateCornerBadge();
+        }
+
         function exportBackup() {
-            const backupData = {
-                yn_custom_data: customData,
-                yn_topic_checklist: topicChecklist,
-                yn_deleted_topics_v1: deletedTopics,
-                yn_anki: ankiReviews,
-                yn_card_diff: cardDifficulty,
-                yn_quiz_stats: quizStats,
-                yn_question_schedule: questionSchedule,
-                yn_question_indices: questionIndices,
-                yn_card_indices: cardIndices,
-                yn_gpc_images_v3: gpcImages,
-                yn_info_images_v3: infographicImages,
-                yn_pdf_notes_v3: pdfNotes,
-                yn_madera_files_v1: maderaFiles,
-                yn_font_scale: currentFontScale
+            const backupObj = {
+                customData, topicChecklist, deletedTopics, ankiReviews, cardDifficulty,
+                questionSchedule, questionIndices, cardIndices, gpcImages, infographicImages, pdfNotes, maderaFiles, diaposFiles,
+                currentSubject, currentTab, currentFontScale, isDarkMode
             };
-
-            const jsonString = JSON.stringify(backupData, null, 2);
-            const blob = new Blob([jsonString], { type: "application/json" });
-            const fileName = `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`;
-
-            if (navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                const file = new File([blob], fileName, { type: "application/json" });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share({ files: [file], title: 'Respaldar YuliNotas' }).catch(() => {});
-                    return;
-                }
-            }
-
-            const url = URL.createObjectURL(blob);
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.href = url;
-            downloadAnchor.download = fileName;
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            document.body.removeChild(downloadAnchor);
-            URL.revokeObjectURL(url);
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `YuliNotas_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
         }
 
         function importBackup(e) {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(evt) {
                 try {
-                    const imported = JSON.parse(evt.target.result);
-                    if (imported.yn_custom_data) localStorage.setItem('yn_custom_data', JSON.stringify(imported.yn_custom_data));
-                    if (imported.yn_topic_checklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.yn_topic_checklist));
-                    if (imported.yn_deleted_topics_v1) localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(imported.yn_deleted_topics_v1));
-                    if (imported.yn_anki) localStorage.setItem('yn_anki', JSON.stringify(imported.yn_anki));
-                    if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
-                    if (imported.yn_quiz_stats) localStorage.setItem('yn_quiz_stats', JSON.stringify(imported.yn_quiz_stats));
-                    if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
-                    if (imported.yn_question_indices) localStorage.setItem('yn_question_indices', JSON.stringify(imported.yn_question_indices));
-                    if (imported.yn_card_indices) localStorage.setItem('yn_card_indices', JSON.stringify(imported.yn_card_indices));
-                    if (imported.yn_gpc_images_v3) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.yn_gpc_images_v3));
-                    if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
-                    if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
-                    if (imported.yn_madera_files_v1) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.yn_madera_files_v1));
-                    if (imported.yn_font_scale) {
-                        currentFontScale = imported.yn_font_scale;
-                        localStorage.setItem('yn_font_scale', currentFontScale.toString());
-                        document.documentElement.style.setProperty('--font-scale', currentFontScale);
-                    }
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.customData) customData = parsed.customData;
+                    if (parsed.topicChecklist) topicChecklist = parsed.topicChecklist;
+                    if (parsed.deletedTopics) deletedTopics = parsed.deletedTopics;
+                    if (parsed.ankiReviews) ankiReviews = parsed.ankiReviews;
+                    if (parsed.cardDifficulty) cardDifficulty = parsed.cardDifficulty;
+                    if (parsed.questionSchedule) questionSchedule = parsed.questionSchedule;
+                    if (parsed.questionIndices) questionIndices = parsed.questionIndices;
+                    if (parsed.cardIndices) cardIndices = parsed.cardIndices;
+                    if (parsed.gpcImages) gpcImages = parsed.gpcImages;
+                    if (parsed.infographicImages) infographicImages = parsed.infographicImages;
+                    if (parsed.pdfNotes) pdfNotes = parsed.pdfNotes;
+                    if (parsed.maderaFiles) maderaFiles = parsed.maderaFiles;
+                    if (parsed.diaposFiles) diaposFiles = parsed.diaposFiles;
+                    if (parsed.currentSubject) currentSubject = parsed.currentSubject;
+                    if (parsed.currentTab) currentTab = parsed.currentTab;
 
-                    customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
-                    topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
-                    deletedTopics = JSON.parse(localStorage.getItem('yn_deleted_topics_v1') || '{}');
-                    ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
-                    cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
-                    quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
-                    questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
-                    questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
-                    cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
-                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
-                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
-                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
-                    maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
+                    localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                    localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+                    localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(deletedTopics));
+                    localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
+                    localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
+                    localStorage.setItem('yn_question_schedule', JSON.stringify(questionSchedule));
+                    localStorage.setItem('yn_question_indices', JSON.stringify(questionIndices));
+                    localStorage.setItem('yn_card_indices', JSON.stringify(cardIndices));
+                    localStorage.setItem('yn_gpc_images_v3', JSON.stringify(gpcImages));
+                    localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
+                    localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
+                    localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
+                    localStorage.setItem('yn_diapos_files_v1', JSON.stringify(diaposFiles));
 
-                    alert('¡Progreso importado con éxito!');
-                    renderContent();
+                    selectSubject(currentSubject);
+                    selectTab(currentTab);
+                    alert('¡Datos cargados exitosamente!');
                 } catch (err) {
-                    alert('Error al leer el archivo de respaldo.');
+                    alert('Error al leer el archivo JSON.');
                 }
             };
             reader.readAsText(file);
         }
 
+        // Inicializar
         selectSubject(currentSubject);
         selectTab(currentTab);
     </script>
