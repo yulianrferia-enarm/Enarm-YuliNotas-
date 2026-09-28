@@ -190,108 +190,135 @@
             font-weight: 800;
         }
 
-        /* Agrupación por Temario Desplegable */
-        .topic-group-card {
+        /* Vista en Cuadrícula (Galería de Temas) */
+        .topics-grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .topics-grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .topic-grid-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            overflow: hidden;
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
-        .topic-group-header {
-            padding: 12px 14px;
-            font-size: calc(13px * var(--font-scale));
-            font-weight: 700;
-            color: var(--text-dark);
+        .topic-grid-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            background: rgba(0,0,0,0.02);
-        }
-
-        .topic-group-header-actions {
-            display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 6px;
         }
 
-        .btn-delete-topic {
-            background: transparent;
-            color: #E53935;
-            border: none;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-delete-topic:hover {
-            background: rgba(229, 57, 53, 0.1);
-        }
-
-        .topic-group-body {
-            padding: 12px;
-            border-top: 1px solid var(--border-color);
-            display: none;
+        .topic-grid-title {
+            font-size: calc(12px * var(--font-scale));
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.3;
         }
 
         .topic-count-badge {
             font-size: calc(10px * var(--font-scale));
             background: var(--primary-color);
             color: white;
-            padding: 2px 8px;
+            padding: 2px 7px;
             border-radius: 10px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
-        /* Sección Diapos (Enlaces) */
-        .diapos-box {
+        .topic-preview-box {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 12px;
+            min-height: 110px;
+            max-height: 160px;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 8px;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
         }
 
-        .diapos-link-input-row {
+        .topic-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .topic-preview-box iframe {
+            width: 100%;
+            height: 120px;
+            border: none;
+            pointer-events: none;
+            background: #FFF;
+        }
+
+        .topic-empty-preview {
+            font-size: calc(11px * var(--font-scale));
+            color: var(--text-muted);
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+        }
+
+        .topic-card-actions {
             display: flex;
             gap: 6px;
         }
 
+        .topic-action-btn {
+            flex: 1;
+            padding: 6px;
+            border: none;
+            border-radius: 8px;
+            font-size: calc(10.5px * var(--font-scale));
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            text-align: center;
+            background: var(--primary-color);
+        }
+
+        .topic-action-btn.btn-upload { background: #2E7D32; }
+
+        /* Sección Diapos (Enlaces en Cuadrícula) */
+        .diapos-link-input-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
         .diapos-link-input-row input {
             flex: 1;
-            padding: 8px;
+            padding: 7px;
             border: 1px solid var(--border-color);
-            background: var(--info-bg);
+            background: var(--card-bg);
             color: var(--text-dark);
             border-radius: 8px;
             font-size: calc(11px * var(--font-scale));
-        }
-
-        .diapos-action-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: calc(11px * var(--font-scale));
-            cursor: pointer;
-            white-space: nowrap;
         }
 
         .diapos-saved-link {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--info-bg);
-            padding: 10px;
+            background: var(--card-bg);
+            padding: 8px 10px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
         }
@@ -299,57 +326,46 @@
         .diapos-saved-link a {
             color: var(--primary-color);
             font-weight: 700;
-            font-size: calc(12px * var(--font-scale));
+            font-size: calc(11px * var(--font-scale));
             text-decoration: none;
             word-break: break-all;
-            max-width: 80%;
+            max-width: 75%;
         }
 
         .diapos-saved-link a:hover { text-decoration: underline; }
 
-        /* Carrusel Deslizable por Tema */
+        /* Carrusel Deslizable en Modal o Vista Detalle si hay varios */
         .carousel-wrapper {
             position: relative;
             display: flex;
             align-items: center;
-            margin-top: 10px;
+            width: 100%;
+            height: 100%;
         }
 
         .carousel-container {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            gap: 12px;
-            padding: 8px 4px;
+            gap: 8px;
             width: 100%;
+            height: 100%;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
 
-        .carousel-container::-webkit-scrollbar { height: 6px; }
-        .carousel-container::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
-        }
+        .carousel-container::-webkit-scrollbar { display: none; }
 
         .carousel-slide {
             flex: 0 0 100%;
+            height: 100%;
             scroll-snap-align: center;
             position: relative;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .carousel-slide img {
-            width: 100%;
-            height: auto;
-            max-height: 450px;
-            object-fit: contain;
-            display: block;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .carousel-btn-nav {
@@ -357,12 +373,12 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 14px;
+            width: 26px;
+            height: 26px;
+            font-size: 11px;
             cursor: pointer;
             position: absolute;
-            z-index: 10;
+            z-index: 5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -370,6 +386,24 @@
 
         .carousel-btn-prev { left: 4px; }
         .carousel-btn-next { right: 4px; }
+
+        .delete-slide-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(229, 57, 53, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
 
         /* Flashcards */
         .flashcard-filter-bar {
@@ -541,56 +575,6 @@
             width: 100%;
         }
 
-        /* PDF Cards */
-        .pdf-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .pdf-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .pdf-card-title {
-            font-size: calc(12px * var(--font-scale));
-            font-weight: 700;
-            color: var(--primary-color);
-            word-break: break-all;
-        }
-
-        .pdf-card-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .pdf-btn {
-            padding: 4px 10px;
-            border: none;
-            border-radius: 6px;
-            font-size: calc(10px * var(--font-scale));
-            font-weight: 700;
-            cursor: pointer;
-            color: white;
-        }
-
-        .pdf-btn-open { background: var(--primary-color); }
-
-        .pdf-viewer-frame {
-            width: 100%;
-            height: 350px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: #FFFFFF;
-            cursor: pointer;
-        }
-
         /* Modal visor de imagen / PDF en pantalla completa con Zoom */
         .image-modal-overlay {
             display: none;
@@ -706,40 +690,6 @@
             font-size: 12px;
             font-weight: 700;
             z-index: 1003;
-        }
-
-        .image-upload-zone {
-            border: 2px dashed var(--primary-color);
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .image-upload-zone p {
-            font-size: calc(11px * var(--font-scale));
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .delete-slide-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(229, 57, 53, 0.9);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
         }
 
         /* Temario */
@@ -1312,28 +1262,10 @@
             renderContent();
         }
 
-        function toggleTopicGroup(headerElem) {
-            const body = headerElem.nextElementSibling;
-            if (body.style.display === 'none' || body.style.display === '') body.style.display = 'block';
-            else body.style.display = 'none';
-        }
-
         function scrollCarousel(containerId, direction) {
             const container = document.getElementById(containerId);
             if (!container) return;
             container.scrollBy({ left: direction * container.clientWidth, behavior: 'smooth' });
-        }
-
-        function deleteTopicGroup(e, topicName) {
-            e.stopPropagation();
-            if (!confirm(`¿Eliminar la categoría "${topicName}" de este apartado?`)) return;
-
-            if (!deletedTopics[currentSubject]) deletedTopics[currentSubject] = {};
-            if (!deletedTopics[currentSubject][currentTab]) deletedTopics[currentSubject][currentTab] = [];
-
-            deletedTopics[currentSubject][currentTab].push(topicName);
-            localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(deletedTopics));
-            renderContent();
         }
 
         function uploadTopicFile(e, type, topicName) {
@@ -1407,11 +1339,6 @@
             }
         }
 
-        function openPdfWindow(dataUrl) {
-            const win = window.open();
-            if (win) win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
-        }
-
         function openFullscreenModal(itemsList, startIndex) {
             currentModalList = itemsList;
             currentModalIndex = startIndex;
@@ -1460,112 +1387,102 @@
             document.getElementById('image-modal').classList.remove('active');
         }
 
-        function renderTopicGroupedView(type) {
+        function renderTopicGridView(type) {
             const topics = getActiveTopicsForCurrentTab();
             
             if (type === 'diapos') {
-                return topics.map((topic) => {
-                    const savedLink = (diaposLinks[currentSubject] && diaposLinks[currentSubject][topic]) ? diaposLinks[currentSubject][topic] : '';
-                    const inputId = `diapo_input_${topic.replace(/\s+/g, '_')}`;
+                return `
+                    <div class="topics-grid-container">
+                        ${topics.map((topic) => {
+                            const savedLink = (diaposLinks[currentSubject] && diaposLinks[currentSubject][topic]) ? diaposLinks[currentSubject][topic] : '';
+                            const inputId = `diapo_input_${topic.replace(/\s+/g, '_')}`;
 
-                    return `
-                        <div class="topic-group-card">
-                            <div class="topic-group-header" onclick="toggleTopicGroup(this)">
-                                <span>📌 ${topic}</span>
-                                <div class="topic-group-header-actions">
-                                    <span class="topic-count-badge">${savedLink ? 1 : 0}</span>
-                                    <button class="btn-delete-topic" title="Eliminar categoría" onclick="deleteTopicGroup(event, '${topic}')">🗑</button>
+                            return `
+                                <div class="topic-grid-card">
+                                    <div class="topic-grid-header">
+                                        <div class="topic-grid-title">📌 ${topic}</div>
+                                        <span class="topic-count-badge">${savedLink ? 1 : 0} Link</span>
+                                    </div>
+                                    <div class="topic-preview-box" style="padding:10px; display:block;">
+                                        ${savedLink ? `
+                                            <div class="diapos-saved-link">
+                                                <a href="${savedLink}" target="_blank">🔗 Ver Diapositivas</a>
+                                                <button class="topic-action-btn" style="background:#E53935; width:auto; padding:4px 8px; font-size:10px;" onclick="deleteDiapoLink('${topic}')">✕</button>
+                                            </div>
+                                        ` : `
+                                            <div class="diapos-link-input-row" style="margin-top:0;">
+                                                <input type="url" id="${inputId}" placeholder="Link web o Drive">
+                                                <button class="topic-action-btn" style="width:auto; padding:6px 10px;" onclick="saveDiapoLink('${topic}', '${inputId}')">OK</button>
+                                            </div>
+                                        `}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="topic-group-body">
-                                ${savedLink ? `
-                                    <div class="diapos-saved-link">
-                                        <a href="${savedLink}" target="_blank">🔗 Ver Diapositivas</a>
-                                        <button class="pdf-btn" style="background:#E53935;" onclick="deleteDiapoLink('${topic}')">Eliminar Link</button>
-                                    </div>
-                                ` : `
-                                    <div class="diapos-box">
-                                        <p style="font-size: calc(11px * var(--font-scale)); font-weight: 700; color: var(--primary-color);">Agregar link de diapositivas:</p>
-                                        <div class="diapos-link-input-row">
-                                            <input type="url" id="${inputId}" placeholder="https://drive.google.com/... o enlace web">
-                                            <button class="diapos-action-btn" onclick="saveDiapoLink('${topic}', '${inputId}')">Guardar</button>
-                                        </div>
-                                    </div>
-                                `}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                            `;
+                        }).join('')}
+                    </div>
+                `;
             }
 
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
             let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
-            let labelText = type === 'info' ? '+ Subir Infografías (Múltiples fotos)' : (type === 'gpc' ? '+ Subir Esquemas GPC (Múltiples fotos)' : (type === 'madera' ? '+ Subir Madera (PDF / Imágenes)' : '+ Subir YuliNotas (PDF)'));
+            let labelText = type === 'info' ? '+ Infografías' : (type === 'gpc' ? '+ Esquemas' : (type === 'madera' ? '+ Madera' : '+ YuliNotas'));
 
-            return topics.map((topic, tIdx) => {
-                const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
-                const inputId = `file_input_${type}_${tIdx}`;
-                const carouselId = `carousel_${type}_${tIdx}`;
+            return `
+                <div class="topics-grid-container">
+                    ${topics.map((topic, tIdx) => {
+                        const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
+                        const inputId = `file_input_${type}_${tIdx}`;
+                        const carouselId = `carousel_${type}_${tIdx}`;
 
-                let contentHtml = '';
-                if (items.length > 0) {
-                    contentHtml = `
-                        <div class="carousel-wrapper">
-                            ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
-                            <div class="carousel-container" id="${carouselId}">
-                                ${items.map((item, itemIdx) => {
-                                    const isPdfObj = (typeof item === 'object' && item.isPdf) || (typeof item === 'object' && item.name);
-                                    if (isPdfObj) {
-                                        return `
-                                            <div class="carousel-slide">
-                                                <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
-                                                <div class="pdf-card" style="border:none;">
-                                                    <div class="pdf-card-header">
-                                                        <div class="pdf-card-title">${item.name || 'Documento PDF'} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${item.date || ''})</span></div>
-                                                        <div class="pdf-card-actions">
-                                                            <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${item.data}')">↗ Abrir</button>
-                                                            <button class="pdf-btn pdf-btn-open" style="background:#2E7D32;" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Max</button>
-                                                        </div>
+                        let previewHtml = `<div class="topic-empty-preview">Sin archivos subidos</div>`;
+                        if (items.length > 0) {
+                            previewHtml = `
+                                <div class="carousel-wrapper">
+                                    ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
+                                    <div class="carousel-container" id="${carouselId}">
+                                        ${items.map((item, itemIdx) => {
+                                            const isPdfObj = (typeof item === 'object' && item.isPdf) || (typeof item === 'object' && item.name);
+                                            if (isPdfObj) {
+                                                return `
+                                                    <div class="carousel-slide">
+                                                        <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
+                                                        <iframe src="${item.data}"></iframe>
                                                     </div>
-                                                    <iframe class="pdf-viewer-frame" src="${item.data}"></iframe>
-                                                </div>
-                                            </div>
-                                        `;
-                                    } else {
-                                        const imgSrc = (typeof item === 'object' && item.data) ? item.data : item;
-                                        return `
-                                            <div class="carousel-slide">
-                                                <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
-                                                <img src="${imgSrc}" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">
-                                            </div>
-                                        `;
-                                    }
-                                }).join('')}
-                            </div>
-                            ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
-                        </div>
-                    `;
-                }
+                                                `;
+                                            } else {
+                                                const imgSrc = (typeof item === 'object' && item.data) ? item.data : item;
+                                                return `
+                                                    <div class="carousel-slide">
+                                                        <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
+                                                        <img src="${imgSrc}" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">
+                                                    </div>
+                                                `;
+                                            }
+                                        }).join('')}
+                                    </div>
+                                    ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
+                                </div>
+                            `;
+                        }
 
-                return `
-                    <div class="topic-group-card">
-                        <div class="topic-group-header" onclick="toggleTopicGroup(this)">
-                            <span>📌 ${topic}</span>
-                            <div class="topic-group-header-actions">
-                                <span class="topic-count-badge">${items.length}</span>
-                                <button class="btn-delete-topic" title="Eliminar categoría" onclick="deleteTopicGroup(event, '${topic}')">🗑</button>
+                        return `
+                            <div class="topic-grid-card">
+                                <div class="topic-grid-header">
+                                    <div class="topic-grid-title">📌 ${topic}</div>
+                                    <span class="topic-count-badge">${items.length} arch.</span>
+                                </div>
+                                <div class="topic-preview-box" onclick="${items.length > 0 ? `openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, 0)` : ''}">
+                                    ${previewHtml}
+                                </div>
+                                <div class="topic-card-actions">
+                                    <button class="topic-action-btn btn-upload" onclick="document.getElementById('${inputId}').click()">${labelText}</button>
+                                    <input type="file" id="${inputId}" accept="${inputAccept}" multiple style="display: none;" onchange="uploadTopicFile(event, '${type}', '${topic}')">
+                                </div>
                             </div>
-                        </div>
-                        <div class="topic-group-body">
-                            <div class="image-upload-zone" onclick="document.getElementById('${inputId}').click()">
-                                <p>${labelText}</p>
-                                <input type="file" id="${inputId}" accept="${inputAccept}" multiple style="display: none;" onchange="uploadTopicFile(event, '${type}', '${topic}')">
-                            </div>
-                            ${contentHtml}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                        `;
+                    }).join('')}
+                </div>
+            `;
         }
 
         function renderContent() {
@@ -1616,7 +1533,7 @@
                     </div>
                 `;
             } else if (currentTab === 'madera') {
-                area.innerHTML = renderTopicGroupedView('madera');
+                area.innerHTML = renderTopicGridView('madera');
             } else if (currentTab === 'flashcards') {
                 let cards = subjectData.flashcards || [];
                 if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
@@ -1662,13 +1579,13 @@
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
-                area.innerHTML = renderTopicGroupedView('info');
+                area.innerHTML = renderTopicGridView('info');
             } else if (currentTab === 'esquemas') {
-                area.innerHTML = renderTopicGroupedView('gpc');
+                area.innerHTML = renderTopicGridView('gpc');
             } else if (currentTab === 'yulinotas') {
-                area.innerHTML = renderTopicGroupedView('pdf');
+                area.innerHTML = renderTopicGridView('pdf');
             } else if (currentTab === 'diapos') {
-                area.innerHTML = renderTopicGroupedView('diapos');
+                area.innerHTML = renderTopicGridView('diapos');
             } else if (currentTab === 'temario') {
                 const resourcesRow1 = ['gpc', 'cto', 'drre', 'yuli'];
                 const labelsRow1 = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas'];
