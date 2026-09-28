@@ -1,3 +1,6 @@
+Aquí tienes el código actualizado con los dos cambios solicitados:
+ * Diapos en formato de lista limpia (Tema - Link): Se eliminaron las tarjetas cuadradas en la sección de Diapos y se transformó en una lista limpia y organizada, donde cada renglón muestra el nombre del tema y su respectivo campo o botón para agregar y abrir el link directamente.
+ * Corrección de hileras: Se aseguró de manera estricta que todas las demás secciones (Infografías, Madera, Esquema GPC y YuliNotas) mantengan únicamente 2 columnas por hilera en cualquier tamaño de pantalla.
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -190,17 +193,11 @@
             font-weight: 800;
         }
 
-        /* Cuadrícula General de Tarjetas por Tema: 2 hileras */
+        /* ESTRICTAMENTE 2 HILERAS (COLUMNAS) */
         .direct-topics-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, 1fr) !important;
             gap: 12px;
-        }
-
-        @media (max-width: 550px) {
-            .direct-topics-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         .topic-direct-card {
@@ -230,7 +227,7 @@
             max-width: 90%;
         }
 
-        /* Contenedor del Carrusel (1 imagen a la vez) */
+        /* Vista previa con cobertura completa (cover) */
         .topic-preview-container {
             position: relative;
             width: 100%;
@@ -247,7 +244,8 @@
         .topic-preview-container img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            object-position: center;
             display: block;
             cursor: pointer;
             background: #00000008;
@@ -324,21 +322,46 @@
             width: 100%;
         }
 
-        /* Diapos solo Link */
-        .diapos-mini-box {
+        /* Diapos en formato lista Tema - Link */
+        .diapos-list-container {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
-        .diapos-mini-input-row {
+        .diapos-list-row {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
             display: flex;
-            gap: 4px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
         }
 
-        .diapos-mini-input-row input {
+        .diapos-list-title {
+            font-size: calc(12px * var(--font-scale));
+            font-weight: 700;
+            color: var(--text-dark);
             flex: 1;
-            padding: 8px 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .diapos-action-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1.2;
+            justify-content: flex-end;
+        }
+
+        .diapos-list-row input {
+            width: 100%;
+            max-width: 240px;
+            padding: 6px 10px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-dark);
@@ -346,27 +369,18 @@
             font-size: calc(11px * var(--font-scale));
         }
 
-        .diapos-saved-badge {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            gap: 8px;
-        }
-
-        .diapos-saved-badge a {
+        .diapos-saved-link {
             color: var(--primary-color);
             font-weight: 700;
             font-size: calc(11px * var(--font-scale));
             text-decoration: none;
-            word-break: break-all;
-            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
         }
 
-        .diapos-saved-badge a:hover { text-decoration: underline; }
+        .diapos-saved-link:hover { text-decoration: underline; }
 
         .diapo-delete-btn {
             background: #E53935;
@@ -554,7 +568,7 @@
             width: 100%;
         }
 
-        /* Modal visor de imagen / PDF en pantalla completa con Zoom */
+        /* Modal visor */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -1377,27 +1391,21 @@
             
             if (type === 'diapos') {
                 return `
-                    <div class="direct-topics-grid">
+                    <div class="diapos-list-container">
                         ${topics.map((topic) => {
                             const savedLink = (diaposLinks[currentSubject] && diaposLinks[currentSubject][topic]) ? diaposLinks[currentSubject][topic] : '';
                             const inputId = `diapo_input_${topic.replace(/\s+/g, '_')}`;
 
                             return `
-                                <div class="topic-direct-card">
-                                    <div class="topic-card-header">
-                                        <div class="topic-card-title">📌 ${topic}</div>
-                                    </div>
-                                    <div class="diapos-mini-box">
+                                <div class="diapos-list-row">
+                                    <div class="diapos-list-title">📌 ${topic}</div>
+                                    <div class="diapos-action-area">
                                         ${savedLink ? `
-                                            <div class="diapos-saved-badge">
-                                                <a href="${savedLink}" target="_blank">🔗 Ver Diapositivas</a>
-                                                <button class="diapo-delete-btn" onclick="deleteDiapoLink('${topic}')">✕</button>
-                                            </div>
+                                            <a class="diapos-saved-link" href="${savedLink}" target="_blank" title="${savedLink}">🔗 ${savedLink}</a>
+                                            <button class="diapo-delete-btn" onclick="deleteDiapoLink('${topic}')">✕</button>
                                         ` : `
-                                            <div class="diapos-mini-input-row">
-                                                <input type="url" id="${inputId}" placeholder="Link web o Drive">
-                                                <button class="upload-mini-btn" style="width:auto; padding:8px 12px; margin-top:0;" onclick="saveDiapoLink('${topic}', '${inputId}')">OK</button>
-                                            </div>
+                                            <input type="url" id="${inputId}" placeholder="Pega el link aquí...">
+                                            <button class="upload-mini-btn" style="width:auto; padding:6px 12px; margin-top:0;" onclick="saveDiapoLink('${topic}', '${inputId}')">Guardar</button>
                                         `}
                                     </div>
                                 </div>
@@ -1998,3 +2006,4 @@
     </script>
 </body>
 </html>
+
