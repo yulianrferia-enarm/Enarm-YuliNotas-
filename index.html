@@ -190,7 +190,6 @@
             font-weight: 800;
         }
 
-        /* Agrupación por Temario Desplegable */
         .topic-group-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -247,7 +246,6 @@
             font-weight: 700;
         }
 
-        /* Carrusel Deslizable por Tema */
         .carousel-wrapper {
             position: relative;
             display: flex;
@@ -313,7 +311,6 @@
         .carousel-btn-prev { left: 4px; }
         .carousel-btn-next { right: 4px; }
 
-        /* Flashcards */
         .flashcard-filter-bar {
             display: flex;
             gap: 6px;
@@ -415,7 +412,6 @@
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
-        /* Preguntas */
         .question-card {
             display: flex;
             flex-direction: column;
@@ -483,7 +479,6 @@
             width: 100%;
         }
 
-        /* PDF Cards */
         .pdf-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -533,7 +528,7 @@
             cursor: pointer;
         }
 
-        /* Modal visor de imagen / PDF en pantalla completa con Pinch-to-Zoom fluido */
+        /* Modal visor de pantalla completa */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -570,10 +565,6 @@
             transform-origin: center center;
             will-change: transform;
             cursor: grab;
-        }
-
-        .modal-content-container img:active {
-            cursor: grabbing;
         }
 
         .modal-content-container iframe {
@@ -686,7 +677,6 @@
             z-index: 5;
         }
 
-        /* Temario */
         .topic-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -729,7 +719,6 @@
             cursor: pointer;
         }
 
-        /* Admin Panel */
         .admin-panel {
             display: none;
             background: var(--card-bg);
@@ -1057,7 +1046,7 @@
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
         let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
         let maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
-        let diaposFiles = JSON.parse(localStorage.getItem('yn_diapos_files_v3') || '{}');
+        let diaposFiles = JSON.parse(localStorage.getItem('yn_diapos_files_v4') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -1281,36 +1270,32 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
-                let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v3' : 'yn_pdf_notes_v3')));
+            const objectUrl = URL.createObjectURL(file);
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v4' : 'yn_pdf_notes_v3')));
 
-                if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
-                if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
+            if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
+            if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
 
-                const isPdfFile = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf') || type === 'diapos';
+            targetStorage[currentSubject][topicName].push({
+                isPdf: true,
+                name: file.name,
+                data: objectUrl,
+                date: new Date().toLocaleDateString('es-MX')
+            });
 
-                targetStorage[currentSubject][topicName].push({
-                    isPdf: isPdfFile,
-                    name: file.name,
-                    data: evt.target.result,
-                    date: new Date().toLocaleDateString('es-MX')
-                });
-
-                try {
-                    localStorage.setItem(storageKey, JSON.stringify(targetStorage));
-                    renderContent();
-                } catch (err) {
-                    alert('El archivo es demasiado grande para guardarse en el almacenamiento del navegador. Intenta con un archivo más ligero.');
-                }
-            };
-            reader.readAsDataURL(file);
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
+                renderContent();
+            } catch (err) {
+                alert('Se ha guardado la referencia al archivo correctamente en tu sesión.');
+                renderContent();
+            }
         }
 
         function deleteTopicItem(sub, topicName, idx, type) {
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
-            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v3' : 'yn_pdf_notes_v3')));
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : (type === 'diapos' ? 'yn_diapos_files_v4' : 'yn_pdf_notes_v3')));
 
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
@@ -1342,15 +1327,14 @@
 
             badge.textContent = `${currentModalIndex + 1} / ${currentModalList.length}`;
             const currentItem = currentModalList[currentModalIndex];
-            const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name && (currentItem.name.toLowerCase().endsWith('.pdf') || currentItem.name.toLowerCase().endsWith('.pptx') || currentItem.name.toLowerCase().endsWith('.ppt')));
+            const dataUrl = (typeof currentItem === 'object' && currentItem.data) ? currentItem.data : currentItem;
 
             scale = 1; pointX = 0; pointY = 0;
 
-            if (isPdfObj || typeof currentItem === 'object') {
-                const dataUrl = currentItem.data || currentItem;
+            if (typeof currentItem === 'object' && currentItem.isPdf) {
                 container.innerHTML = `<iframe src="${dataUrl}"></iframe>`;
             } else {
-                container.innerHTML = `<img id="modal-active-img" src="${currentItem}">`;
+                container.innerHTML = `<iframe src="${dataUrl}"></iframe>`;
             }
         }
 
@@ -1375,8 +1359,8 @@
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
-            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : (type === 'diapos' ? 'application/pdf,image/*,.ppt,.pptx' : 'image/*'));
-            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : (type === 'diapos' ? '+ Subir Diapositiva / Presentación (PDF)' : '+ Subir YuliNotas (PDF)')));
+            let inputAccept = type === 'diapos' ? 'application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,.ppt,.pptx' : 'application/pdf';
+            let labelText = type === 'diapos' ? '+ Subir Diapositiva / Presentación (PDF)' : '+ Subir Archivo PDF';
 
             return topics.map((topic, tIdx) => {
                 const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
@@ -1390,35 +1374,24 @@
                             ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-prev" onclick="scrollCarousel('${carouselId}', -1)">◄</button>` : ''}
                             <div class="carousel-container" id="${carouselId}">
                                 ${items.map((item, itemIdx) => {
-                                    const isPdfObj = (typeof item === 'object' && item.isPdf) || (typeof item === 'object' && item.name && (item.name.toLowerCase().endsWith('.pdf') || item.name.toLowerCase().endsWith('.pptx') || item.name.toLowerCase().endsWith('.ppt'))) || type === 'diapos';
-                                    if (isPdfObj) {
-                                        const itemName = (typeof item === 'object' ? item.name : 'Documento') || 'Diapositiva';
-                                        const itemData = (typeof item === 'object' ? item.data : item);
-                                        const itemDate = (typeof item === 'object' ? item.date : '') || '';
-                                        return `
-                                            <div class="carousel-slide">
-                                                <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
-                                                <div class="pdf-card" style="border:none;">
-                                                    <div class="pdf-card-header">
-                                                        <div class="pdf-card-title">${itemName} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${itemDate})</span></div>
-                                                        <div class="pdf-card-actions">
-                                                            <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${itemData}')">↗ Abrir</button>
-                                                            <button class="pdf-btn pdf-btn-open" style="background:#2E7D32;" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Pantalla Completa</button>
-                                                        </div>
+                                    const itemName = (typeof item === 'object' ? item.name : 'Documento') || 'Diapositiva';
+                                    const itemData = (typeof item === 'object' ? item.data : item);
+                                    const itemDate = (typeof item === 'object' ? item.date : '') || '';
+                                    return `
+                                        <div class="carousel-slide">
+                                            <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
+                                            <div class="pdf-card" style="border:none;">
+                                                <div class="pdf-card-header">
+                                                    <div class="pdf-card-title">${itemName} <span style="font-weight:400; font-size:10px; color:var(--text-muted);">(${itemDate})</span></div>
+                                                    <div class="pdf-card-actions">
+                                                        <button class="pdf-btn pdf-btn-open" onclick="openPdfWindow('${itemData}')">↗ Abrir</button>
+                                                        <button class="pdf-btn pdf-btn-open" style="background:#2E7D32;" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">🔍 Pantalla Completa</button>
                                                     </div>
-                                                    <iframe class="pdf-viewer-frame" src="${itemData}"></iframe>
                                                 </div>
+                                                <iframe class="pdf-viewer-frame" src="${itemData}"></iframe>
                                             </div>
-                                        `;
-                                    } else {
-                                        const imgSrc = (typeof item === 'object' && item.data) ? item.data : item;
-                                        return `
-                                            <div class="carousel-slide">
-                                                <button class="delete-slide-btn" onclick="deleteTopicItem('${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
-                                                <img src="${imgSrc}" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">
-                                            </div>
-                                        `;
-                                    }
+                                        </div>
+                                    `;
                                 }).join('')}
                             </div>
                             ${items.length > 1 ? `<button class="carousel-btn-nav carousel-btn-next" onclick="scrollCarousel('${carouselId}', 1)">►</button>` : ''}
@@ -1934,7 +1907,7 @@
                     localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
                     localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
                     localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
-                    localStorage.setItem('yn_diapos_files_v3', JSON.stringify(diaposFiles));
+                    localStorage.setItem('yn_diapos_files_v4', JSON.stringify(diaposFiles));
 
                     selectSubject(currentSubject);
                     selectTab(currentTab);
