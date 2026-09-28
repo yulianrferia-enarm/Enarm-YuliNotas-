@@ -226,37 +226,29 @@
             color: var(--text-dark);
         }
 
-        .topic-items-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-            gap: 8px;
-            margin-top: 4px;
-            max-height: 180px;
-            overflow-y: auto;
-            padding: 2px;
-        }
-
-        .thumbnail-box {
+        /* Contenedor del Carrusel de Vista Previa */
+        .topic-preview-container {
             position: relative;
-            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: 140px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .thumbnail-box img {
+        .topic-preview-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+            cursor: pointer;
         }
 
-        .thumbnail-box iframe {
+        .topic-preview-container iframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -264,16 +256,23 @@
             background: #FFF;
         }
 
+        .empty-preview-text {
+            font-size: calc(11px * var(--font-scale));
+            color: var(--text-muted);
+            text-align: center;
+            font-style: italic;
+        }
+
         .thumb-delete-btn {
             position: absolute;
-            top: 2px;
-            right: 2px;
+            top: 4px;
+            right: 4px;
             background: rgba(229, 57, 53, 0.9);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             font-size: 10px;
             font-weight: bold;
             cursor: pointer;
@@ -282,6 +281,27 @@
             justify-content: center;
             z-index: 5;
         }
+
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 11px;
+            cursor: pointer;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-prev { left: 6px; }
+        .carousel-next { right: 6px; }
 
         .upload-mini-btn {
             background: var(--primary-color);
@@ -296,8 +316,6 @@
             width: 100%;
             margin-top: 4px;
         }
-
-        .upload-mini-btn.btn-alt { background: #2E7D32; }
 
         /* Diapos en Tarjetas */
         .diapos-mini-box {
@@ -1014,6 +1032,7 @@
         
         let questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
         let cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
+        let previewIndices = {}; // Controla la imagen actual en la vista previa por cada tema
 
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
@@ -1265,8 +1284,18 @@
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
                 localStorage.setItem(storageKey, JSON.stringify(targetStorage));
+                if (previewIndices[topicName] && previewIndices[topicName] >= targetStorage[sub][topicName].length) {
+                    previewIndices[topicName] = Math.max(0, targetStorage[sub][topicName].length - 1);
+                }
                 renderContent();
             }
+        }
+
+        function changePreviewIndex(e, topicName, direction, maxLen) {
+            e.stopPropagation();
+            if (!previewIndices[topicName]) previewIndices[topicName] = 0;
+            previewIndices[topicName] = (previewIndices[topicName] + direction + maxLen) % maxLen;
+            renderContent();
         }
 
         function saveDiapoLink(topicName, inputId) {
@@ -1380,31 +1409,20 @@
                     ${topics.map((topic, tIdx) => {
                         const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
                         const inputId = `file_input_${type}_${tIdx}`;
+                        
+                        if (previewIndices[topic] === undefined) previewIndices[topic] = 0;
+                        let pIdx = previewIndices[topic] % (items.length || 1);
 
-                        let thumbsHtml = '';
+                        let previewHtml = `<div class="empty-preview-text">Sin archivos subidos</div>`;
                         if (items.length > 0) {
-                            thumbsHtml = `
-                                <div class="topic-items-row">
-                                    ${items.map((item, itemIdx) => {
-                                        const isPdfObj = (typeof item === 'object' && item.isPdf) || (typeof item === 'object' && item.name);
-                                        if (isPdfObj) {
-                                            return `
-                                                <div class="thumbnail-box" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">
-                                                    <button class="thumb-delete-btn" onclick="deleteTopicItem(event, '${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
-                                                    <iframe src="${item.data}"></iframe>
-                                                </div>
-                                            `;
-                                        } else {
-                                            const imgSrc = (typeof item === 'object' && item.data) ? item.data : item;
-                                            return `
-                                                <div class="thumbnail-box" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${itemIdx})">
-                                                    <button class="thumb-delete-btn" onclick="deleteTopicItem(event, '${currentSubject}', '${topic}', ${itemIdx}, '${type}')">✕</button>
-                                                    <img src="${imgSrc}">
-                                                </div>
-                                            `;
-                                        }
-                                    }).join('')}
-                                </div>
+                            const currentItem = items[pIdx];
+                            const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
+
+                            previewHtml = `
+                                <button class="thumb-delete-btn" onclick="deleteTopicItem(event, '${currentSubject}', '${topic}', ${pIdx}, '${type}')">✕</button>
+                                ${items.length > 1 ? `<button class="carousel-nav-btn carousel-prev" onclick="changePreviewIndex(event, '${topic}', -1, ${items.length})">◄</button>` : ''}
+                                ${isPdfObj ? `<iframe src="${currentItem.data}"></iframe>` : `<img src="${currentItem.data || currentItem}" onclick="openFullscreenModal(${JSON.stringify(items).replace(/"/g, '&quot;')}, ${pIdx})">`}
+                                ${items.length > 1 ? `<button class="carousel-nav-btn carousel-next" onclick="changePreviewIndex(event, '${topic}', 1, ${items.length})">►</button>` : ''}
                             `;
                         }
 
@@ -1412,9 +1430,11 @@
                             <div class="topic-direct-card">
                                 <div class="topic-card-header">
                                     <div class="topic-card-title">📌 ${topic}</div>
-                                    <span style="font-size:10px; font-weight:700; color:var(--primary-color);">${items.length} arch.</span>
+                                    <span style="font-size:10px; font-weight:700; color:var(--primary-color);">${items.length > 0 ? `${pIdx + 1}/${items.length}` : '0 arch.'}</span>
                                 </div>
-                                ${thumbsHtml}
+                                <div class="topic-preview-container">
+                                    ${previewHtml}
+                                </div>
                                 <button class="upload-mini-btn" onclick="document.getElementById('${inputId}').click()">${labelText}</button>
                                 <input type="file" id="${inputId}" accept="${inputAccept}" multiple style="display: none;" onchange="uploadTopicFile(event, '${type}', '${topic}')">
                             </div>
