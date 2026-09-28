@@ -760,22 +760,24 @@
 
         .topic-checklist {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 4px;
             background: var(--card-bg);
             padding: 6px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
+            margin-bottom: 4px;
         }
 
         .check-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: calc(10px * var(--font-scale));
+            font-size: calc(9.5px * var(--font-scale));
             font-weight: 600;
             color: var(--text-muted);
             gap: 4px;
+            text-align: center;
         }
 
         .check-item input[type="checkbox"] {
@@ -1263,11 +1265,11 @@
             } else if (currentTab === 'diapos') {
                 badge.textContent = `${countTopicItems(diaposLinks, currentSubject)} Links`;
             } else if (currentTab === 'temario') {
-                let totalPossibleSubjectChecks = subjectData.temario.length * 5;
+                let totalPossibleSubjectChecks = subjectData.temario.length * 8;
                 let completedSubjectChecks = 0;
                 subjectData.temario.forEach((_, idx) => {
                     const topicKey = `${currentSubject}_${idx}`;
-                    ['gpc', 'cto', 'drre', 'yuli', 'clase'].forEach(res => {
+                    ['gpc', 'cto', 'drre', 'yuli', 'clase', 'madera', 'punto', 'diapos'].forEach(res => {
                         if (topicChecklist[`${topicKey}_${res}`]) completedSubjectChecks++;
                     });
                 });
@@ -1668,19 +1670,33 @@
             } else if (currentTab === 'diapos') {
                 area.innerHTML = renderTopicGroupedView('diapos');
             } else if (currentTab === 'temario') {
-                const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
-                const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
+                const resourcesRow1 = ['gpc', 'cto', 'drre', 'yuli'];
+                const labelsRow1 = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas'];
+                const resourcesRow2 = ['clase', 'madera', 'punto', 'diapos'];
+                const labelsRow2 = ['Clase', 'Madera', 'Punto ENARM', 'Diapos'];
+
                 area.innerHTML = subjectData.temario.map((t, idx) => {
                     const topicKey = `${currentSubject}_${idx}`;
                     return `
                         <div class="topic-card">
                             <div class="topic-header">${t}</div>
                             <div class="topic-checklist">
-                                ${resources.map((res, rIdx) => {
+                                ${resourcesRow1.map((res, rIdx) => {
                                     const checkKey = `${topicKey}_${res}`;
                                     return `
                                         <div class="check-item">
-                                            <span>${labels[rIdx]}</span>
+                                            <span>${labelsRow1[rIdx]}</span>
+                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            <div class="topic-checklist" style="margin-top: 4px;">
+                                ${resourcesRow2.map((res, rIdx) => {
+                                    const checkKey = `${topicKey}_${res}`;
+                                    return `
+                                        <div class="check-item">
+                                            <span>${labelsRow2[rIdx]}</span>
                                             <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
                                         </div>
                                     `;
