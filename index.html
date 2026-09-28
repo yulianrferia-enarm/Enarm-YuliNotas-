@@ -247,6 +247,66 @@
             font-weight: 700;
         }
 
+        /* Sección Diapos (Enlaces) */
+        .diapos-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .diapos-link-input-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .diapos-link-input-row input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--info-bg);
+            color: var(--text-dark);
+            border-radius: 8px;
+            font-size: calc(11px * var(--font-scale));
+        }
+
+        .diapos-action-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: calc(11px * var(--font-scale));
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .diapos-saved-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--info-bg);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .diapos-saved-link a {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: calc(12px * var(--font-scale));
+            text-decoration: none;
+            word-break: break-all;
+            max-width: 80%;
+        }
+
+        .diapos-saved-link a:hover { text-decoration: underline; }
+
         /* Carrusel Deslizable por Tema */
         .carousel-wrapper {
             position: relative;
@@ -266,9 +326,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        .carousel-container::-webkit-scrollbar {
-            height: 6px;
-        }
+        .carousel-container::-webkit-scrollbar { height: 6px; }
         .carousel-container::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 3px;
@@ -533,7 +591,7 @@
             cursor: pointer;
         }
 
-        /* Modal visor de imagen / PDF en pantalla completa con Pinch-to-Zoom fluido */
+        /* Modal visor de imagen / PDF en pantalla completa */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -572,9 +630,7 @@
             cursor: grab;
         }
 
-        .modal-content-container img:active {
-            cursor: grabbing;
-        }
+        .modal-content-container img:active { cursor: grabbing; }
 
         .modal-content-container iframe {
             width: 100%;
@@ -650,42 +706,6 @@
             font-size: 12px;
             font-weight: 700;
             z-index: 1003;
-        }
-
-        /* Estadísticas */
-        .stats-dashboard {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-top: 16px;
-        }
-
-        .stat-card-box {
-            background: var(--info-bg);
-            border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 12px;
-        }
-
-        .stat-card-box h4 {
-            font-size: calc(13px * var(--font-scale));
-            color: var(--primary-color);
-            margin-bottom: 8px;
-        }
-
-        .progress-bar-container {
-            background: var(--border-color);
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 6px 0;
-        }
-
-        .progress-fill {
-            background: var(--primary-color);
-            height: 100%;
-            width: 0%;
-            transition: width 0.4s ease;
         }
 
         .image-upload-zone {
@@ -897,8 +917,8 @@
             <button class="tab-btn btn-tab-madera" onclick="selectTab('madera')">Madera</button>
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
             <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
+            <button class="tab-btn btn-tab-diapos" onclick="selectTab('diapos')">Diapos</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
-            <button class="tab-btn btn-tab-stats" onclick="selectTab('stats')">Métricas</button>
         </div>
 
         <div class="content-panel">
@@ -1084,10 +1104,8 @@
         let deletedTopics = JSON.parse(localStorage.getItem('yn_deleted_topics_v1') || '{}');
         let ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
         let cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
-        let quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
         let questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
         
-        // Almacenamiento independiente por materia para preguntas y flashcards
         let questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
         let cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
 
@@ -1095,6 +1113,7 @@
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
         let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
         let maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
+        let diaposLinks = JSON.parse(localStorage.getItem('yn_diapos_links_v1') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -1213,8 +1232,9 @@
         function countTopicItems(storageObj, subjectKey) {
             if (!storageObj[subjectKey]) return 0;
             let total = 0;
-            Object.values(storageObj[subjectKey]).forEach(arr => {
-                if (Array.isArray(arr)) total += arr.length;
+            Object.values(storageObj[subjectKey]).forEach(val => {
+                if (Array.isArray(val)) total += val.length;
+                else if (typeof val === 'string' && val.trim() !== '') total += 1;
             });
             return total;
         }
@@ -1240,6 +1260,8 @@
                 badge.textContent = `${countTopicItems(gpcImages, currentSubject)} Esquemas`;
             } else if (currentTab === 'yulinotas') {
                 badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
+            } else if (currentTab === 'diapos') {
+                badge.textContent = `${countTopicItems(diaposLinks, currentSubject)} Links`;
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 5;
                 let completedSubjectChecks = 0;
@@ -1251,10 +1273,6 @@
                 });
                 let percentage = totalPossibleSubjectChecks > 0 ? Math.round((completedSubjectChecks / totalPossibleSubjectChecks) * 100) : 0;
                 badge.textContent = `${percentage}%`;
-            } else if (currentTab === 'stats') {
-                const totalQuiz = quizStats.correct + quizStats.incorrect;
-                const quizAccuracy = totalQuiz > 0 ? Math.round((quizStats.correct / totalQuiz) * 100) : 0;
-                badge.textContent = `${quizAccuracy}%`;
             }
         }
 
@@ -1359,6 +1377,25 @@
             }
         }
 
+        function saveDiapoLink(topicName, inputId) {
+            const urlInput = document.getElementById(inputId).value.trim();
+            if (!urlInput) return alert('Por favor ingresa un link válido.');
+
+            if (!diaposLinks[currentSubject]) diaposLinks[currentSubject] = {};
+            diaposLinks[currentSubject][topicName] = urlInput;
+            localStorage.setItem('yn_diapos_links_v1', JSON.stringify(diaposLinks));
+            renderContent();
+        }
+
+        function deleteDiapoLink(topicName) {
+            if (!confirm('¿Eliminar el link de diapos de este tema?')) return;
+            if (diaposLinks[currentSubject] && diaposLinks[currentSubject][topicName]) {
+                delete diaposLinks[currentSubject][topicName];
+                localStorage.setItem('yn_diapos_links_v1', JSON.stringify(diaposLinks));
+                renderContent();
+            }
+        }
+
         function openPdfWindow(dataUrl) {
             const win = window.open();
             if (win) win.document.write(`<iframe src="${dataUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
@@ -1414,6 +1451,42 @@
 
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
+            
+            if (type === 'diapos') {
+                return topics.map((topic) => {
+                    const savedLink = (diaposLinks[currentSubject] && diaposLinks[currentSubject][topic]) ? diaposLinks[currentSubject][topic] : '';
+                    const inputId = `diapo_input_${topic.replace(/\s+/g, '_')}`;
+
+                    return `
+                        <div class="topic-group-card">
+                            <div class="topic-group-header" onclick="toggleTopicGroup(this)">
+                                <span>📌 ${topic}</span>
+                                <div class="topic-group-header-actions">
+                                    <span class="topic-count-badge">${savedLink ? 1 : 0}</span>
+                                    <button class="btn-delete-topic" title="Eliminar categoría" onclick="deleteTopicGroup(event, '${topic}')">🗑</button>
+                                </div>
+                            </div>
+                            <div class="topic-group-body">
+                                ${savedLink ? `
+                                    <div class="diapos-saved-link">
+                                        <a href="${savedLink}" target="_blank">🔗 Ver Diapositivas</a>
+                                        <button class="pdf-btn" style="background:#E53935;" onclick="deleteDiapoLink('${topic}')">Eliminar Link</button>
+                                    </div>
+                                ` : `
+                                    <div class="diapos-box">
+                                        <p style="font-size: calc(11px * var(--font-scale)); font-weight: 700; color: var(--primary-color);">Agregar link de diapositivas:</p>
+                                        <div class="diapos-link-input-row">
+                                            <input type="url" id="${inputId}" placeholder="https://drive.google.com/... o enlace web">
+                                            <button class="diapos-action-btn" onclick="saveDiapoLink('${topic}', '${inputId}')">Guardar</button>
+                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
             let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
             let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : '+ Subir YuliNotas (PDF)'));
@@ -1583,6 +1656,8 @@
                 area.innerHTML = renderTopicGroupedView('gpc');
             } else if (currentTab === 'yulinotas') {
                 area.innerHTML = renderTopicGroupedView('pdf');
+            } else if (currentTab === 'diapos') {
+                area.innerHTML = renderTopicGroupedView('diapos');
             } else if (currentTab === 'temario') {
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
@@ -1605,28 +1680,6 @@
                         </div>
                     `;
                 }).join('');
-            } else if (currentTab === 'stats') {
-                const totalQuiz = quizStats.correct + quizStats.incorrect;
-                const quizAccuracy = totalQuiz > 0 ? Math.round((quizStats.correct / totalQuiz) * 100) : 0;
-                
-                area.innerHTML = `
-                    <div class="stats-dashboard">
-                        <div class="stat-card-box">
-                            <h4>Precisión en Preguntas</h4>
-                            <p style="font-size: calc(20px * var(--font-scale)); font-weight: 800; margin: 4px 0;">${quizAccuracy}% Correctas</p>
-                            <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted);">${quizStats.correct} aciertos | ${quizStats.incorrect} fallos (${totalQuiz} respondidas)</p>
-                            <div class="progress-bar-container">
-                                <div class="progress-fill" style="width: ${quizAccuracy}%;"></div>
-                            </div>
-                        </div>
-                        <div class="stat-card-box">
-                            <h4>Distribución de Dificultad (Flashcards)</h4>
-                            <p style="font-size: calc(12px * var(--font-scale)); margin-top: 6px;">Difíciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='hard').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Medias: <strong>${Object.values(cardDifficulty).filter(v=>v==='good').length}</strong></p>
-                            <p style="font-size: calc(12px * var(--font-scale));">Fáciles: <strong>${Object.values(cardDifficulty).filter(v=>v==='easy').length}</strong></p>
-                        </div>
-                    </div>
-                `;
             }
         }
 
@@ -1640,14 +1693,11 @@
             const isCorrect = selectedIdx === correctIdx;
             if (!isCorrect) {
                 selectedBtn.classList.add('incorrect');
-                quizStats.incorrect++;
                 questionSchedule[qId] = { weight: ((questionSchedule[qId] || {}).weight || 0) + 5, status: 'Frecuente (Repasar pronto)' };
             } else {
-                quizStats.correct++;
                 questionSchedule[qId] = { weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0), status: 'Dominada' };
             }
 
-            localStorage.setItem('yn_quiz_stats', JSON.stringify(quizStats));
             localStorage.setItem('yn_question_schedule', JSON.stringify(questionSchedule));
 
             const expBox = document.getElementById('explanation-box');
@@ -1952,7 +2002,6 @@
                 yn_deleted_topics_v1: deletedTopics,
                 yn_anki: ankiReviews,
                 yn_card_diff: cardDifficulty,
-                yn_quiz_stats: quizStats,
                 yn_question_schedule: questionSchedule,
                 yn_question_indices: questionIndices,
                 yn_card_indices: cardIndices,
@@ -1960,6 +2009,7 @@
                 yn_info_images_v3: infographicImages,
                 yn_pdf_notes_v3: pdfNotes,
                 yn_madera_files_v1: maderaFiles,
+                yn_diapos_links_v1: diaposLinks,
                 yn_font_scale: currentFontScale
             };
 
@@ -1998,7 +2048,6 @@
                     if (imported.yn_deleted_topics_v1) localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(imported.yn_deleted_topics_v1));
                     if (imported.yn_anki) localStorage.setItem('yn_anki', JSON.stringify(imported.yn_anki));
                     if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
-                    if (imported.yn_quiz_stats) localStorage.setItem('yn_quiz_stats', JSON.stringify(imported.yn_quiz_stats));
                     if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
                     if (imported.yn_question_indices) localStorage.setItem('yn_question_indices', JSON.stringify(imported.yn_question_indices));
                     if (imported.yn_card_indices) localStorage.setItem('yn_card_indices', JSON.stringify(imported.yn_card_indices));
@@ -2006,6 +2055,7 @@
                     if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
                     if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
                     if (imported.yn_madera_files_v1) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.yn_madera_files_v1));
+                    if (imported.yn_diapos_links_v1) localStorage.setItem('yn_diapos_links_v1', JSON.stringify(imported.yn_diapos_links_v1));
                     if (imported.yn_font_scale) {
                         currentFontScale = imported.yn_font_scale;
                         localStorage.setItem('yn_font_scale', currentFontScale.toString());
@@ -2017,7 +2067,6 @@
                     deletedTopics = JSON.parse(localStorage.getItem('yn_deleted_topics_v1') || '{}');
                     ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
                     cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
-                    quizStats = JSON.parse(localStorage.getItem('yn_quiz_stats') || '{"correct":0, "incorrect":0}');
                     questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
                     questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
                     cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
@@ -2025,6 +2074,7 @@
                     infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
                     pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
                     maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
+                    diaposLinks = JSON.parse(localStorage.getItem('yn_diapos_links_v1') || '{}');
 
                     alert('¡Progreso importado con éxito!');
                     renderContent();
