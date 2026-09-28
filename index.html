@@ -1289,23 +1289,21 @@
                 if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
                 if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
 
-                if (file.type === 'application/pdf') {
-                    targetStorage[currentSubject][topicName].push({
-                        isPdf: true,
-                        name: file.name,
-                        data: evt.target.result,
-                        date: new Date().toLocaleDateString('es-MX')
-                    });
-                } else {
-                    targetStorage[currentSubject][topicName].push({
-                        isPdf: false,
-                        name: file.name || '',
-                        data: evt.target.result
-                    });
-                }
+                const isPdfFile = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
 
-                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
-                renderContent();
+                targetStorage[currentSubject][topicName].push({
+                    isPdf: isPdfFile,
+                    name: file.name,
+                    data: evt.target.result,
+                    date: new Date().toLocaleDateString('es-MX')
+                });
+
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify(targetStorage));
+                    renderContent();
+                } catch (err) {
+                    alert('El archivo es demasiado grande para guardarse en el almacenamiento del navegador. Intenta con un archivo más ligero.');
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -1377,7 +1375,7 @@
         function renderTopicGroupedView(type) {
             const topics = getActiveTopicsForCurrentTab();
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : (type === 'diapos' ? diaposFiles : pdfNotes)));
-            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : (type === 'diapos' ? 'application/pdf,image/*' : 'image/*'));
+            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : (type === 'diapos' ? 'application/pdf,image/*,application/vnd.openxmlformats-officedocument.presentationml.presentation' : 'image/*'));
             let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : (type === 'diapos' ? '+ Subir Diapo (PDF / Imagen)' : '+ Subir YuliNotas (PDF)')));
 
             return topics.map((topic, tIdx) => {
