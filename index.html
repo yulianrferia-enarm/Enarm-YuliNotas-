@@ -87,7 +87,7 @@
         .btn-font { background: #4A148C; color: white; }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 12px 16px;
         }
@@ -190,18 +190,30 @@
             font-weight: 800;
         }
 
-        /* Cuadrícula General de Tarjetas por Tema (Ahora a 1 sola columna a lo ancho) */
+        /* Cuadrícula General de Tarjetas por Tema: 3 columnas en pantallas grandes */
         .direct-topics-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .direct-topics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .direct-topics-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .topic-direct-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 14px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -215,16 +227,20 @@
         }
 
         .topic-card-title {
-            font-size: calc(13px * var(--font-scale));
+            font-size: calc(12px * var(--font-scale));
             font-weight: 700;
             color: var(--text-dark);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 70%;
         }
 
-        /* Contenedor del Carrusel Amplio */
+        /* Contenedor del Carrusel Amplio por Tema */
         .topic-preview-container {
             position: relative;
             width: 100%;
-            height: 280px;
+            height: 200px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -252,7 +268,7 @@
         }
 
         .empty-preview-text {
-            font-size: calc(12px * var(--font-scale));
+            font-size: calc(11px * var(--font-scale));
             color: var(--text-muted);
             text-align: center;
             font-style: italic;
@@ -260,15 +276,15 @@
 
         .thumb-delete-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 6px;
+            right: 6px;
             background: rgba(229, 57, 53, 0.95);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 26px;
-            height: 26px;
-            font-size: 12px;
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -285,10 +301,10 @@
             background: rgba(0, 0, 0, 0.65);
             color: white;
             border: none;
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             z-index: 4;
             display: flex;
@@ -298,16 +314,16 @@
         }
 
         .carousel-nav-btn:hover { background: rgba(0, 0, 0, 0.85); }
-        .carousel-prev { left: 10px; }
-        .carousel-next { right: 10px; }
+        .carousel-prev { left: 8px; }
+        .carousel-next { right: 8px; }
 
         .upload-mini-btn {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 8px;
-            font-size: calc(12px * var(--font-scale));
+            font-size: calc(11px * var(--font-scale));
             font-weight: 700;
             cursor: pointer;
             text-align: center;
@@ -333,7 +349,7 @@
             background: var(--card-bg);
             color: var(--text-dark);
             border-radius: 8px;
-            font-size: calc(11.5px * var(--font-scale));
+            font-size: calc(11px * var(--font-scale));
         }
 
         .diapos-saved-badge {
@@ -341,7 +357,7 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
-            padding: 8px 12px;
+            padding: 8px 10px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
             gap: 8px;
@@ -350,7 +366,7 @@
         .diapos-saved-badge a {
             color: var(--primary-color);
             font-weight: 700;
-            font-size: calc(12px * var(--font-scale));
+            font-size: calc(11px * var(--font-scale));
             text-decoration: none;
             word-break: break-all;
             flex: 1;
@@ -363,10 +379,10 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            min-width: 24px;
-            font-size: 11px;
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            font-size: 10px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -1375,7 +1391,7 @@
                             return `
                                 <div class="topic-direct-card">
                                     <div class="topic-card-header">
-                                        <div class="topic-card-title">📌 ${topic}</div>
+                                        <div class="topic-card-title" title="${topic}">📌 ${topic}</div>
                                     </div>
                                     <div class="diapos-mini-box">
                                         ${savedLink ? `
@@ -1386,7 +1402,7 @@
                                         ` : `
                                             <div class="diapos-mini-input-row">
                                                 <input type="url" id="${inputId}" placeholder="Link web o Drive">
-                                                <button class="upload-mini-btn" style="width:auto; padding:8px 14px;" onclick="saveDiapoLink('${topic}', '${inputId}')">OK</button>
+                                                <button class="upload-mini-btn" style="width:auto; padding:8px 12px;" onclick="saveDiapoLink('${topic}', '${inputId}')">OK</button>
                                             </div>
                                         `}
                                     </div>
@@ -1410,7 +1426,7 @@
                         if (previewIndices[topic] === undefined) previewIndices[topic] = 0;
                         let pIdx = previewIndices[topic] % (items.length || 1);
 
-                        let previewHtml = `<div class="empty-preview-text">Sin archivos subidos en este tema</div>`;
+                        let previewHtml = `<div class="empty-preview-text">Sin archivos subidos</div>`;
                         if (items.length > 0) {
                             const currentItem = items[pIdx];
                             const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
@@ -1426,8 +1442,8 @@
                         return `
                             <div class="topic-direct-card">
                                 <div class="topic-card-header">
-                                    <div class="topic-card-title">📌 ${topic}</div>
-                                    <span style="font-size:11px; font-weight:700; color:var(--primary-color);">${items.length > 0 ? `Imagen ${pIdx + 1} de ${items.length}` : '0 archivos'}</span>
+                                    <div class="topic-card-title" title="${topic}">📌 ${topic}</div>
+                                    <span style="font-size:10.5px; font-weight:700; color:var(--primary-color); white-space:nowrap;">${items.length > 0 ? `${pIdx + 1}/${items.length}` : '0 arch.'}</span>
                                 </div>
                                 <div class="topic-preview-container">
                                     ${previewHtml}
