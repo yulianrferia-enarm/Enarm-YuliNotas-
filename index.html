@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -188,6 +188,30 @@
             border-radius: 12px;
             font-size: calc(10px * var(--font-scale));
             font-weight: 800;
+        }
+
+        /* Panel de Métricas y Estadísticas */
+        .metrics-card {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .metrics-card h3 {
+            font-size: calc(13px * var(--font-scale));
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: calc(12px * var(--font-scale));
+            margin-bottom: 6px;
+            color: var(--text-dark);
         }
 
         .topic-group-card {
@@ -809,6 +833,7 @@
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
             <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
             <button class="tab-btn btn-tab-diapos" onclick="selectTab('diapos')">Diapos</button>
+            <button class="tab-btn btn-tab-metricas" onclick="selectTab('metricas')">Métricas</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
         </div>
 
@@ -1003,7 +1028,7 @@
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
         let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
         let maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
-        let diaposFiles = JSON.parse(localStorage.getItem('yn_diapos_files_v5') || '{}');
+        let diaposFiles = JSON.parse(localStorage.getItem('yn_diapos_files_v6') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
         let currentFontScale = parseFloat(localStorage.getItem('yn_font_scale') || '1');
 
@@ -1099,6 +1124,8 @@
                 badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
             } else if (currentTab === 'diapos') {
                 badge.textContent = `${countTopicItems(diaposFiles, currentSubject)} Diapos`;
+            } else if (currentTab === 'metricas') {
+                badge.textContent = 'Estadísticas';
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 5;
                 let completedSubjectChecks = 0;
@@ -1178,7 +1205,7 @@
             const reader = new FileReader();
             reader.onload = function(evt) {
                 let targetStorage = type === 'diapos' ? diaposFiles : pdfNotes;
-                let storageKey = type === 'diapos' ? 'yn_diapos_files_v5' : 'yn_pdf_notes_v3';
+                let storageKey = type === 'diapos' ? 'yn_diapos_files_v6' : 'yn_pdf_notes_v3';
 
                 if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
                 if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
@@ -1201,7 +1228,7 @@
 
         function deleteTopicItem(sub, topicName, idx, type) {
             let targetStorage = type === 'diapos' ? diaposFiles : pdfNotes;
-            let storageKey = type === 'diapos' ? 'yn_diapos_files_v5' : 'yn_pdf_notes_v3';
+            let storageKey = type === 'diapos' ? 'yn_diapos_files_v6' : 'yn_pdf_notes_v3';
 
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
@@ -1424,6 +1451,28 @@
                 area.innerHTML = renderTopicGroupedView('pdf');
             } else if (currentTab === 'diapos') {
                 area.innerHTML = renderTopicGroupedView('diapos');
+            } else if (currentTab === 'metricas') {
+                let totalQuestions = (subjectData.preguntas || []).length;
+                let totalCards = (subjectData.flashcards || []).length;
+                let totalTopics = subjectData.temario.length;
+                let completedChecks = 0;
+                subjectData.temario.forEach((_, idx) => {
+                    const topicKey = `${currentSubject}_${idx}`;
+                    ['gpc', 'cto', 'drre', 'yuli', 'clase'].forEach(res => {
+                        if (topicChecklist[`${topicKey}_${res}`]) completedChecks++;
+                    });
+                });
+                let percentage = (totalTopics * 5) > 0 ? Math.round((completedChecks / (totalTopics * 5)) * 100) : 0;
+
+                area.innerHTML = `
+                    <div class="metrics-card">
+                        <h3>📊 Métricas de Estudio: ${subjectsConfig[currentSubject].title}</h3>
+                        <div class="metric-row"><span>Preguntas Totales:</span> <strong>${totalQuestions}</strong></div>
+                        <div class="metric-row"><span>Flashcards Totales:</span> <strong>${totalCards}</strong></div>
+                        <div class="metric-row"><span>Temas del Temario:</span> <strong>${totalTopics}</strong></div>
+                        <div class="metric-row"><span>Avance General del Temario:</span> <strong>${percentage}%</strong></div>
+                    </div>
+                `;
             } else if (currentTab === 'temario') {
                 const resources = ['gpc', 'cto', 'drre', 'yuli', 'clase'];
                 const labels = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas', 'Clase'];
@@ -1810,7 +1859,7 @@
                     localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
                     localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
                     localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
-                    localStorage.setItem('yn_diapos_files_v5', JSON.stringify(diaposFiles));
+                    localStorage.setItem('yn_diapos_files_v6', JSON.stringify(diaposFiles));
 
                     selectSubject(currentSubject);
                     selectTab(currentTab);
