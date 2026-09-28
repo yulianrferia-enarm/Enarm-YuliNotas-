@@ -15,6 +15,7 @@
             --border-color: #E5E5EA;
             --info-bg: #FAFAFA;
             --font-scale: 1;
+            --content-padding: 16px; /* Margen uniforme estricto */
         }
 
         body.dark-mode {
@@ -45,7 +46,7 @@
         .app-header {
             background-color: var(--card-bg);
             color: var(--text-dark);
-            padding: 12px 16px;
+            padding: 12px var(--content-padding);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
@@ -57,6 +58,8 @@
             justify-content: space-between;
             align-items: center;
             gap: 6px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .app-header h1 {
@@ -89,7 +92,7 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 12px 16px;
+            padding: 12px var(--content-padding);
         }
 
         .section-title {
@@ -97,7 +100,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-muted);
-            margin: 4px 0 6px 4px;
+            margin: 4px 0 6px 0;
             font-weight: 700;
         }
 
@@ -170,7 +173,7 @@
         .content-panel {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 16px;
+            padding: var(--content-padding);
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             min-height: 380px;
             border: 1px solid var(--border-color);
@@ -190,11 +193,12 @@
             font-weight: 800;
         }
 
-        /* ESTRICTAMENTE 2 HILERAS (COLUMNAS) */
+        /* HILERAS UNIFORMES DE 2 COLUMNAS CON MÁRGENES ESTRICTOS */
         .direct-topics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 12px;
+            width: 100%;
         }
 
         .topic-direct-card {
@@ -206,12 +210,15 @@
             flex-direction: column;
             gap: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            width: 100%;
+            overflow: hidden;
         }
 
         .topic-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
         }
 
         .topic-card-title {
@@ -221,7 +228,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 90%;
+            max-width: 85%;
         }
 
         /* Vista previa con cobertura completa (cover) */
@@ -319,11 +326,12 @@
             width: 100%;
         }
 
-        /* Diapos en formato lista Tema - Link */
+        /* Diapos en formato lista Tema - Link alineadas */
         .diapos-list-container {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            width: 100%;
         }
 
         .diapos-list-row {
@@ -335,6 +343,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            width: 100%;
         }
 
         .diapos-list-title {
@@ -502,7 +511,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            padding-top: 16px;
+            padding-top: 4px;
         }
 
         .question-text {
@@ -689,6 +698,7 @@
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 10px;
+            width: 100%;
         }
 
         .topic-header {
@@ -735,6 +745,7 @@
             padding: 16px;
             margin-bottom: 20px;
             border: 2px solid var(--primary-color);
+            width: 100%;
         }
 
         .admin-panel.active { display: block; }
@@ -852,6 +863,7 @@
         </div>
 
         <!-- 2. PESTAÑAS -->
+        <div class="section-title">Apartados</div>
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
@@ -993,7 +1005,7 @@
                     "Sindrome de Cushing", "Insuficiencia suprarrenal", "Hiperaldosteronismo", "Feocromocitoma", "Diabetes mellitus", 
                     "Cetoacidosis diabética", "Síndrome hiperglucémico hiperosmolar", "Pie diabético", "Anemia", "Leucemia mieloide crónica", 
                     "Leucemia linfática crónica (LLC)", "Leucemias agudas", "Linfoma no Hodgkin", "Linfoma Hodgkin", "Policitemia vera", 
-                    "Trombocitemia", "Mieloma múltiple", "Alteraciones de la coagulación", "Trombocitopenia", "Insuficiencia renal prerenal", 
+                    "Trombocitopenia", "Mieloma múltiple", "Alteraciones de la coagulación", "Trombocitopenia", "Insuficiencia renal prerenal", 
                     "IRA parenquimatosa", "IRA postrenal", "Enfermedad renal crónica", "Síndrome nefrítico", "Síndrome nefrótico", 
                     "Glomerulonefritis", "Nefropatía diabética", "Lupus eritematoso sistémico", "Vasculitis", "Enfermedad de Goodpasture", 
                     "Trastornos tubulares", "Microangiopatías trombóticas", "Enfermedad pulmonar obstructiva crónica", "Exacerbaciones EPOC", 
