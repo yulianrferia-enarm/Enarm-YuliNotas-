@@ -591,7 +591,7 @@
             cursor: pointer;
         }
 
-        /* Modal visor de imagen / PDF en pantalla completa */
+        /* Modal visor de imagen / PDF en pantalla completa con Zoom */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -1335,35 +1335,44 @@
         }
 
         function uploadTopicFile(e, type, topicName) {
-            const file = e.target.files[0];
-            if (!file) return;
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
 
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-                let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
 
-                if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
-                if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
+            if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
+            if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
 
-                if (file.type === 'application/pdf') {
-                    targetStorage[currentSubject][topicName].push({
-                        isPdf: true,
-                        name: file.name,
-                        data: evt.target.result,
-                        date: new Date().toLocaleDateString('es-MX')
-                    });
-                } else {
-                    targetStorage[currentSubject][topicName].push({
-                        isPdf: false,
-                        data: evt.target.result
-                    });
-                }
-
-                localStorage.setItem(storageKey, JSON.stringify(targetStorage));
-                renderContent();
-            };
-            reader.readAsDataURL(file);
+            let processedCount = 0;
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    if (file.type === 'application/pdf') {
+                        targetStorage[currentSubject][topicName].push({
+                            isPdf: true,
+                            name: file.name,
+                            data: evt.target.result,
+                            date: new Date().toLocaleDateString('es-MX')
+                        });
+                    } else {
+                        targetStorage[currentSubject][topicName].push({
+                            isPdf: false,
+                            data: evt.target.result
+                        });
+                    }
+                    processedCount++;
+                    if (processedCount === files.length) {
+                        try {
+                            localStorage.setItem(storageKey, JSON.stringify(targetStorage));
+                            renderContent();
+                        } catch (err) {
+                            alert('Los archivos son muy pesados para la memoria del navegador. Intenta subir menos fotos a la vez.');
+                        }
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
         function deleteTopicItem(sub, topicName, idx, type) {
@@ -1489,7 +1498,7 @@
 
             let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
             let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
-            let labelText = type === 'info' ? '+ Subir Infografía / Apunte' : (type === 'gpc' ? '+ Subir Esquema GPC' : (type === 'madera' ? '+ Subir Madera (PDF / Imagen)' : '+ Subir YuliNotas (PDF)'));
+            let labelText = type === 'info' ? '+ Subir Infografías (Múltiples fotos)' : (type === 'gpc' ? '+ Subir Esquemas GPC (Múltiples fotos)' : (type === 'madera' ? '+ Subir Madera (PDF / Imágenes)' : '+ Subir YuliNotas (PDF)'));
 
             return topics.map((topic, tIdx) => {
                 const items = (targetStorage[currentSubject] && targetStorage[currentSubject][topic]) ? targetStorage[currentSubject][topic] : [];
@@ -1548,7 +1557,7 @@
                         <div class="topic-group-body">
                             <div class="image-upload-zone" onclick="document.getElementById('${inputId}').click()">
                                 <p>${labelText}</p>
-                                <input type="file" id="${inputId}" accept="${inputAccept}" style="display: none;" onchange="uploadTopicFile(event, '${type}', '${topic}')">
+                                <input type="file" id="${inputId}" accept="${inputAccept}" multiple style="display: none;" onchange="uploadTopicFile(event, '${type}', '${topic}')">
                             </div>
                             ${contentHtml}
                         </div>
