@@ -190,27 +190,21 @@
             font-weight: 800;
         }
 
-        /* Cuadrícula General de Tarjetas por Tema */
+        /* Cuadrícula General de Tarjetas por Tema (Ahora a 1 sola columna a lo ancho) */
         .direct-topics-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        @media (max-width: 550px) {
-            .direct-topics-grid {
-                grid-template-columns: 1fr;
-            }
+            grid-template-columns: 1fr;
+            gap: 14px;
         }
 
         .topic-direct-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 12px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
@@ -221,19 +215,19 @@
         }
 
         .topic-card-title {
-            font-size: calc(12px * var(--font-scale));
+            font-size: calc(13px * var(--font-scale));
             font-weight: 700;
             color: var(--text-dark);
         }
 
-        /* Contenedor del Carrusel de Vista Previa */
+        /* Contenedor del Carrusel Amplio */
         .topic-preview-container {
             position: relative;
             width: 100%;
-            height: 140px;
+            height: 280px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -243,9 +237,10 @@
         .topic-preview-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: block;
             cursor: pointer;
+            background: #00000008;
         }
 
         .topic-preview-container iframe {
@@ -257,7 +252,7 @@
         }
 
         .empty-preview-text {
-            font-size: calc(11px * var(--font-scale));
+            font-size: calc(12px * var(--font-scale));
             color: var(--text-muted);
             text-align: center;
             font-style: italic;
@@ -265,56 +260,58 @@
 
         .thumb-delete-btn {
             position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(229, 57, 53, 0.9);
+            top: 8px;
+            right: 8px;
+            background: rgba(229, 57, 53, 0.95);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
+            width: 26px;
+            height: 26px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 5;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .carousel-nav-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             color: white;
             border: none;
-            width: 26px;
-            height: 26px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            font-size: 11px;
+            font-size: 16px;
             cursor: pointer;
             z-index: 4;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.2s;
         }
 
-        .carousel-prev { left: 6px; }
-        .carousel-next { right: 6px; }
+        .carousel-nav-btn:hover { background: rgba(0, 0, 0, 0.85); }
+        .carousel-prev { left: 10px; }
+        .carousel-next { right: 10px; }
 
         .upload-mini-btn {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: calc(11px * var(--font-scale));
+            font-size: calc(12px * var(--font-scale));
             font-weight: 700;
             cursor: pointer;
             text-align: center;
             width: 100%;
-            margin-top: 4px;
         }
 
         /* Diapos en Tarjetas */
@@ -326,17 +323,17 @@
 
         .diapos-mini-input-row {
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .diapos-mini-input-row input {
             flex: 1;
-            padding: 6px;
+            padding: 8px 10px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-dark);
-            border-radius: 6px;
-            font-size: calc(10.5px * var(--font-scale));
+            border-radius: 8px;
+            font-size: calc(11.5px * var(--font-scale));
         }
 
         .diapos-saved-badge {
@@ -344,8 +341,8 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
-            padding: 6px 10px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             gap: 8px;
         }
@@ -353,7 +350,7 @@
         .diapos-saved-badge a {
             color: var(--primary-color);
             font-weight: 700;
-            font-size: calc(11px * var(--font-scale));
+            font-size: calc(12px * var(--font-scale));
             text-decoration: none;
             word-break: break-all;
             flex: 1;
@@ -366,9 +363,9 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            min-width: 22px;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
@@ -1032,7 +1029,7 @@
         
         let questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
         let cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
-        let previewIndices = {}; // Controla la imagen actual en la vista previa por cada tema
+        let previewIndices = {};
 
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
@@ -1389,7 +1386,7 @@
                                         ` : `
                                             <div class="diapos-mini-input-row">
                                                 <input type="url" id="${inputId}" placeholder="Link web o Drive">
-                                                <button class="upload-mini-btn" style="width:auto; padding:6px 10px; margin-top:0;" onclick="saveDiapoLink('${topic}', '${inputId}')">OK</button>
+                                                <button class="upload-mini-btn" style="width:auto; padding:8px 14px;" onclick="saveDiapoLink('${topic}', '${inputId}')">OK</button>
                                             </div>
                                         `}
                                     </div>
@@ -1413,7 +1410,7 @@
                         if (previewIndices[topic] === undefined) previewIndices[topic] = 0;
                         let pIdx = previewIndices[topic] % (items.length || 1);
 
-                        let previewHtml = `<div class="empty-preview-text">Sin archivos subidos</div>`;
+                        let previewHtml = `<div class="empty-preview-text">Sin archivos subidos en este tema</div>`;
                         if (items.length > 0) {
                             const currentItem = items[pIdx];
                             const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
@@ -1430,7 +1427,7 @@
                             <div class="topic-direct-card">
                                 <div class="topic-card-header">
                                     <div class="topic-card-title">📌 ${topic}</div>
-                                    <span style="font-size:10px; font-weight:700; color:var(--primary-color);">${items.length > 0 ? `${pIdx + 1}/${items.length}` : '0 arch.'}</span>
+                                    <span style="font-size:11px; font-weight:700; color:var(--primary-color);">${items.length > 0 ? `Imagen ${pIdx + 1} de ${items.length}` : '0 archivos'}</span>
                                 </div>
                                 <div class="topic-preview-container">
                                     ${previewHtml}
