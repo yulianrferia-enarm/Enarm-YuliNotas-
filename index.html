@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -326,9 +326,10 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
-            padding: 6px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
+            gap: 8px;
         }
 
         .diapos-saved-badge a {
@@ -337,10 +338,26 @@
             font-size: calc(11px * var(--font-scale));
             text-decoration: none;
             word-break: break-all;
-            max-width: 80%;
+            flex: 1;
         }
 
         .diapos-saved-badge a:hover { text-decoration: underline; }
+
+        .diapo-delete-btn {
+            background: #E53935;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         /* Flashcards */
         .flashcard-filter-bar {
@@ -1338,7 +1355,7 @@
                                         ${savedLink ? `
                                             <div class="diapos-saved-badge">
                                                 <a href="${savedLink}" target="_blank">🔗 Ver Diapositivas</a>
-                                                <button class="thumb-delete-btn" style="position:static;" onclick="deleteDiapoLink('${topic}')">✕</button>
+                                                <button class="diapo-delete-btn" onclick="deleteDiapoLink('${topic}')">✕</button>
                                             </div>
                                         ` : `
                                             <div class="diapos-mini-input-row">
