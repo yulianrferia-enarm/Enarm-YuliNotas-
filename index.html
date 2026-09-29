@@ -1529,7 +1529,7 @@
                         <div class="question-text">${q.q}</div>
                         ${optionsWithFeedback.map((item, idx) => `
                             <div class="option-container">
-                                <button class="option-btn" data-correct="${item.isCorrect}" onclick="checkAnswerNotebook(this)">${String.fromCharCode(65 + idx)})${item.text}</button>
+                                <button class="option-btn" data-correct="${item.isCorrect}" onclick="checkAnswerNotebook(this)">${String.fromCharCode(65 + idx)}) ${item.text}</button>
                                 <div class="option-feedback">${item.feedback}</div>
                             </div>
                         `).join('')}
@@ -1804,14 +1804,11 @@
             renderContent();
         }
 
-        // Función modificada para mostrar las explicaciones de TODAS las opciones al mismo tiempo (Correctas en verde, incorrectas en rojo)
         function checkAnswerNotebook(selectedBtn) {
             const container = selectedBtn.closest('.question-card');
             
-            // Deshabilitar todos los botones de opciones para evitar múltiples clics
             container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
 
-            // Iterar sobre cada contenedor de opción para colorear y mostrar su feedback simultáneamente
             container.querySelectorAll('.option-container').forEach(optContainer => {
                 const btn = optContainer.querySelector('.option-btn');
                 const feedbackBox = optContainer.querySelector('.option-feedback');
@@ -1828,7 +1825,6 @@
                 }
             });
 
-            // Mostrar el botón para pasar a la siguiente pregunta
             const nextBtn = document.getElementById('next-q-btn');
             if (nextBtn) nextBtn.style.display = 'block';
         }
