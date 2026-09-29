@@ -581,6 +581,31 @@
             font-weight: 700;
         }
 
+        /* Nuevo estilo para el bloque de retroalimentación global */
+        .global-feedback-box {
+            display: none;
+            margin-top: 12px;
+            padding: 16px;
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            font-size: calc(12.5px * var(--font-scale));
+            line-height: 1.5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .global-feedback-box.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilos conservados para el simulacro */
         .option-feedback {
             display: none;
             padding: 10px 14px;
@@ -594,12 +619,6 @@
             border-left: 4px solid #28A745;
             background: #E9F7EF;
             color: #155724;
-        }
-
-        .option-feedback.incorrect-feedback {
-            border-left: 4px solid #DC3545;
-            background: #FADBD8;
-            color: #721C24;
         }
 
         .next-q-btn {
@@ -617,6 +636,7 @@
             box-shadow: 0 4px 12px rgba(142,36,170,0.25);
         }
 
+        /* Modales y demás clases... */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -1587,37 +1607,57 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                let optionsWithFeedback = shuffledOptions.map(opt => {
-                    let isCorrect = (opt === correctValue);
-                    let specificFeedback = "";
-                    
-                    if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
-                        let found = q.discardExplanation.find(item => {
-                            let cleanItem = item.toLowerCase();
-                            let cleanOpt = opt.toLowerCase();
-                            return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 12)));
-                        });
-                        if (found) specificFeedback = found;
-                    }
-                    
-                    if (!specificFeedback) {
-                        specificFeedback = isCorrect 
-                            ? `<b>Justificación correcta:</b> ${q.explanation || correctValue}` 
-                            : `<b>Justificación incorrecta:</b> No corresponde a la opción indicada para este caso.`;
-                    }
+                // Construcción de los motivos de opciones incorrectas para el mini resumen
+                let incorrectReasons = shuffledOptions
+                    .filter(opt => opt !== correctValue)
+                    .map(opt => {
+                        let specificFeedback = "";
+                        if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
+                            let found = q.discardExplanation.find(item => {
+                                let cleanItem = item.toLowerCase();
+                                let cleanOpt = opt.toLowerCase();
+                                return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 12)));
+                            });
+                            if (found) specificFeedback = found;
+                        }
+                        if (!specificFeedback) {
+                            specificFeedback = `<b>${opt}:</b> No es la opción indicada para este escenario clínico.`;
+                        }
+                        return `<li style="margin-bottom: 6px;">${specificFeedback}</li>`;
+                    }).join('');
 
-                    return { text: opt, isCorrect, feedback: specificFeedback };
-                });
+                // Bloque Global de Retroalimentación
+                let globalFeedbackHTML = `
+                    <div class="global-feedback-box">
+                        <div style="color: #2E7D32; font-weight: 800; font-size: calc(14px * var(--font-scale)); margin-bottom: 6px;">
+                            ✓ Respuesta Correcta
+                        </div>
+                        <div style="margin-bottom: 8px; color: var(--text-dark); font-weight: 700; font-size: calc(13px * var(--font-scale));">
+                            ${correctValue}
+                        </div>
+                        <div style="margin-bottom: 14px; color: var(--text-dark);">
+                            ${q.explanation || 'Opción de primera línea para este caso.'}
+                        </div>
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 10px;">
+                            <strong style="color: var(--text-muted); font-size: calc(11.5px * var(--font-scale)); display: block; margin-bottom: 8px;">
+                                ¿Por qué las demás son incorrectas?
+                            </strong>
+                            <ul style="margin: 0; padding-left: 18px; color: var(--text-dark); font-size: calc(12px * var(--font-scale));">
+                                ${incorrectReasons}
+                            </ul>
+                        </div>
+                    </div>
+                `;
 
                 area.innerHTML = `
                     <div class="question-card">
                         <div class="question-text">${q.q}</div>
-                        ${optionsWithFeedback.map((item, idx) => `
+                        ${shuffledOptions.map((opt, idx) => `
                             <div class="option-container">
-                                <button class="option-btn" data-correct="${item.isCorrect}" onclick="checkAnswerNotebook(this)">${String.fromCharCode(65 + idx)}) ${item.text}</button>
-                                <div class="option-feedback ${item.isCorrect ? 'correct-feedback' : 'incorrect-feedback'}">${item.feedback}</div>
+                                <button class="option-btn" data-correct="${opt === correctValue}" onclick="checkAnswerNotebook(this)">${String.fromCharCode(65 + idx)}) ${opt}</button>
                             </div>
                         `).join('')}
+                        ${globalFeedbackHTML}
                         <button id="next-q-btn" class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                     </div>
                 `;
@@ -1893,11 +1933,9 @@
         function checkAnswerNotebook(selectedBtn) {
             const container = selectedBtn.closest('.question-card');
             
-            container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-
-            container.querySelectorAll('.option-container').forEach(optContainer => {
-                const btn = optContainer.querySelector('.option-btn');
-                const feedbackBox = optContainer.querySelector('.option-feedback');
+            // Bloquea los botones e ilumina
+            container.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
                 const isCorrectOption = btn.getAttribute('data-correct') === 'true';
 
                 if (isCorrectOption) {
@@ -1905,11 +1943,13 @@
                 } else {
                     btn.classList.add('incorrect');
                 }
-
-                if (feedbackBox) {
-                    feedbackBox.style.display = 'block';
-                }
             });
+
+            // Muestra el recuadro global inferior de feedback
+            const globalFeedback = container.querySelector('.global-feedback-box');
+            if (globalFeedback) {
+                globalFeedback.classList.add('active');
+            }
 
             const nextBtn = document.getElementById('next-q-btn');
             if (nextBtn) nextBtn.style.display = 'block';
@@ -1945,19 +1985,19 @@
                 saveBtn.style.display = 'block';
                 saveBtn.textContent = 'Guardar Pregunta';
                 container.innerHTML = `
-                    <textarea id="af-q" rows="3" placeholder="Pregunta / caso"></textarea>
-                    <input type="text" id="af-o0" placeholder="Opción A (Correcta) directamente">
-                    <input type="text" id="af-o1" placeholder="Opción B (Incorrecta)">
-                    <input type="text" id="af-o2" placeholder="Opción C (Incorrecta)">
-                    <input type="text" id="af-o3" placeholder="Opción D (Incorrecta)">
-                    <textarea id="af-jcorr" rows="2" placeholder="Justificación correcta"></textarea>
-                    <textarea id="af-jinc" rows="3" placeholder="Justificación incorrecta"></textarea>
+                    <textarea id="af-q" rows="3" placeholder="Caso clínico / Pregunta"></textarea>
+                    <input type="text" id="af-o0" placeholder="Opción Correcta">
+                    <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
+                    <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
+                    <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
+                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación general / opción correcta"></textarea>
+                    <textarea id="af-disc" rows="4" placeholder="Razones por opción (ej:&#10;<b>Opción 1:</b> CORRECTA...&#10;<b>Opción 2:</b> INCORRECTA porque...)"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus preguntas estructuradas (Pregunta / Opciones / Justificación correcta / Justificación incorrecta):</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="Pregunta / caso: ...&#10;Opciones: ...&#10;Justificación correcta: ...&#10;Justificación incorrecta: ..."></textarea>
+                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus casos clínicos estructurados:</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="Caso Clínico: ..."></textarea>
                     <button type="button" onclick="processPastedPreguntas()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Preguntas</button>
                 `;
             } else if (type === 'flashcards_paste') {
@@ -1995,8 +2035,7 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            // Separar bloques por número de pregunta o etiqueta común
-            const caseBlocks = text.split(/(?=\b\d+[\.\)]\s*Pregunta|\bPregunta \/ caso|\bCaso clínico)/i);
+            const caseBlocks = text.split(/(?=\b\d+\.\s*Caso clínico|\bCaso clínico|\bCaso clínico \/ Pregunta:)/i);
             
             caseBlocks.forEach(block => {
                 const trimmed = block.trim();
@@ -2004,62 +2043,75 @@
 
                 let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
                 let qText = "";
-                let optionsList = [];
-                let justCorr = "";
-                let justInc = "";
-                
-                let currentSection = 'q';
+                let optionsMap = {}; 
+                let discardList = [];
+                let correctOptLetter = "";
 
                 lines.forEach(line => {
-                    let lower = line.toLowerCase();
-                    if (lower.startsWith('opciones:') || lower.startsWith('opciones')) {
-                        currentSection = 'options';
-                        let clean = line.replace(/^opciones[:]?\s*/i, '').trim();
-                        if (clean) {
-                            let parts = clean.split(/[\n;]|\b[A-G][\)\.\:]/);
-                            parts.forEach(p => { if(p.trim()) optionsList.push(p.trim().replace(/^[A-G][\)\.\:]\s*/, '')); });
+                    let cleanLine = line.replace(/^\d+\.\s*/, '');
+                    let upperLine = cleanLine.toUpperCase();
+
+                    let optMatch = cleanLine.match(/^([A-G])[\)\.\:]\s*(.*)/);
+                    if (optMatch) {
+                        let letter = optMatch[1].toUpperCase();
+                        let content = optMatch[2].trim();
+                        if (content.toLowerCase().includes('correcta') || content.toLowerCase().includes('incorrecta')) {
+                            let parts = content.split(/[:\.]\s*(?=[A-Z])/);
+                            optionsMap[letter] = parts[0].trim();
+                            discardList.push(`<b>Opción ${letter}:</b> ${content}`);
+                        } else {
+                            optionsMap[letter] = content;
                         }
                         return;
                     }
-                    if (lower.includes('justificación correcta') || lower.includes('justificacion correcta')) {
-                        currentSection = 'jcorr';
-                        justCorr = line.replace(/^.*correcta[:]?\s*/i, '').trim();
-                        return;
-                    }
-                    if (lower.includes('justificación incorrecta') || lower.includes('justificacion incorrecta')) {
-                        currentSection = 'jinc';
-                        justInc = line.replace(/^.*incorrecta[:]?\s*/i, '').trim();
+
+                    if (cleanLine.toLowerCase().startsWith('opción correcta') || upperLine.includes('CORRECTA')) {
+                        if (cleanLine.includes('A)') || cleanLine.startsWith('A') || upperLine.includes('INCISO A')) correctOptLetter = 'A';
+                        if (cleanLine.includes('B)') || cleanLine.startsWith('B') || upperLine.includes('INCISO B')) correctOptLetter = 'B';
+                        if (cleanLine.includes('C)') || cleanLine.startsWith('C') || upperLine.includes('INCISO C')) correctOptLetter = 'C';
+                        if (cleanLine.includes('D)') || cleanLine.startsWith('D') || upperLine.includes('INCISO D')) correctOptLetter = 'D';
+                        if (cleanLine.includes('E)') || cleanLine.startsWith('E') || upperLine.includes('INCISO E')) correctOptLetter = 'E';
+                        if (cleanLine.includes('F)') || cleanLine.startsWith('F') || upperLine.includes('INCISO F')) correctOptLetter = 'F';
+                        if (cleanLine.includes('G)') || cleanLine.startsWith('G') || upperLine.includes('INCISO G')) correctOptLetter = 'G';
+                        
+                        discardList.push(cleanLine);
                         return;
                     }
 
-                    if (currentSection === 'q') {
-                        let cleanL = line.replace(/^(pregunta \/ caso|pregunta|caso clínico)[:]?\s*/i, '').replace(/^\d+[\.\)]\s*/, '');
-                        qText = qText ? qText + " " + cleanL : cleanL;
-                    } else if (currentSection === 'options') {
-                        let optText = line.replace(/^[A-G][\)\.\:]\s*/, '').trim();
-                        if (optText) optionsList.push(optText);
-                    } else if (currentSection === 'jcorr') {
-                        justCorr = justCorr ? justCorr + " " + line : line;
-                    } else if (currentSection === 'jinc') {
-                        justInc = justInc ? justInc + " " + line : line;
+                    if (cleanLine.toLowerCase().startsWith('se descarta') || cleanLine.toLowerCase().includes('incorrecta')) {
+                        discardList.push(cleanLine);
+                        return;
+                    }
+
+                    if (!qText) {
+                        qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
+                    } else {
+                        qText += " " + cleanLine;
                     }
                 });
 
-                if (qText && optionsList.length >= 2) {
-                    let correctVal = optionsList[0]; // Por defecto la primera es la correcta provista, luego se barajan visualmente
-                    let discardArray = optionsList.map(opt => {
-                        return (opt === correctVal) 
-                            ? `<b>Justificación correcta:</b> ${justCorr || correctVal}` 
-                            : `<b>Justificación incorrecta:</b> ${justInc || 'No corresponde al cuadro clínico planteado.'}`;
+                let optionKeys = Object.keys(optionsMap).sort();
+                if (qText && optionKeys.length >= 2) {
+                    let rawOpts = optionKeys.map(k => optionsMap[k]);
+                    let correctTextVal = optionsMap['G'] || optionsMap[optionKeys[0]]; 
+
+                    if (correctOptLetter && optionsMap[correctOptLetter]) {
+                        correctTextVal = optionsMap[correctOptLetter];
+                    }
+
+                    let finalDiscard = rawOpts.map(opt => {
+                        let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, 10)));
+                        if (found) return found;
+                        return opt === correctTextVal ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA para este escenario clínico.`;
                     });
 
                     customData[sub].preguntas.push({
                         id: 'p_paste_' + Date.now() + Math.random(),
                         q: qText,
-                        rawOptions: optionsList,
-                        correctText: correctVal,
-                        explanation: justCorr || `Respuesta correcta: ${correctVal}`,
-                        discardExplanation: discardArray
+                        rawOptions: rawOpts,
+                        correctText: correctTextVal,
+                        explanation: `Respuesta correcta: ${correctTextVal}`,
+                        discardExplanation: finalDiscard
                     });
                     addedQ++;
                 }
@@ -2071,7 +2123,7 @@
                 renderContent();
                 toggleAdminPanel();
             } else {
-                alert('No se pudo procesar el formato. Asegúrate de incluir las secciones: Pregunta/caso, Opciones, Justificación correcta y Justificación incorrecta.');
+                alert('No se pudo procesar el formato. Asegúrate de incluir las opciones con sus incisos (A, B, C...).');
             }
         }
 
@@ -2139,26 +2191,22 @@
                 const o1 = document.getElementById('af-o1').value.trim();
                 const o2 = document.getElementById('af-o2').value.trim();
                 const o3 = document.getElementById('af-o3').value.trim();
-                const jcorr = document.getElementById('af-jcorr').value.trim();
-                const jinc = document.getElementById('af-jinc').value.trim();
+                const exp = document.getElementById('af-exp').value.trim();
+                const disc = document.getElementById('af-disc').value.trim();
 
-                if (!q || !o0 || !o1) return alert('Llena al menos la pregunta y dos opciones.');
+                if (!q || !o0 || !o1) return alert('Llena al menos la pregunta, la opción correcta y una incorrecta.');
                 let options = [o0, o1];
                 if (o2) options.push(o2);
                 if (o3) options.push(o3);
 
-                let discardArray = options.map(opt => {
-                    return (opt === o0) 
-                        ? `<b>Justificación correcta:</b> ${jcorr || o0}` 
-                        : `<b>Justificación incorrecta:</b> ${jinc || 'No corresponde al caso clínico.'}`;
-                });
+                let discardArray = disc ? disc.split('\n').filter(Boolean) : options.map(opt => opt === o0 ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`);
 
                 customData[sub].preguntas.push({
                     id: 'p_' + Date.now(),
                     q,
                     rawOptions: options,
                     correctText: o0,
-                    explanation: jcorr || `Respuesta correcta: ${o0}`,
+                    explanation: exp || `Respuesta correcta: ${o0}`,
                     discardExplanation: discardArray
                 });
 
@@ -2183,73 +2231,27 @@
             updateCornerBadge();
         }
 
+        // Función processAnki y arranque completados
         function processAnki(cardId, days, diff) {
             cardDifficulty[cardId] = diff;
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
 
             let next = new Date();
             next.setDate(next.getDate() + days);
-            ankiReviews[cardId] = { nextDate: next.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
+            
+            ankiReviews[cardId] = { nextDate: next.toLocaleDateString('es-MX') };
             localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
-
+            
             if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
             if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
             cardIndices[currentSubject][activeCardFilter]++;
             localStorage.setItem('yn_card_indices', JSON.stringify(cardIndices));
+            
             renderContent();
         }
 
-        function exportBackup() {
-            const backupObj = { baseData, customData, topicChecklist, deletedTopics, ankiReviews, cardDifficulty, gpcImages, infographicImages, pdfNotes, maderaFiles, diaposLinks };
-            const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `YuliNotas_Respaldo_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function importBackup(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const data = JSON.parse(evt.target.result);
-                    if (data.customData) customData = data.customData;
-                    if (data.topicChecklist) topicChecklist = data.topicChecklist;
-                    if (data.deletedTopics) deletedTopics = data.deletedTopics;
-                    if (data.ankiReviews) ankiReviews = data.ankiReviews;
-                    if (data.cardDifficulty) cardDifficulty = data.cardDifficulty;
-                    if (data.gpcImages) gpcImages = data.gpcImages;
-                    if (data.infographicImages) infographicImages = data.infographicImages;
-                    if (data.pdfNotes) pdfNotes = data.pdfNotes;
-                    if (data.maderaFiles) maderaFiles = data.maderaFiles;
-                    if (data.diaposLinks) diaposLinks = data.diaposLinks;
-
-                    localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                    localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
-                    localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(deletedTopics));
-                    localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
-                    localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
-                    localStorage.setItem('yn_gpc_images_v3', JSON.stringify(gpcImages));
-                    localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
-                    localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
-                    localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
-                    localStorage.setItem('yn_diapos_links_v1', JSON.stringify(diaposLinks));
-
-                    alert('¡Datos cargados correctamente!');
-                    renderContent();
-                } catch (err) {
-                    alert('El archivo no es válido.');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        selectSubject(currentSubject);
-        selectTab(currentTab);
+        // Inicializar al cargar la página
+        renderContent();
     </script>
 </body>
 </html>
