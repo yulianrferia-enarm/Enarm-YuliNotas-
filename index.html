@@ -1995,62 +1995,90 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            // Separador robusto para múltiples preguntas en bloque (detecta números seguidos de punto, "Caso", "Pregunta", etc.)
-            const blocks = text.split(/(?=\b\d+[\.\)]\s*(?:Caso|Pregunta)?|\bCaso\s+clínico|\bPregunta\s*\d+)/i);
-
-            blocks.forEach(block => {
+            const caseBlocks = text.split(/(?=\b\d+\.\s*Caso clínico|\bCaso clínico|\bCaso clínico \/ Pregunta:)/i);
+            
+            caseBlocks.forEach(block => {
                 const trimmed = block.trim();
-                if (!trimmed || trimmed.length < 15) return;
+                if (!trimmed) return;
 
                 let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
                 let qText = "";
-                let correctOpt = "";
-                let incorrectOpts = [];
-                let correctExp = "";
+                let optionsMap = {}; // A, B, C, D... -> texto de opción
                 let discardList = [];
+                let correctOptLetter = "";
 
                 lines.forEach(line => {
-                    let cleanLine = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[\*\-\•]\s*/, '');
-                    let lower = cleanLine.toLowerCase();
+                    let cleanLine = line.replace(/^\d+\.\s*/, '');
+                    let upperLine = cleanLine.toUpperCase();
 
-                    if (lower.startsWith('caso clínico') || lower.startsWith('pregunta:') || lower.startsWith('caso:')) {
-                        qText = cleanLine.replace(/^(caso clínico[\/:]?|pregunta:|caso:)\s*/i, '');
-                    } else if (lower.startsWith('opción correcta:') || lower.startsWith('correcta:')) {
-                        correctOpt = cleanLine.replace(/^(opción correcta:|correcta:)\s*/i, '');
-                    } else if (lower.startsWith('opción incorrecta') || lower.startsWith('incorrecta')) {
-                        incorrectOpts.push(cleanLine.replace(/^(opción incorrecta\s*\d*[:\s]*|incorrecta[:\s]*)/i, ''));
-                    } else if (lower.startsWith('retroalimentación') || lower.startsWith('explicación:')) {
-                        correctExp = cleanLine.replace(/^(retroalimentación[:\s]*|explicación[:\s]*)/i, '');
-                    } else if (lower.startsWith('<b>') || lower.startsWith('a)') || lower.startsWith('b)') || lower.startsWith('c)') || lower.startsWith('d)')) {
-                        discardList.push(cleanLine);
-                    } else if (!qText && (cleanLine.includes('?') || cleanLine.length > 30)) {
-                        qText = cleanLine;
-                    } else if (qText && !correctOpt && !lower.includes('opción') && !lower.includes('retroalimentación')) {
-                        if (!qText.includes('?')) {
-                            qText += " " + cleanLine;
+                    // Detectar opciones tipo A) o A.
+                    let optMatch = cleanLine.match(/^([A-G])[\)\.\:]\s*(.*)/);
+                    if (optMatch) {
+                        let letter = optMatch[1].toUpperCase();
+                        let content = optMatch[2].trim();
+                        // Si la línea contiene retroalimentación integrada, separarla
+                        if (content.toLowerCase().includes('correcta') || content.toLowerCase().includes('incorrecta')) {
+                            let parts = content.split(/[:\.]\s*(?=[A-Z])/);
+                            optionsMap[letter] = parts[0].trim();
+                            discardList.push(`<b>Opción ${letter}:</b> ${content}`);
+                        } else {
+                            optionsMap[letter] = content;
                         }
+                        return;
+                    }
+
+                    // Detectar líneas de descarte explícitas o retroalimentación
+                    if (cleanLine.toLowerCase().startsWith('opción correcta') || upperLine.includes('CORRECTA')) {
+                        if (cleanLine.includes('A)') || cleanLine.startsWith('A') || upperLine.includes('INCISO A')) correctOptLetter = 'A';
+                        if (cleanLine.includes('B)') || cleanLine.startsWith('B') || upperLine.includes('INCISO B')) correctOptLetter = 'B';
+                        if (cleanLine.includes('C)') || cleanLine.startsWith('C') || upperLine.includes('INCISO C')) correctOptLetter = 'C';
+                        if (cleanLine.includes('D)') || cleanLine.startsWith('D') || upperLine.includes('INCISO D')) correctOptLetter = 'D';
+                        if (cleanLine.includes('E)') || cleanLine.startsWith('E') || upperLine.includes('INCISO E')) correctOptLetter = 'E';
+                        if (cleanLine.includes('F)') || cleanLine.startsWith('F') || upperLine.includes('INCISO F')) correctOptLetter = 'F';
+                        if (cleanLine.includes('G)') || cleanLine.startsWith('G') || upperLine.includes('INCISO G')) correctOptLetter = 'G';
+                        
+                        discardList.push(cleanLine);
+                        return;
+                    }
+
+                    if (cleanLine.toLowerCase().startsWith('se descarta') || cleanLine.toLowerCase().includes('incorrecta')) {
+                        discardList.push(cleanLine);
+                        return;
+                    }
+
+                    // Si no es opción ni descarte, es parte del caso clínico/pregunta
+                    if (!qText) {
+                        qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
+                    } else {
+                        qText += " " + cleanLine;
                     }
                 });
 
-                // Si no se detectó una opción correcta explícita, intenta inferirla o tomar la primera línea con formato de opción si existe
-                if (!correctOpt && incorrectOpts.length > 0) {
-                    correctOpt = incorrectOpts.shift();
-                }
+                let optionKeys = Object.keys(optionsMap).sort();
+                if (qText && optionKeys.length >= 2) {
+                    let rawOpts = optionKeys.map(k => optionsMap[k]);
+                    // Si no se especificó letra correcta explícita, asumimos la primera o buscamos en descarte
+                    let correctTextVal = optionsMap['G'] || optionsMap[optionKeys[0]]; // Por defecto el ejemplo G o el primero
 
-                if (qText && correctOpt) {
-                    let allOpts = [correctOpt, ...incorrectOpts];
-                    // Asegurar al menos 2 opciones para que funcione el test
-                    if (allOpts.length < 2) {
-                        allOpts.push("Opción alternativa de relleno");
+                    // Refinar búsqueda de la correcta según la letra detectada
+                    if (correctOptLetter && optionsMap[correctOptLetter]) {
+                        correctTextVal = optionsMap[correctOptLetter];
                     }
-                    
+
+                    // Generar lista de descarte limpia alineada con las opciones reales
+                    let finalDiscard = rawOpts.map(opt => {
+                        let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, 10)));
+                        if (found) return found;
+                        return opt === correctTextVal ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA para este escenario clínico.`;
+                    });
+
                     customData[sub].preguntas.push({
                         id: 'p_paste_' + Date.now() + Math.random(),
                         q: qText,
-                        rawOptions: allOpts,
-                        correctText: correctOpt,
-                        explanation: correctExp || `Respuesta correcta: ${correctOpt}`,
-                        discardExplanation: discardList.length > 0 ? discardList : allOpts.map(opt => opt === correctOpt ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`)
+                        rawOptions: rawOpts,
+                        correctText: correctTextVal,
+                        explanation: `Respuesta correcta: ${correctTextVal}`,
+                        discardExplanation: finalDiscard
                     });
                     addedQ++;
                 }
@@ -2058,11 +2086,11 @@
 
             if (addedQ > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se procesaron y ordenaron ${addedQ} preguntas exitosamente!`);
+                alert(`¡Se agregaron ${addedQ} preguntas exitosamente!`);
                 renderContent();
                 toggleAdminPanel();
             } else {
-                alert('No se pudo estructurar automáticamente. Asegúrate de que cada pregunta indique claramente el enunciado y la opción correcta.');
+                alert('No se pudo procesar el formato. Asegúrate de incluir las opciones con sus incisos (A, B, C...).');
             }
         }
 
@@ -2079,24 +2107,19 @@
 
             lines.forEach(line => {
                 let clean = line.trim();
-                let lower = clean.toLowerCase();
-
-                if (lower.includes('frente:') || lower.startsWith('* f') || lower.startsWith('- f') || lower.startsWith('q:')) {
+                if (clean.toLowerCase().includes('frente:') || clean.startsWith('* F') || clean.startsWith('- F')) {
                     if (currentQ && currentA) {
                         customData[sub].flashcards.push({ id: 'fc_' + Date.now() + Math.random(), q: currentQ, a: currentA, tag: 'normal' });
                         addedFc++;
                     }
-                    currentQ = clean.replace(/^[\*\-\•]?\s*(frente:|q:)\s*/i, '');
+                    currentQ = clean.replace(/^[\*\-\•]?\s*frente:\s*/i, '');
                     currentA = "";
-                } else if (lower.includes('reverso:') || lower.startsWith('* r') || lower.startsWith('- r') || lower.startsWith('a:')) {
-                    currentA = clean.replace(/^[\*\-\•]?\s*(reverso:|a:)\s*/i, '');
+                } else if (clean.toLowerCase().includes('reverso:') || clean.startsWith('* R') || clean.startsWith('- R')) {
+                    currentA = clean.replace(/^[\*\-\•]?\s*reverso:\s*/i, '');
                 } else if (currentA !== "") {
                     currentA += " " + clean;
                 } else if (currentQ !== "") {
                     currentQ += " " + clean;
-                } else if (clean) {
-                    if (!currentQ) currentQ = clean;
-                    else if (!currentA) currentA = clean;
                 }
             });
 
@@ -2107,11 +2130,11 @@
 
             if (addedFc > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se procesaron y ordenaron ${addedFc} flashcards exitosamente!`);
+                alert(`¡Se agregaron ${addedFc} flashcards exitosamente!`);
                 renderContent();
                 toggleAdminPanel();
             } else {
-                alert('No se pudieron procesar las flashcards. Verifica el formato.');
+                alert('No se pudieron procesar las flashcards. Revisa el formato.');
             }
         }
 
