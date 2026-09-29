@@ -811,6 +811,109 @@
             font-weight: 700;
             cursor: pointer;
         }
+
+        /* Estilos del Simulacro ENARM */
+        .sim-setup-card {
+            text-align: center;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .sim-setup-card h3 {
+            font-size: calc(16px * var(--font-scale));
+            color: var(--primary-color);
+        }
+
+        .sim-setup-card p {
+            font-size: calc(12px * var(--font-scale));
+            color: var(--text-muted);
+            max-width: 450px;
+            line-height: 1.4;
+        }
+
+        .sim-btn-group {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            max-width: 400px;
+            justify-content: center;
+        }
+
+        .sim-option-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            background: var(--info-bg);
+            color: var(--text-dark);
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: calc(12px * var(--font-scale));
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sim-option-btn.selected {
+            border-color: var(--primary-color);
+            background: var(--card-bg);
+            color: var(--primary-color);
+        }
+
+        .sim-start-btn {
+            width: 100%;
+            max-width: 400px;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: calc(14px * var(--font-scale));
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .sim-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--info-bg);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+            font-size: calc(12px * var(--font-scale));
+            font-weight: 700;
+        }
+
+        .sim-timer {
+            color: #E53935;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .sim-results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .sim-score-box {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 14px;
+        }
+
+        .sim-score-num {
+            font-size: calc(32px * var(--font-scale));
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 6px 0;
+        }
     </style>
 </head>
 <body>
@@ -873,6 +976,7 @@
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
             <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
             <button class="tab-btn btn-tab-diapos" onclick="selectTab('diapos')">Diapos</button>
+            <button class="tab-btn btn-tab-simulacro" onclick="selectTab('simulacro')">Simulacro ENARM</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
         </div>
 
@@ -977,6 +1081,10 @@
         let currentSubject = localStorage.getItem('yn_current_subject') || 'gineco';
         let currentTab = localStorage.getItem('yn_current_tab') || 'preguntas';
         let activeCardFilter = 'all';
+
+        // Estado del Simulacro ENARM
+        let simState = JSON.parse(localStorage.getItem('yn_sim_state') || 'null');
+        let simTimerInterval = null;
 
         let currentModalList = [];
         let currentModalIndex = 0;
@@ -1118,6 +1226,8 @@
                 badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
             } else if (currentTab === 'diapos') {
                 badge.textContent = `${countTopicItems(diaposLinks, currentSubject)} Links`;
+            } else if (currentTab === 'simulacro') {
+                badge.textContent = simState && simState.active ? `Simulacro` : `Examen`;
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 8;
                 let completedSubjectChecks = 0;
@@ -1480,6 +1590,8 @@
                 area.innerHTML = renderTopicGridView('pdf');
             } else if (currentTab === 'diapos') {
                 area.innerHTML = renderTopicGridView('diapos');
+            } else if (currentTab === 'simulacro') {
+                renderSimulacroView(area);
             } else if (currentTab === 'temario') {
                 const resourcesRow1 = ['gpc', 'cto', 'drre', 'yuli'];
                 const labelsRow1 = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas'];
@@ -1517,6 +1629,179 @@
                     `;
                 }).join('');
             }
+        }
+
+        // Lógica del Simulacro ENARM
+        function renderSimulacroView(container) {
+            if (simTimerInterval) clearInterval(simTimerInterval);
+
+            if (!simState || !simState.active) {
+                container.innerHTML = `
+                    <div class="sim-setup-card">
+                        <h3>🩺 Simulacro ENARM</h3>
+                        <p>Evalúa tus conocimientos bajo condiciones de examen con temporizador automático y retroalimentación final.</p>
+                        <div style="font-size: calc(12px * var(--font-scale)); font-weight:700; color:var(--text-dark);">Selecciona el número de preguntas:</div>
+                        <div class="sim-btn-group">
+                            <button class="sim-option-btn selected" id="sim-opt-50" onclick="setSimCount(50)">50 Preg.</button>
+                            <button class="sim-option-btn" id="sim-opt-100" onclick="setSimCount(100)">100 Preg.</button>
+                            <button class="sim-option-btn" id="sim-opt-280" onclick="setSimCount(280)">280 Preg. (ENARM)</button>
+                        </div>
+                        <button class="sim-start-btn" onclick="startSimulacro()">Comenzar Examen</button>
+                    </div>
+                `;
+                window.selectedSimCount = 50;
+                return;
+            }
+
+            if (simState.finished) {
+                let correctCount = simState.answers.filter((ans, idx) => ans === simState.questions[idx].correctOptionIndex).length;
+                let totalQ = simState.questions.length;
+                let pct = Math.round((correctCount / totalQ) * 100);
+
+                container.innerHTML = `
+                    <div class="sim-results-container">
+                        <h3>🎯 Resultados del Simulacro</h3>
+                        <div class="sim-score-box">
+                            <div style="font-size:calc(13px * var(--font-scale)); color:var(--text-muted);">Calificación Final</div>
+                            <div class="sim-score-num">${correctCount} / ${totalQ} (${pct}%)</div>
+                            <p style="font-size:calc(12px * var(--font-scale));">${pct >= 65 ? '¡Excelente puntaje! Estás muy cerca de lograrlo.' : 'Sigue repasando los temas con menor puntaje.'}</p>
+                        </div>
+                        <button class="sim-start-btn" style="margin: 0 auto;" onclick="resetSimulacro()">🔄 Nuevo Simulacro</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Renderizar pregunta activa del simulacro
+            let qData = simState.questions[simState.currentIndex];
+            let userAns = simState.answers[simState.currentIndex];
+
+            container.innerHTML = `
+                <div class="sim-header-bar">
+                    <span>Pregunta ${simState.currentIndex + 1} de ${simState.questions.length}</span>
+                    <span class="sim-timer" id="sim-timer-display">--:--</span>
+                </div>
+                <div class="question-card">
+                    <div class="question-text">${qData.q}</div>
+                    ${qData.shuffledOptions.map((opt, idx) => {
+                        let btnClass = "option-btn";
+                        if (userAns !== undefined) {
+                            if (idx === qData.correctOptionIndex) btnClass += " correct";
+                            else if (idx === userAns) btnClass += " incorrect";
+                        }
+                        return `
+                            <button class="${btnClass}" ${userAns !== undefined ? 'disabled' : ''} onclick="answerSimulacro(${idx})">
+                                ${String.fromCharCode(65 + idx)}) ${opt.text}
+                            </button>
+                        `;
+                    }).join('')}
+                    ${userAns !== undefined ? `
+                        <div class="option-feedback" style="display:block; margin-top:8px;">
+                            ${qData.explanation}
+                        </div>
+                    ` : ''}
+                    <div style="display: flex; gap: 8px; margin-top: 14px;">
+                        ${simState.currentIndex > 0 ? `<button class="upload-mini-btn" style="background:#555;" onclick="navigateSim(-1)">Anterior</button>` : ''}
+                        ${simState.currentIndex < simState.questions.length - 1 ? `<button class="upload-mini-btn" onclick="navigateSim(1)">Siguiente ➔</button>` : `<button class="upload-mini-btn" style="background:#2E7D32;" onclick="finishSimulacro()">Finalizar Examen</button>`}
+                    </div>
+                </div>
+            `;
+
+            startSimTimer();
+        }
+
+        function setSimCount(count) {
+            window.selectedSimCount = count;
+            document.querySelectorAll('.sim-option-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById(`sim-opt-${count}`).classList.add('selected');
+        }
+
+        function startSimulacro() {
+            const data = getData();
+            let allQuestions = [];
+            Object.keys(data).forEach(sub => {
+                if (data[sub].preguntas) {
+                    data[sub].preguntas.forEach(q => allQuestions.push(q));
+                }
+            });
+
+            if (allQuestions.length === 0) return alert('No hay suficientes preguntas registradas para iniciar un simulacro.');
+
+            let shuffledPool = shuffleArray(allQuestions);
+            let count = Math.min(window.selectedSimCount || 50, shuffledPool.length);
+            let selectedQuestions = shuffledPool.slice(0, count).map(q => {
+                let rawList = q.rawOptions || q.options || [];
+                let correctVal = q.correctText || rawList[q.correct || 0];
+                let optionsObj = rawList.map(opt => ({ text: opt, isCorrect: (opt === correctVal) }));
+                let shuffledOpts = shuffleArray(optionsObj);
+                let correctIdx = shuffledOpts.findIndex(o => o.isCorrect);
+
+                return {
+                    q: q.q,
+                    shuffledOptions: shuffledOpts,
+                    correctOptionIndex: correctIdx,
+                    explanation: q.explanation || `Respuesta correcta: ${correctVal}`
+                };
+            });
+
+            simState = {
+                active: true,
+                finished: false,
+                questions: selectedQuestions,
+                answers: new Array(selectedQuestions.length).fill(undefined),
+                currentIndex: 0,
+                timeLeft: count * 60 // 1 minuto por pregunta
+            };
+
+            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+            renderContent();
+        }
+
+        function answerSimulacro(optionIdx) {
+            if (!simState || simState.answers[simState.currentIndex] !== undefined) return;
+            simState.answers[simState.currentIndex] = optionIdx;
+            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+            renderContent();
+        }
+
+        function navigateSim(direction) {
+            if (!simState) return;
+            simState.currentIndex = Math.max(0, Math.min(simState.questions.length - 1, simState.currentIndex + direction));
+            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+            renderContent();
+        }
+
+        function startSimTimer() {
+            if (!simState || simState.finished) return;
+            simTimerInterval = setInterval(() => {
+                if (simState.timeLeft > 0) {
+                    simState.timeLeft--;
+                    let mins = Math.floor(simState.timeLeft / 60);
+                    let secs = simState.timeLeft % 60;
+                    let display = document.getElementById('sim-timer-display');
+                    if (display) {
+                        display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    }
+                } else {
+                    clearInterval(simTimerInterval);
+                    finishSimulacro();
+                }
+            }, 1000);
+        }
+
+        function finishSimulacro() {
+            if (!simState) return;
+            if (simTimerInterval) clearInterval(simTimerInterval);
+            simState.finished = true;
+            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+            renderContent();
+        }
+
+        function resetSimulacro() {
+            if (simTimerInterval) clearInterval(simTimerInterval);
+            simState = null;
+            localStorage.removeItem('yn_sim_state');
+            renderContent();
         }
 
         // Función modificada para mostrar las explicaciones de TODAS las opciones al mismo tiempo (Correctas en verde, incorrectas en rojo)
