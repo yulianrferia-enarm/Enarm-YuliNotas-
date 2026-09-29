@@ -1988,13 +1988,14 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            const caseBlocks = text.split(/(?=Caso Clínico|\*?\s*Caso clínico \/ Pregunta:)/i);
+            // Divide los bloques usando la numeración inicial (ej: "1. Caso clínico" o simplemente saltos de línea con "Caso clínico")
+            const caseBlocks = text.split(/(?=\b\d+\.\s*Caso clínico|\bCaso clínico|\bCaso clínico \/ Pregunta:)/i);
             
             caseBlocks.forEach(block => {
                 const trimmed = block.trim();
                 if (!trimmed) return;
 
-                if (trimmed.toLowerCase().includes('caso clínico / pregunta:') || trimmed.toLowerCase().includes('opción correcta:') || trimmed.toLowerCase().includes('caso clínico:')) {
+                if (trimmed.toLowerCase().includes('caso clínico') || trimmed.toLowerCase().includes('opción correcta')) {
                     let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
                     let qText = "";
                     let correctOpt = "";
@@ -2003,19 +2004,34 @@
                     let discardList = [];
 
                     lines.forEach(line => {
-                        let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
+                        // Limpia prefijos numéricos de formato tipo "1. Caso clínico..." o "2. Opción Correcta..."
+                        let cleanLine = line.replace(/^\d+\.\s*/, '').replace(/^[\*\-\•]\s*/, '');
+                        
                         if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
                             qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
+                        } else if (!qText && (cleanLine.includes('gestación') || cleanLine.includes('años') || cleanLine.includes('paciente') || cleanLine.includes('masculino') || cleanLine.includes('femenina'))) {
+                            // Por si el texto del caso clínico viene sin la etiqueta exacta pero contiene el caso
+                            qText = cleanLine;
                         } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
                             correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '');
                         } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
                             incorrectOpts.push(cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, ''));
-                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación correcta:')) {
-                            correctExp = cleanLine.replace(/^retroalimentación correcta:\s*/i, '');
-                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación incorrectas:') || cleanLine.startsWith('- **') || cleanLine.startsWith('• **')) {
+                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación opción correcta:') || cleanLine.toLowerCase().startsWith('retroalimentación correcta')) {
+                            correctExp = cleanLine.replace(/^(retroalimentación opción correcta:|retroalimentación correcta)\s*/i, '');
+                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas:') || cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas') || cleanLine.startsWith('A)') || cleanLine.startsWith('B)') || cleanLine.startsWith('C)')) {
                             discardList.push(cleanLine);
+                        } else if (qText && !correctOpt && !cleanLine.toLowerCase().startsWith('opción') && !cleanLine.toLowerCase().startsWith('retroalimentación')) {
+                            // Extensión del caso clínico si abarca varias líneas
+                            if (qText && !qText.includes('?')) {
+                                qText += " " + cleanLine;
+                            }
                         }
                     });
+
+                    // Extracción inteligente adicional si faltaron etiquetas exactas
+                    if (!qText) {
+                        qText = lines.find(l => l.includes('?') || l.length > 50) || "";
+                    }
 
                     if (qText && correctOpt) {
                         let allOpts = [correctOpt, ...incorrectOpts];
@@ -2040,7 +2056,7 @@
                 renderContent();
                 toggleAdminPanel();
             } else {
-                alert('No se pudo procesar el formato. Asegúrate de usar la estructura correcta solicitada a Gemini.');
+                alert('No se pudo procesar el formato. Asegúrate de incluir al menos el caso clínico y la opción correcta.');
             }
         }
 
