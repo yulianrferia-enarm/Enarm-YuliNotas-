@@ -1995,70 +1995,74 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            const caseBlocks = text.split(/(?=\b\d+\.\s*Caso clínico|\bCaso clínico|\bCaso clínico \/ Pregunta:)/i);
-            
-            caseBlocks.forEach(block => {
+            // Separador robusto para múltiples preguntas en bloque (detecta números seguidos de punto, "Caso", "Pregunta", etc.)
+            const blocks = text.split(/(?=\b\d+[\.\)]\s*(?:Caso|Pregunta)?|\bCaso\s+clínico|\bPregunta\s*\d+)/i);
+
+            blocks.forEach(block => {
                 const trimmed = block.trim();
-                if (!trimmed) return;
+                if (!trimmed || trimmed.length < 15) return;
 
-                if (trimmed.toLowerCase().includes('caso clínico') || trimmed.toLowerCase().includes('opción correcta')) {
-                    let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
-                    let qText = "";
-                    let correctOpt = "";
-                    let incorrectOpts = [];
-                    let correctExp = "";
-                    let discardList = [];
+                let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+                let qText = "";
+                let correctOpt = "";
+                let incorrectOpts = [];
+                let correctExp = "";
+                let discardList = [];
 
-                    lines.forEach(line => {
-                        let cleanLine = line.replace(/^\d+\.\s*/, '').replace(/^[\*\-\•]\s*/, '');
-                        
-                        if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
-                            qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
-                        } else if (!qText && (cleanLine.includes('gestación') || cleanLine.includes('años') || cleanLine.includes('paciente') || cleanLine.includes('masculino') || cleanLine.includes('femenina'))) {
-                            qText = cleanLine;
-                        } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
-                            correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '');
-                        } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
-                            incorrectOpts.push(cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, ''));
-                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación opción correcta:') || cleanLine.toLowerCase().startsWith('retroalimentación correcta')) {
-                            correctExp = cleanLine.replace(/^(retroalimentación opción correcta:|retroalimentación correcta)\s*/i, '');
-                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas:') || cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas') || cleanLine.startsWith('<b>') || cleanLine.startsWith('A)') || cleanLine.startsWith('B)') || cleanLine.startsWith('C)') || cleanLine.startsWith('D)')) {
-                            discardList.push(cleanLine);
-                        } else if (qText && !correctOpt && !cleanLine.toLowerCase().startsWith('opción') && !cleanLine.toLowerCase().startsWith('retroalimentación')) {
-                            if (qText && !qText.includes('?')) {
-                                qText += " " + cleanLine;
-                            }
+                lines.forEach(line => {
+                    let cleanLine = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[\*\-\•]\s*/, '');
+                    let lower = cleanLine.toLowerCase();
+
+                    if (lower.startsWith('caso clínico') || lower.startsWith('pregunta:') || lower.startsWith('caso:')) {
+                        qText = cleanLine.replace(/^(caso clínico[\/:]?|pregunta:|caso:)\s*/i, '');
+                    } else if (lower.startsWith('opción correcta:') || lower.startsWith('correcta:')) {
+                        correctOpt = cleanLine.replace(/^(opción correcta:|correcta:)\s*/i, '');
+                    } else if (lower.startsWith('opción incorrecta') || lower.startsWith('incorrecta')) {
+                        incorrectOpts.push(cleanLine.replace(/^(opción incorrecta\s*\d*[:\s]*|incorrecta[:\s]*)/i, ''));
+                    } else if (lower.startsWith('retroalimentación') || lower.startsWith('explicación:')) {
+                        correctExp = cleanLine.replace(/^(retroalimentación[:\s]*|explicación[:\s]*)/i, '');
+                    } else if (lower.startsWith('<b>') || lower.startsWith('a)') || lower.startsWith('b)') || lower.startsWith('c)') || lower.startsWith('d)')) {
+                        discardList.push(cleanLine);
+                    } else if (!qText && (cleanLine.includes('?') || cleanLine.length > 30)) {
+                        qText = cleanLine;
+                    } else if (qText && !correctOpt && !lower.includes('opción') && !lower.includes('retroalimentación')) {
+                        if (!qText.includes('?')) {
+                            qText += " " + cleanLine;
                         }
+                    }
+                });
+
+                // Si no se detectó una opción correcta explícita, intenta inferirla o tomar la primera línea con formato de opción si existe
+                if (!correctOpt && incorrectOpts.length > 0) {
+                    correctOpt = incorrectOpts.shift();
+                }
+
+                if (qText && correctOpt) {
+                    let allOpts = [correctOpt, ...incorrectOpts];
+                    // Asegurar al menos 2 opciones para que funcione el test
+                    if (allOpts.length < 2) {
+                        allOpts.push("Opción alternativa de relleno");
+                    }
+                    
+                    customData[sub].preguntas.push({
+                        id: 'p_paste_' + Date.now() + Math.random(),
+                        q: qText,
+                        rawOptions: allOpts,
+                        correctText: correctOpt,
+                        explanation: correctExp || `Respuesta correcta: ${correctOpt}`,
+                        discardExplanation: discardList.length > 0 ? discardList : allOpts.map(opt => opt === correctOpt ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`)
                     });
-
-                    if (!qText) {
-                        qText = lines.find(l => l.includes('?') || l.length > 50) || "";
-                    }
-
-                    if (qText && correctOpt) {
-                        let allOpts = [correctOpt, ...incorrectOpts];
-                        if (allOpts.length >= 2) {
-                            customData[sub].preguntas.push({
-                                id: 'p_paste_' + Date.now() + Math.random(),
-                                q: qText,
-                                rawOptions: allOpts,
-                                correctText: correctOpt,
-                                explanation: correctExp || `Respuesta correcta: ${correctOpt}`,
-                                discardExplanation: discardList.length > 0 ? discardList : allOpts.map(opt => opt === correctOpt ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA. No corresponde a la opción de primera línea.`)
-                            });
-                            addedQ++;
-                        }
-                    }
+                    addedQ++;
                 }
             });
 
             if (addedQ > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se agregaron ${addedQ} preguntas exitosamente!`);
+                alert(`¡Se procesaron y ordenaron ${addedQ} preguntas exitosamente!`);
                 renderContent();
                 toggleAdminPanel();
             } else {
-                alert('No se pudo procesar el formato. Asegúrate de incluir al menos el caso clínico y la opción correcta.');
+                alert('No se pudo estructurar automáticamente. Asegúrate de que cada pregunta indique claramente el enunciado y la opción correcta.');
             }
         }
 
@@ -2075,19 +2079,24 @@
 
             lines.forEach(line => {
                 let clean = line.trim();
-                if (clean.toLowerCase().includes('frente:') || clean.startsWith('* F') || clean.startsWith('- F')) {
+                let lower = clean.toLowerCase();
+
+                if (lower.includes('frente:') || lower.startsWith('* f') || lower.startsWith('- f') || lower.startsWith('q:')) {
                     if (currentQ && currentA) {
                         customData[sub].flashcards.push({ id: 'fc_' + Date.now() + Math.random(), q: currentQ, a: currentA, tag: 'normal' });
                         addedFc++;
                     }
-                    currentQ = clean.replace(/^[\*\-\•]?\s*frente:\s*/i, '');
+                    currentQ = clean.replace(/^[\*\-\•]?\s*(frente:|q:)\s*/i, '');
                     currentA = "";
-                } else if (clean.toLowerCase().includes('reverso:') || clean.startsWith('* R') || clean.startsWith('- R')) {
-                    currentA = clean.replace(/^[\*\-\•]?\s*reverso:\s*/i, '');
+                } else if (lower.includes('reverso:') || lower.startsWith('* r') || lower.startsWith('- r') || lower.startsWith('a:')) {
+                    currentA = clean.replace(/^[\*\-\•]?\s*(reverso:|a:)\s*/i, '');
                 } else if (currentA !== "") {
                     currentA += " " + clean;
                 } else if (currentQ !== "") {
                     currentQ += " " + clean;
+                } else if (clean) {
+                    if (!currentQ) currentQ = clean;
+                    else if (!currentA) currentA = clean;
                 }
             });
 
@@ -2098,11 +2107,11 @@
 
             if (addedFc > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se agregaron ${addedFc} flashcards exitosamente!`);
+                alert(`¡Se procesaron y ordenaron ${addedFc} flashcards exitosamente!`);
                 renderContent();
                 toggleAdminPanel();
             } else {
-                alert('No se pudieron procesar las flashcards. Revisa el formato.');
+                alert('No se pudieron procesar las flashcards. Verifica el formato.');
             }
         }
 
