@@ -1508,7 +1508,11 @@
                     let specificFeedback = "";
                     
                     if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
-                        let found = q.discardExplanation.find(item => item.toLowerCase().includes(opt.toLowerCase().substring(0, 15)));
+                        let found = q.discardExplanation.find(item => {
+                            let cleanItem = item.replace(/<\/?[^>]+(>|$)/g, "").toLowerCase();
+                            let cleanOpt = opt.toLowerCase();
+                            return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 15)));
+                        });
                         if (found) specificFeedback = found;
                     }
                     
@@ -1859,8 +1863,8 @@
                     <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
                     <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
                     <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación (Correcto / Explicación general)"></textarea>
-                    <textarea id="af-disc" rows="2" placeholder="Retroalimentación (Incorrecto / Descarte)"></textarea>
+                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación opción correcta"></textarea>
+                    <textarea id="af-disc" rows="3" placeholder="Retroalimentación opciones incorrectas (ej: A) ... B) ... C) ...)"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 saveBtn.style.display = 'none';
@@ -1943,7 +1947,7 @@
                             q: qText.trim(),
                             rawOptions: allOptions,
                             correctText: correctOpt,
-                            explanation: "Revisa la retroalimentación detallada de cada opción abajo.",
+                            explanation: "Respuesta correcta seleccionada.",
                             discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
                         });
                         addedQ++;
@@ -2021,13 +2025,21 @@
 
                 if (!q || !o0 || !o1) return alert('Completa la pregunta.');
                 
+                let discArray = [];
+                if (discText) {
+                    discArray = discText.split('\n').filter(Boolean);
+                }
+                if (exp) {
+                    discArray.unshift(`<b>Correcto:</b> ${exp}`);
+                }
+
                 customData[sub].preguntas.push({
                     id: 'qcustom_' + Date.now(),
                     q,
                     rawOptions: [o0, o1, o2, o3].filter(Boolean),
                     correctText: o0,
-                    explanation: exp || "Respuesta guardada.",
-                    discardExplanation: discText ? [discText] : [`<b>Opción correcta:</b> ${o0}`]
+                    explanation: exp || `<b>Correcto:</b> ${o0}`,
+                    discardExplanation: discArray.length ? discArray : [`<b>Opción correcta:</b> ${o0}`]
                 });
             }
 
