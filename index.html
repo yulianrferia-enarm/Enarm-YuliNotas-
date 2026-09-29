@@ -507,7 +507,7 @@
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
-        /* Preguntas y Estilo NotebookLM por Opción */
+        /* Preguntas y Estilo con retroalimentación por opción */
         .question-card {
             display: flex;
             flex-direction: column;
@@ -1082,7 +1082,6 @@
         let currentTab = localStorage.getItem('yn_current_tab') || 'preguntas';
         let activeCardFilter = 'all';
 
-        // Estado del Simulacro ENARM
         let simState = JSON.parse(localStorage.getItem('yn_sim_state') || 'null');
         let simTimerInterval = null;
 
@@ -1631,7 +1630,6 @@
             }
         }
 
-        // Lógica del Simulacro ENARM
         function renderSimulacroView(container) {
             if (simTimerInterval) clearInterval(simTimerInterval);
 
@@ -1672,7 +1670,6 @@
                 return;
             }
 
-            // Renderizar pregunta activa del simulacro
             let qData = simState.questions[simState.currentIndex];
             let userAns = simState.answers[simState.currentIndex];
 
@@ -1750,7 +1747,7 @@
                 questions: selectedQuestions,
                 answers: new Array(selectedQuestions.length).fill(undefined),
                 currentIndex: 0,
-                timeLeft: count * 60 // 1 minuto por pregunta
+                timeLeft: count * 60 
             };
 
             localStorage.setItem('yn_sim_state', JSON.stringify(simState));
