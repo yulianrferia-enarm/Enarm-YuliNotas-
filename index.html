@@ -540,6 +540,7 @@
             width: 100%;
         }
 
+        /* ESTILOS NUEVOS DE RESPUESTAS */
         .option-btn.correct {
             background-color: #D4EDDA !important;
             border-color: #28A745 !important;
@@ -564,6 +565,16 @@
             color: var(--text-dark);
             margin-bottom: 4px;
             line-height: 1.4;
+        }
+
+        .option-feedback.correct-feedback {
+            border-left-color: #28A745;
+            background: #F4FBF5;
+        }
+
+        .option-feedback.incorrect-feedback {
+            border-left-color: #DC3545;
+            background: #FDF7F7;
         }
 
         .next-q-btn {
@@ -1511,7 +1522,7 @@
                         let found = q.discardExplanation.find(item => {
                             let cleanItem = item.replace(/<\/?[^>]+(>|$)/g, "").toLowerCase();
                             let cleanOpt = opt.toLowerCase();
-                            return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 15)));
+                            return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 12)));
                         });
                         if (found) specificFeedback = found;
                     }
@@ -1531,7 +1542,7 @@
                         ${optionsWithFeedback.map((item, idx) => `
                             <div class="option-container">
                                 <button class="option-btn" data-correct="${item.isCorrect}" onclick="checkAnswerNotebook(this)">${String.fromCharCode(65 + idx)}) ${item.text}</button>
-                                <div class="option-feedback">${item.feedback}</div>
+                                <div class="option-feedback ${item.isCorrect ? 'correct-feedback' : 'incorrect-feedback'}">${item.feedback}</div>
                             </div>
                         `).join('')}
                         <button id="next-q-btn" class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
@@ -1695,7 +1706,7 @@
                         `;
                     }).join('')}
                     ${userAns !== undefined ? `
-                        <div class="option-feedback" style="display:block; margin-top:8px;">
+                        <div class="option-feedback correct-feedback" style="display:block; margin-top:8px;">
                             ${qData.explanation}
                         </div>
                     ` : ''}
@@ -1919,6 +1930,7 @@
                     let qText = "";
                     let correctOpt = "";
                     let incorrectOpts = [];
+                    let correctExp = "";
                     let discardList = [];
 
                     lines.forEach(line => {
@@ -1926,42 +1938,40 @@
                         if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
                             qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
                         } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
-                            correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '').trim();
+                            correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '');
                         } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
-                            let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
-                            if (optVal) incorrectOpts.push(optVal);
-                        } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
-                            discardList.push(`<b>Correcto:</b> ${cleanLine.replace(/^correcto:\s*/i, '')}`);
-                        } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
-                            discardList.push(`<b>Incorrecto:</b> ${cleanLine.replace(/^incorrecto:\s*/i, '')}`);
-                        } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
-                            qText += " " + cleanLine;
+                            incorrectOpts.push(cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, ''));
+                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación correcta:')) {
+                            correctExp = cleanLine.replace(/^retroalimentación correcta:\s*/i, '');
+                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación incorrectas:') || cleanLine.startsWith('- **') || cleanLine.startsWith('• **')) {
+                            discardList.push(cleanLine);
                         }
                     });
 
                     if (qText && correctOpt) {
-                        let allOptions = [correctOpt, ...incorrectOpts];
-
-                        customData[sub].preguntas.push({
-                            id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
-                            q: qText.trim(),
-                            rawOptions: allOptions,
-                            correctText: correctOpt,
-                            explanation: "Respuesta correcta seleccionada.",
-                            discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
-                        });
-                        addedQ++;
+                        let allOpts = [correctOpt, ...incorrectOpts];
+                        if (allOpts.length >= 2) {
+                            customData[sub].preguntas.push({
+                                id: 'p_paste_' + Date.now() + Math.random(),
+                                q: qText,
+                                rawOptions: allOpts,
+                                correctText: correctOpt,
+                                explanation: correctExp || `Respuesta correcta: ${correctOpt}`,
+                                discardExplanation: discardList.length > 0 ? discardList : allOpts.map(opt => opt === correctOpt ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`)
+                            });
+                            addedQ++;
+                        }
                     }
                 }
             });
 
             if (addedQ > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se agregaron ${addedQ} preguntas a ${subjectsConfig[sub].title}!`);
-                toggleAdminPanel();
+                alert(`¡Se agregaron ${addedQ} preguntas exitosamente!`);
                 renderContent();
+                toggleAdminPanel();
             } else {
-                alert('No se pudieron interpretar las preguntas. Revisa el formato.');
+                alert('No se pudo procesar el formato. Asegúrate de usar la estructura correcta solicitada a Gemini.');
             }
         }
 
@@ -1971,36 +1981,41 @@
             const sub = document.getElementById('admin-subject').value;
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
-            let addedFC = 0;
-            let lines = text.replace(/\r\n/g, '\n').split('\n').map(l => l.trim()).filter(Boolean);
-            let currentFront = null;
+            let addedFc = 0;
+            const lines = text.split('\n');
+            let currentQ = "";
+            let currentA = "";
 
             lines.forEach(line => {
-                let cleanLine = line.replace(/^[\*\-\•]\s*/, '').trim();
-                let lower = cleanLine.toLowerCase();
-
-                if (lower.startsWith('frente:')) {
-                    currentFront = cleanLine.replace(/^frente\s*[:\-]\s*/i, '').trim();
-                } else if (lower.startsWith('reverso:') && currentFront) {
-                    let backText = cleanLine.replace(/^reverso\s*[:\-]\s*/i, '').trim();
-                    customData[sub].flashcards.push({
-                        id: 'fc_parsed_' + Math.random().toString(36).substring(2, 9),
-                        q: currentFront,
-                        a: backText,
-                        tag: 'texto'
-                    });
-                    addedFC++;
-                    currentFront = null;
+                let clean = line.trim();
+                if (clean.toLowerCase().includes('frente:') || clean.startsWith('* F') || clean.startsWith('- F')) {
+                    if (currentQ && currentA) {
+                        customData[sub].flashcards.push({ id: 'fc_' + Date.now() + Math.random(), q: currentQ, a: currentA, tag: 'normal' });
+                        addedFc++;
+                    }
+                    currentQ = clean.replace(/^[\*\-\•]?\s*frente:\s*/i, '');
+                    currentA = "";
+                } else if (clean.toLowerCase().includes('reverso:') || clean.startsWith('* R') || clean.startsWith('- R')) {
+                    currentA = clean.replace(/^[\*\-\•]?\s*reverso:\s*/i, '');
+                } else if (currentA !== "") {
+                    currentA += " " + clean;
+                } else if (currentQ !== "") {
+                    currentQ += " " + clean;
                 }
             });
 
-            if (addedFC > 0) {
+            if (currentQ && currentA) {
+                customData[sub].flashcards.push({ id: 'fc_' + Date.now() + Math.random(), q: currentQ, a: currentA, tag: 'normal' });
+                addedFc++;
+            }
+
+            if (addedFc > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se agregaron ${addedFC} flashcards!`);
-                toggleAdminPanel();
+                alert(`¡Se agregaron ${addedFc} flashcards exitosamente!`);
                 renderContent();
+                toggleAdminPanel();
             } else {
-                alert('No se detectaron flashcards.');
+                alert('No se pudieron procesar las flashcards. Revisa el formato.');
             }
         }
 
@@ -2010,70 +2025,68 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             if (type === 'flashcard_1x1') {
-                const q = document.getElementById('af-q').value;
-                const a = document.getElementById('af-a').value;
-                if (!q || !a) return alert('Completa los campos.');
-                customData[sub].flashcards.push({ id: 'custom_fc_' + Date.now(), q, a });
+                const q = document.getElementById('af-q').value.trim();
+                const a = document.getElementById('af-a').value.trim();
+                if (!q || !a) return alert('Completa ambos campos.');
+                customData[sub].flashcards.push({ id: 'fc_' + Date.now(), q, a, tag: 'normal' });
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                alert('Flashcard guardada con éxito.');
+                renderContent();
+                toggleAdminPanel();
             } else if (type === 'pregunta_1x1') {
-                const q = document.getElementById('af-q').value;
-                const o0 = document.getElementById('af-o0').value;
-                const o1 = document.getElementById('af-o1').value;
-                const o2 = document.getElementById('af-o2').value;
-                const o3 = document.getElementById('af-o3').value;
-                const exp = document.getElementById('af-exp').value;
-                const discText = document.getElementById('af-disc').value;
+                const q = document.getElementById('af-q').value.trim();
+                const o0 = document.getElementById('af-o0').value.trim();
+                const o1 = document.getElementById('af-o1').value.trim();
+                const o2 = document.getElementById('af-o2').value.trim();
+                const o3 = document.getElementById('af-o3').value.trim();
+                const exp = document.getElementById('af-exp').value.trim();
+                const disc = document.getElementById('af-disc').value.trim();
 
-                if (!q || !o0 || !o1) return alert('Completa la pregunta.');
-                
-                let discArray = [];
-                if (discText) {
-                    discArray = discText.split('\n').filter(Boolean);
-                }
-                if (exp) {
-                    discArray.unshift(`<b>Correcto:</b> ${exp}`);
-                }
+                if (!q || !o0 || !o1) return alert('Llena al menos la pregunta, la opción correcta y una incorrecta.');
+                let options = [o0, o1];
+                if (o2) options.push(o2);
+                if (o3) options.push(o3);
+
+                let discardArray = disc ? disc.split('\n').filter(Boolean) : options.map(opt => opt === o0 ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`);
 
                 customData[sub].preguntas.push({
-                    id: 'qcustom_' + Date.now(),
+                    id: 'p_' + Date.now(),
                     q,
-                    rawOptions: [o0, o1, o2, o3].filter(Boolean),
+                    rawOptions: options,
                     correctText: o0,
-                    explanation: exp || `<b>Correcto:</b> ${o0}`,
-                    discardExplanation: discArray.length ? discArray : [`<b>Opción correcta:</b> ${o0}`]
+                    explanation: exp || `Respuesta correcta: ${o0}`,
+                    discardExplanation: discardArray
                 });
-            }
 
-            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-            alert('¡Guardado exitosamente!');
-            toggleAdminPanel();
-            renderContent();
-        }
-
-        function deleteCustomItem(sub, category, idx) {
-            if (!confirm('¿Eliminar elemento?')) return;
-            if (customData[sub] && customData[sub][category]) {
-                customData[sub][category].splice(idx, 1);
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                changeAdminFields();
+                alert('Pregunta guardada con éxito.');
                 renderContent();
+                toggleAdminPanel();
             }
         }
 
-        function toggleCheck(key) {
-            topicChecklist[key] = !topicChecklist[key];
-            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+        function deleteCustomItem(sub, type, idx) {
+            if (!confirm('¿Eliminar este elemento personalizado?')) return;
+            customData[sub][type].splice(idx, 1);
+            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+            changeAdminFields();
             renderContent();
         }
 
-        function processAnki(cardId, days, diffTag) {
-            if (days > 0) {
-                const nextDate = new Date();
-                nextDate.setDate(nextDate.getDate() + days);
-                ankiReviews[cardId] = { nextDate: nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
-                localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
-            }
-            cardDifficulty[cardId] = diffTag;
+        function toggleCheck(checkKey) {
+            topicChecklist[checkKey] = !topicChecklist[checkKey];
+            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+            updateCornerBadge();
+        }
+
+        function processAnki(cardId, days, diff) {
+            cardDifficulty[cardId] = diff;
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
+
+            let next = new Date();
+            next.setDate(next.getDate() + days);
+            ankiReviews[cardId] = { nextDate: next.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
+            localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
 
             if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
             if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
@@ -2083,32 +2096,13 @@
         }
 
         function exportBackup() {
-            const backupData = {
-                yn_custom_data: customData,
-                yn_topic_checklist: topicChecklist,
-                yn_deleted_topics_v1: deletedTopics,
-                yn_anki: ankiReviews,
-                yn_card_diff: cardDifficulty,
-                yn_question_schedule: questionSchedule,
-                yn_question_indices: questionIndices,
-                yn_card_indices: cardIndices,
-                yn_gpc_images_v3: gpcImages,
-                yn_info_images_v3: infographicImages,
-                yn_pdf_notes_v3: pdfNotes,
-                yn_madera_files_v1: maderaFiles,
-                yn_diapos_links_v1: diaposLinks,
-                yn_font_scale: currentFontScale
-            };
-            const jsonString = JSON.stringify(backupData, null, 2);
-            const blob = new Blob([jsonString], { type: "application/json" });
-            const fileName = `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`;
+            const backupObj = { baseData, customData, topicChecklist, deletedTopics, ankiReviews, cardDifficulty, gpcImages, infographicImages, pdfNotes, maderaFiles, diaposLinks };
+            const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.href = url;
-            downloadAnchor.download = fileName;
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            document.body.removeChild(downloadAnchor);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `YuliNotas_Respaldo_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
             URL.revokeObjectURL(url);
         }
 
@@ -2118,44 +2112,33 @@
             const reader = new FileReader();
             reader.onload = function(evt) {
                 try {
-                    const imported = JSON.parse(evt.target.result);
-                    if (imported.yn_custom_data) localStorage.setItem('yn_custom_data', JSON.stringify(imported.yn_custom_data));
-                    if (imported.yn_topic_checklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.yn_topic_checklist));
-                    if (imported.yn_deleted_topics_v1) localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(imported.yn_deleted_topics_v1));
-                    if (imported.yn_anki) localStorage.setItem('yn_anki', JSON.stringify(imported.yn_anki));
-                    if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
-                    if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
-                    if (imported.yn_question_indices) localStorage.setItem('yn_question_indices', JSON.stringify(imported.yn_question_indices));
-                    if (imported.yn_card_indices) localStorage.setItem('yn_card_indices', JSON.stringify(imported.yn_card_indices));
-                    if (imported.yn_gpc_images_v3) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.yn_gpc_images_v3));
-                    if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
-                    if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
-                    if (imported.yn_madera_files_v1) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.yn_madera_files_v1));
-                    if (imported.yn_diapos_links_v1) localStorage.setItem('yn_diapos_links_v1', JSON.stringify(imported.yn_diapos_links_v1));
-                    if (imported.yn_font_scale) {
-                        currentFontScale = imported.yn_font_scale;
-                        localStorage.setItem('yn_font_scale', currentFontScale.toString());
-                        document.documentElement.style.setProperty('--font-scale', currentFontScale);
-                    }
+                    const data = JSON.parse(evt.target.result);
+                    if (data.customData) customData = data.customData;
+                    if (data.topicChecklist) topicChecklist = data.topicChecklist;
+                    if (data.deletedTopics) deletedTopics = data.deletedTopics;
+                    if (data.ankiReviews) ankiReviews = data.ankiReviews;
+                    if (data.cardDifficulty) cardDifficulty = data.cardDifficulty;
+                    if (data.gpcImages) gpcImages = data.gpcImages;
+                    if (data.infographicImages) infographicImages = data.infographicImages;
+                    if (data.pdfNotes) pdfNotes = data.pdfNotes;
+                    if (data.maderaFiles) maderaFiles = data.maderaFiles;
+                    if (data.diaposLinks) diaposLinks = data.diaposLinks;
 
-                    customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
-                    topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
-                    deletedTopics = JSON.parse(localStorage.getItem('yn_deleted_topics_v1') || '{}');
-                    ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
-                    cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
-                    questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
-                    questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
-                    cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
-                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
-                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
-                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
-                    maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
-                    diaposLinks = JSON.parse(localStorage.getItem('yn_diapos_links_v1') || '{}');
+                    localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                    localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+                    localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(deletedTopics));
+                    localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
+                    localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
+                    localStorage.setItem('yn_gpc_images_v3', JSON.stringify(gpcImages));
+                    localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
+                    localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
+                    localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
+                    localStorage.setItem('yn_diapos_links_v1', JSON.stringify(diaposLinks));
 
-                    alert('¡Progreso importado con éxito!');
+                    alert('¡Datos cargados correctamente!');
                     renderContent();
                 } catch (err) {
-                    alert('Error al leer el archivo.');
+                    alert('El archivo no es válido.');
                 }
             };
             reader.readAsText(file);
