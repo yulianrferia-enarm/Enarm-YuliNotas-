@@ -1602,8 +1602,8 @@
                     
                     if (!specificFeedback) {
                         specificFeedback = isCorrect 
-                            ? `<b>Correcto:</b> ${q.explanation || correctValue}` 
-                            : `<b>Incorrecto (${opt}):</b> No es la opción de primera línea o indicada para este escenario clínico específico.`;
+                            ? `<b>Justificación correcta:</b> ${q.explanation || correctValue}` 
+                            : `<b>Justificación incorrecta:</b> No corresponde a la opción indicada para este caso.`;
                     }
 
                     return { text: opt, isCorrect, feedback: specificFeedback };
@@ -1945,19 +1945,19 @@
                 saveBtn.style.display = 'block';
                 saveBtn.textContent = 'Guardar Pregunta';
                 container.innerHTML = `
-                    <textarea id="af-q" rows="3" placeholder="Caso clínico / Pregunta"></textarea>
-                    <input type="text" id="af-o0" placeholder="Opción Correcta">
-                    <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
-                    <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
-                    <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación general / opción correcta"></textarea>
-                    <textarea id="af-disc" rows="4" placeholder="Razones por opción (ej:&#10;<b>Opción 1:</b> CORRECTA...&#10;<b>Opción 2:</b> INCORRECTA porque...)"></textarea>
+                    <textarea id="af-q" rows="3" placeholder="Pregunta / caso"></textarea>
+                    <input type="text" id="af-o0" placeholder="Opción A (Correcta) directamente">
+                    <input type="text" id="af-o1" placeholder="Opción B (Incorrecta)">
+                    <input type="text" id="af-o2" placeholder="Opción C (Incorrecta)">
+                    <input type="text" id="af-o3" placeholder="Opción D (Incorrecta)">
+                    <textarea id="af-jcorr" rows="2" placeholder="Justificación correcta"></textarea>
+                    <textarea id="af-jinc" rows="3" placeholder="Justificación incorrecta"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus casos clínicos estructurados:</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="Caso Clínico: ..."></textarea>
+                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus preguntas estructuradas (Pregunta / Opciones / Justificación correcta / Justificación incorrecta):</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="Pregunta / caso: ...&#10;Opciones: ...&#10;Justificación correcta: ...&#10;Justificación incorrecta: ..."></textarea>
                     <button type="button" onclick="processPastedPreguntas()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Preguntas</button>
                 `;
             } else if (type === 'flashcards_paste') {
@@ -1995,7 +1995,8 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            const caseBlocks = text.split(/(?=\b\d+\.\s*Caso clínico|\bCaso clínico|\bCaso clínico \/ Pregunta:)/i);
+            // Separar bloques por número de pregunta o etiqueta común
+            const caseBlocks = text.split(/(?=\b\d+[\.\)]\s*Pregunta|\bPregunta \/ caso|\bCaso clínico)/i);
             
             caseBlocks.forEach(block => {
                 const trimmed = block.trim();
@@ -2003,82 +2004,62 @@
 
                 let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
                 let qText = "";
-                let optionsMap = {}; // A, B, C, D... -> texto de opción
-                let discardList = [];
-                let correctOptLetter = "";
+                let optionsList = [];
+                let justCorr = "";
+                let justInc = "";
+                
+                let currentSection = 'q';
 
                 lines.forEach(line => {
-                    let cleanLine = line.replace(/^\d+\.\s*/, '');
-                    let upperLine = cleanLine.toUpperCase();
-
-                    // Detectar opciones tipo A) o A.
-                    let optMatch = cleanLine.match(/^([A-G])[\)\.\:]\s*(.*)/);
-                    if (optMatch) {
-                        let letter = optMatch[1].toUpperCase();
-                        let content = optMatch[2].trim();
-                        // Si la línea contiene retroalimentación integrada, separarla
-                        if (content.toLowerCase().includes('correcta') || content.toLowerCase().includes('incorrecta')) {
-                            let parts = content.split(/[:\.]\s*(?=[A-Z])/);
-                            optionsMap[letter] = parts[0].trim();
-                            discardList.push(`<b>Opción ${letter}:</b> ${content}`);
-                        } else {
-                            optionsMap[letter] = content;
+                    let lower = line.toLowerCase();
+                    if (lower.startsWith('opciones:') || lower.startsWith('opciones')) {
+                        currentSection = 'options';
+                        let clean = line.replace(/^opciones[:]?\s*/i, '').trim();
+                        if (clean) {
+                            let parts = clean.split(/[\n;]|\b[A-G][\)\.\:]/);
+                            parts.forEach(p => { if(p.trim()) optionsList.push(p.trim().replace(/^[A-G][\)\.\:]\s*/, '')); });
                         }
                         return;
                     }
-
-                    // Detectar líneas de descarte explícitas o retroalimentación
-                    if (cleanLine.toLowerCase().startsWith('opción correcta') || upperLine.includes('CORRECTA')) {
-                        if (cleanLine.includes('A)') || cleanLine.startsWith('A') || upperLine.includes('INCISO A')) correctOptLetter = 'A';
-                        if (cleanLine.includes('B)') || cleanLine.startsWith('B') || upperLine.includes('INCISO B')) correctOptLetter = 'B';
-                        if (cleanLine.includes('C)') || cleanLine.startsWith('C') || upperLine.includes('INCISO C')) correctOptLetter = 'C';
-                        if (cleanLine.includes('D)') || cleanLine.startsWith('D') || upperLine.includes('INCISO D')) correctOptLetter = 'D';
-                        if (cleanLine.includes('E)') || cleanLine.startsWith('E') || upperLine.includes('INCISO E')) correctOptLetter = 'E';
-                        if (cleanLine.includes('F)') || cleanLine.startsWith('F') || upperLine.includes('INCISO F')) correctOptLetter = 'F';
-                        if (cleanLine.includes('G)') || cleanLine.startsWith('G') || upperLine.includes('INCISO G')) correctOptLetter = 'G';
-                        
-                        discardList.push(cleanLine);
+                    if (lower.includes('justificación correcta') || lower.includes('justificacion correcta')) {
+                        currentSection = 'jcorr';
+                        justCorr = line.replace(/^.*correcta[:]?\s*/i, '').trim();
+                        return;
+                    }
+                    if (lower.includes('justificación incorrecta') || lower.includes('justificacion incorrecta')) {
+                        currentSection = 'jinc';
+                        justInc = line.replace(/^.*incorrecta[:]?\s*/i, '').trim();
                         return;
                     }
 
-                    if (cleanLine.toLowerCase().startsWith('se descarta') || cleanLine.toLowerCase().includes('incorrecta')) {
-                        discardList.push(cleanLine);
-                        return;
-                    }
-
-                    // Si no es opción ni descarte, es parte del caso clínico/pregunta
-                    if (!qText) {
-                        qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
-                    } else {
-                        qText += " " + cleanLine;
+                    if (currentSection === 'q') {
+                        let cleanL = line.replace(/^(pregunta \/ caso|pregunta|caso clínico)[:]?\s*/i, '').replace(/^\d+[\.\)]\s*/, '');
+                        qText = qText ? qText + " " + cleanL : cleanL;
+                    } else if (currentSection === 'options') {
+                        let optText = line.replace(/^[A-G][\)\.\:]\s*/, '').trim();
+                        if (optText) optionsList.push(optText);
+                    } else if (currentSection === 'jcorr') {
+                        justCorr = justCorr ? justCorr + " " + line : line;
+                    } else if (currentSection === 'jinc') {
+                        justInc = justInc ? justInc + " " + line : line;
                     }
                 });
 
-                let optionKeys = Object.keys(optionsMap).sort();
-                if (qText && optionKeys.length >= 2) {
-                    let rawOpts = optionKeys.map(k => optionsMap[k]);
-                    // Si no se especificó letra correcta explícita, asumimos la primera o buscamos en descarte
-                    let correctTextVal = optionsMap['G'] || optionsMap[optionKeys[0]]; // Por defecto el ejemplo G o el primero
-
-                    // Refinar búsqueda de la correcta según la letra detectada
-                    if (correctOptLetter && optionsMap[correctOptLetter]) {
-                        correctTextVal = optionsMap[correctOptLetter];
-                    }
-
-                    // Generar lista de descarte limpia alineada con las opciones reales
-                    let finalDiscard = rawOpts.map(opt => {
-                        let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, 10)));
-                        if (found) return found;
-                        return opt === correctTextVal ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA para este escenario clínico.`;
+                if (qText && optionsList.length >= 2) {
+                    let correctVal = optionsList[0]; // Por defecto la primera es la correcta provista, luego se barajan visualmente
+                    let discardArray = optionsList.map(opt => {
+                        return (opt === correctVal) 
+                            ? `<b>Justificación correcta:</b> ${justCorr || correctVal}` 
+                            : `<b>Justificación incorrecta:</b> ${justInc || 'No corresponde al cuadro clínico planteado.'}`;
                     });
 
                     customData[sub].preguntas.push({
                         id: 'p_paste_' + Date.now() + Math.random(),
                         q: qText,
-                        rawOptions: rawOpts,
-                        correctText: correctTextVal,
-                        explanation: `Respuesta correcta: ${correctTextVal}`,
-                        discardExplanation: finalDiscard
+                        rawOptions: optionsList,
+                        correctText: correctVal,
+                        explanation: justCorr || `Respuesta correcta: ${correctVal}`,
+                        discardExplanation: discardArray
                     });
                     addedQ++;
                 }
@@ -2090,7 +2071,7 @@
                 renderContent();
                 toggleAdminPanel();
             } else {
-                alert('No se pudo procesar el formato. Asegúrate de incluir las opciones con sus incisos (A, B, C...).');
+                alert('No se pudo procesar el formato. Asegúrate de incluir las secciones: Pregunta/caso, Opciones, Justificación correcta y Justificación incorrecta.');
             }
         }
 
@@ -2158,22 +2139,26 @@
                 const o1 = document.getElementById('af-o1').value.trim();
                 const o2 = document.getElementById('af-o2').value.trim();
                 const o3 = document.getElementById('af-o3').value.trim();
-                const exp = document.getElementById('af-exp').value.trim();
-                const disc = document.getElementById('af-disc').value.trim();
+                const jcorr = document.getElementById('af-jcorr').value.trim();
+                const jinc = document.getElementById('af-jinc').value.trim();
 
-                if (!q || !o0 || !o1) return alert('Llena al menos la pregunta, la opción correcta y una incorrecta.');
+                if (!q || !o0 || !o1) return alert('Llena al menos la pregunta y dos opciones.');
                 let options = [o0, o1];
                 if (o2) options.push(o2);
                 if (o3) options.push(o3);
 
-                let discardArray = disc ? disc.split('\n').filter(Boolean) : options.map(opt => opt === o0 ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`);
+                let discardArray = options.map(opt => {
+                    return (opt === o0) 
+                        ? `<b>Justificación correcta:</b> ${jcorr || o0}` 
+                        : `<b>Justificación incorrecta:</b> ${jinc || 'No corresponde al caso clínico.'}`;
+                });
 
                 customData[sub].preguntas.push({
                     id: 'p_' + Date.now(),
                     q,
                     rawOptions: options,
                     correctText: o0,
-                    explanation: exp || `Respuesta correcta: ${o0}`,
+                    explanation: jcorr || `Respuesta correcta: ${o0}`,
                     discardExplanation: discardArray
                 });
 
