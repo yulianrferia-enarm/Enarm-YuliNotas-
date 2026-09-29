@@ -540,7 +540,6 @@
             width: 100%;
         }
 
-        /* ESTILOS NUEVOS DE RESPUESTAS */
         .option-btn.correct {
             background-color: #D4EDDA !important;
             border-color: #28A745 !important;
@@ -1063,9 +1062,46 @@
                     "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
-            cirugia: { flashcards: [], preguntas: [], temario: ["Abdomen agudo", "Apendicitis aguda", "Patología biliar"] },
-            interna: { flashcards: [], preguntas: [], temario: ["Insuficiencia cardíaca", "Hipertensión arterial sistémica"] },
-            pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "Ictericia neonatal"] }
+            cirugia: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Abdomen agudo", "Apendicitis aguda", "Colecistitis aguda", "Colelitiasis", "Coledocolitiasis", 
+                    "Colangitis", "Pancreatitis aguda", "Obstrucción intestinal", "Hernias de la pared abdominal", 
+                    "Enfermedad ulcerosa péptica perforada", "Diverticulitis aguda", "Hemorragia de tubo digestivo alto", 
+                    "Hemorragia de tubo digestivo bajo", "Isquemia mesentérica", "Trauma abdominal cerrado y penetrante", 
+                    "Enfermedad hemorroidal", "Fisura anal", "Absceso anorrectal y fístula", "Tumores de colon y recto"
+                ] 
+            },
+            interna: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Hipertensión arterial sistémica", "Insuficiencia cardíaca", "Infarto agudo de miocardio", "Arritmias cardíacas", 
+                    "Fiebre reumática", "Endocarditis infecciosa", "Enfermedad pulmonar obstructiva crónica (EPOC)", "Asma bronquial", 
+                    "Neumonía adquirida en la comunidad", "Tuberculosis pulmonar", "Tromboembolia pulmonar", "Diabetes mellitus tipo 1", 
+                    "Diabetes mellitus tipo 2", "Cetoacidosis diabética", "Estado hiperosmolar hiperglucémico", "Hipotiroidismo", 
+                    "Hipertiroidismo", "Enfermedad renal crónica", "Insuficiencia renal aguda", "Glomerulonefritis", 
+                    "Artritis reumatoide", "Lupus eritematoso sistémico", "Gota", "Cirrosis hepática", "Hepatitis viral aguda", 
+                    "Enfermedad por reflujo gastroesofágico", "Úlcera péptica", "Enfermedad inflamatoria intestinal", "Accidente cerebrovascular", 
+                    "Crisis convulsivas y epilepsia", "Cefalea y migraña", "Meningitis bacteriana", "Anemia ferropénica", 
+                    "Anemias megaloblásticas", "Anemias hemolíticas", "Leucemias agudas", "Linfomas"
+                ] 
+            },
+            pedia: { 
+                flashcards: [], 
+                preguntas: [], 
+                temario: [
+                    "Reanimación neonatal", "Ictericia neonatal", "Sepsis neonatal", "Síndrome de dificultad respiratoria del recién nacido", 
+                    "Enterocolitis necrosante", "Infección de vías urinarias en pediatría", "Diarrea aguda y deshidratación", 
+                    "Infecciones respiratorias agudas altas (faringoamigdalitis, otitis)", "Bronquiolitis", "Neumonía en pediatría", 
+                    "Asma infantil", "Desnutrición infantil", "Obesidad infantil", "Esquema nacional de vacunación", 
+                    "Crecimiento y desarrollo (Milestones)", "Trastornos del desarrollo psicomotor", "Convulsiones febriles", 
+                    "Epilepsia en la infancia", "Varicela", "Sarampión", "Rubeola", "Escarlatina", "Enfermedad de Kawasaki", 
+                    "Purpura de Henoch-Schönlein", "Fiebre reumática en pediatría", "Cardiopatías congénitas acianógenas", 
+                    "Cardiopatías congénitas cianógenas", "Leucemia linfoblástica aguda en pediatría"
+                ] 
+            }
         };
 
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
