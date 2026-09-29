@@ -1047,18 +1047,68 @@
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
-                preguntas: [{ 
-                    id: "qp_g1",
-                    q: "Femenina de 32 años con dismenorrea secundaria progresiva, dispareunia e infertilidad. ¿Estándar de oro diagnóstico?", 
-                    rawOptions: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
-                    correctText: "Laparoscopia diagnóstica", 
-                    explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
-                    discardExplanation: [
-                        "<b>Ecografía pélvica:</b> Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
-                        "<b>Resonancia Magnética:</b> Reservada para endometriosis profunda con compromiso visceral.",
-                        "<b>CA-125 sérico:</b> Marcador inespecífico; no se recomienda de rutina."
-                    ] 
-                }],
+                preguntas: [
+                    { 
+                        id: "qp_g1",
+                        q: "Femenina de 32 años con dismenorrea secundaria progresiva, dispareunia e infertilidad. ¿Estándar de oro diagnóstico?", 
+                        rawOptions: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
+                        correctText: "Laparoscopia diagnóstica", 
+                        explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
+                        discardExplanation: [
+                            "<b>Ecografía pélvica:</b> Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
+                            "<b>Resonancia Magnética:</b> Reservada para endometriosis profunda con compromiso visceral.",
+                            "<b>CA-125 sérico:</b> Marcador inespecífico; no se recomienda de rutina."
+                        ] 
+                    },
+                    {
+                        id: "qp_gen_high_1",
+                        q: "Mujer de 28 años G1P0, acude a revisión por amenograma secundario de 5 meses y galactorrea bilateral espontánea, no dolorosa. No refiere cefalea ni alteraciones visuales. Se realiza prueba de embarazo negativa y perfil tiroideo normal con TSH de 2.1 mUI/L. ¿Cuál es el siguiente paso diagnóstico más apropiado?",
+                        rawOptions: ["Determinación de prolactina sérica", "Resonancia magnética de silla turca con contraste", "Iniciar tratamiento con cabergolina", "Radiografía de cráneo simple"],
+                        correctText: "Determinación de prolactina sérica",
+                        explanation: "Ante la presencia de galactorrea y amenorrea secundaria con TSH normal y embarazo descartado, el paso inicial fundamental es confirmar la hiperprolactinemia midiendo los niveles séricos de prolactina antes de realizar estudios de imagen.",
+                        discardExplanation: [
+                            "<b>Resonancia magnética de silla turca con contraste:</b> Se solicita tras confirmar la elevación de prolactina para descartar un prolactinoma.",
+                            "<b>Iniciar tratamiento con cabergolina:</b> Requiere documentar bioquímicamente la hiperprolactinemia y evaluar características del adenoma por imagen.",
+                            "<b>Radiografía de cráneo simple:</b> Estudio obsoleto y sin sensibilidad adecuada para la patología selar."
+                        ]
+                    },
+                    {
+                        id: "qp_gen_high_2",
+                        q: "Paciente femenina de 45 años, con antecedente de tabaquismo pesado, acude a consulta por metrorragia intermitente de 2 meses de evolución. Al examen físico se palpa útero irregular, crecido aproximadamente a 12 semanas de gestación, móvil, no doloroso. Ultrasonido pélvico demuestra múltiples miomas intramurales y submucosos, siendo el mayor de 4 cm. Endometrio de 5 mm homogéneo. ¿Cuál es la conducta terapéutica inicial de elección si la paciente desea conservar su fertilidad?",
+                        rawOptions: ["Agonistas de la hormona liberadora de gonadotropinas (GnRH)", "Histerectomía abdominal total", "Miomectomía histeroscópica o laparoscópica", "Anticonceptivos orales combinados"],
+                        correctText: "Agonistas de la hormona liberadora de gonadotropinas (GnRH)",
+                        explanation: "Los análogos de GnRH se utilizan como manejo médico preoperatorio para disminuir el volumen uterino y de los miomas, reducir la vascularización y corregir la anemia antes de un procedimiento quirúrgico conservador.",
+                        discardExplanation: [
+                            "<b>Histerectomía abdominal total:</b> Proscrita en pacientes que desean conservar su fertilidad y útero.",
+                            "<b>Miomectomía histeroscópica o laparoscópica:</b> Es el tratamiento definitivo, pero frecuentemente se precede de terapia médica con agonistas GnRH si el útero es muy grande o hay anemia.",
+                            "<b>Anticonceptivos orales combinados:</b> Útiles para control temporal del sangrado leve, pero no reducen el tamaño de los miomas sintomáticos de gran volumen."
+                        ]
+                    },
+                    {
+                        id: "qp_gen_high_3",
+                        q: "Mujer de 35 años, G2P2, acude por exudado vaginal fétido, de color grisáceo, homogéneo, que aumenta tras el coito y la menstruación. A la exploración con especulo se observa pared vaginal sin signos inflamatorios marcados, pH vaginal de 5.2. Prueba de aminas (KOH al 10%) positiva. ¿Cuál es el tratamiento farmacológico de primera elección según las GPC?",
+                        rawOptions: ["Metronidazol 500 mg vía oral cada 12 horas por 7 días", "Clindamicina en crema al 2% intravaginal por 7 días", "Fluconazol 150 mg dosis única vía oral", "Azitromicina 1 g dosis única vía oral"],
+                        correctText: "Metronidazol 500 mg vía oral cada 12 horas por 7 días",
+                        explanation: "El cuadro clínico cumple con los criterios de Amsel para vaginosis bacteriana. El tratamiento de primera línea de elección recomendado por las Guías de Práctica Clínica es metronidazol por vía oral.",
+                        discardExplanation: [
+                            "<b>Clindamicina en crema al 2% intravaginal por 7 días:</b> Considerada tratamiento alternativo, especialmente en pacientes embarazadas o intolerantes al metronidazol oral.",
+                            "<b>Fluconazol 150 mg dosis única vía oral:</b> Tratamiento exclusivo para candidiasis vulvovaginal, patología que cursa con pH normal y sin aminas positivas.",
+                            "<b>Azitromicina 1 g dosis única vía oral:</b> Antibiótico indicado para infecciones por Chlamydia trachomatis, no para vaginosis bacteriana."
+                        ]
+                    },
+                    {
+                        id: "qp_gen_high_4",
+                        q: "Adolescente de 16 años que consulta por amenorrea primaria. Presenta desarrollo mamario normal (Tanner V), vello púbico y axilar escaso (Tanner I-II), y ausencia de menarca. A la exploración física, genitales externos femeninos normales con fondo de saco vaginal corto y ciego; no se palpa útero ni anexos por vía rectal. Perfil hormonal muestra FSH y LH elevadas para su edad, testosterona sérica en rango masculino. ¿Cuál es el diagnóstico más probable?",
+                        rawOptions: ["Síndrome de insensibilidad a los andrógenos (Testicular Feminization)", "Síndrome de Mayer-Rokitansky-Küster-Hauser", "Disgenesia gonadal pura (Síndrome de Turner)", "Hipogonadismo hipogonadotrópico idiopático"],
+                        correctText: "Síndrome de insensibilidad a los andrógenos (Testicular Feminization)",
+                        explanation: "El síndrome de insensibilidad completa a los andrógenos se caracteriza por cariotipo 46,XY, fenotipo femenino normal, ausencia de útero por acción de la hormona antimülleriana testicular y testículos ocultos con niveles de testosterona en rango masculino.",
+                        discardExplanation: [
+                            "<b>Síndrome de Mayer-Rokitansky-Küster-Hauser:</b> Cursa con ausencia de útero y vagina superior, pero con niveles hormonales normales y vello axilar/púbico normal (cariotipo 46,XX).",
+                            "<b>Disgenesia gonadal pura (Síndrome de Turner):</b> Se presenta con talla baja, caracteres sexuales infantiles y amenorrea primaria con cariotipo alterado (45,X0).",
+                            "<b>Hipogonadismo hipogonadotrópico idiopático:</b> Cursa con niveles bajos de gonadotropinas y ausencia de desarrollo puberal completo."
+                        ]
+                    }
+                ],
                 temario: [
                     "Síndrome de ovario poliquístico", "Menopausia y climaterio", "Osteoporosis", "Amenorrea primaria", 
                     "Amenorrea secundaria", "Metrorragias", "Insuficiencia ovárica primaria", "Cervicovaginitis", 
@@ -1069,18 +1119,68 @@
             },
             obste: {
                 flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio.", tag: "normal" }],
-                preguntas: [{ 
-                    id: "qp_o1",
-                    q: "Gestante de 34 semanas con sangrado transvaginal rojo rutilante, indoloro y sin actividad uterina. ¿Diagnóstico probable?", 
-                    rawOptions: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
-                    correctText: "Placenta Previa", 
-                    explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
-                    discardExplanation: [
-                        "<b>Desprendimiento Prematuro de Placenta (DPPNI):</b> Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
-                        "<b>Ruptura Uterina:</b> Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
-                        "<b>Vasa Previa:</b> Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
-                    ] 
-                }],
+                preguntas: [
+                    { 
+                        id: "qp_o1",
+                        q: "Gestante de 34 semanas con sangrado transvaginal rojo rutilante, indoloro y sin actividad uterina. ¿Diagnóstico probable?", 
+                        rawOptions: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
+                        correctText: "Placenta Previa", 
+                        explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
+                        discardExplanation: [
+                            "<b>Desprendimiento Prematuro de Placenta (DPPNI):</b> Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
+                            "<b>Ruptura Uterina:</b> Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
+                            "<b>Vasa Previa:</b> Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
+                        ] 
+                    },
+                    {
+                        id: "qp_obs_high_1",
+                        q: "Primigesta de 32 semanas de gestación acude a urgencias por cefalea global intensa, acúfenos y fosfenos de 6 horas de evolución. Presión arterial de 160/110 mmHg tomada en dos ocasiones separadas por 15 minutos. Proteinuria en tira reactiva de 3+. Se inicia infusión intravenosa de sulfato de magnesio y labetalol con descenso adecuado de la presión arterial. Al valorar la monitorización fetal electrónica se observa variabilidad disminuida y desaceleraciones tardías recurrentes con contracciones uterinas ausentes. ¿Cuál es la conducta obstétrica inmediata?",
+                        rawOptions: ["Interrupción de la gestación vía cesárea de urgencia", "Continuar manejo expectante con maduración pulmonar y vigilancia estricta", "Administrar un bolo adicional de sulfato de magnesio y repetir ultrasonido doppler en 48 horas", "Realizar prueba sin estrés (NST) extendida por 2 horas más"],
+                        correctText: "Interrupción de la gestación vía cesárea de urgencia",
+                        explanation: "La presencia de preeclampsia con criterios de severidad asociada a un trazo de categoría III en la FCF (desaceleraciones tardías recurrentes) indica compromiso fetal grave, siendo la indicación absoluta la resolución del embarazo independientemente de la edad gestacional.",
+                        discardExplanation: [
+                            "<b>Continuar manejo expectante con maduración pulmonar:</b> Proscrito ante la presencia de sufrimiento fetal agudo evidenciado por el monitoreo electrónico.",
+                            "<b>Administrar un bolo adicional de sulfato de magnesio:</b> El sulfato de magnesio se indica para neuroprotección y prevención de eclampsia, no revierte el compromiso fetal hipóxico.",
+                            "<b>Realizar prueba sin estrés extendida:</b> Demorar la extracción fetal ante un trazo patológico pone en grave riesgo la vida del producto."
+                        ]
+                    },
+                    {
+                        id: "qp_obs_high_2",
+                        q: "Multigesta de 38 semanas de gestación, en fase activa de trabajo de parto con dilatación completa y expulsivo prolongado. Se extrae producto único vivo masculino de 3,850 g mediante maniobras de atención de parto eutócico asistido con aplicación de forceps. Minutos después del alumbramiento, la paciente presenta sangrado transvaginal profuso, continuo y rojo rutilante. A la exploración bimanual se palpa útero contraído, duro, por debajo de la cicatriz umbilical. Se revisa canal de parto encontrando desgarro cervical profundo que se extiende hacia fondo de saco vaginal. ¿Cuál es el diagnóstico causal de la hemorragia posparto?",
+                        rawOptions: ["Laceración del canal del parto", "Atonía uterina", "Retorno de restos placentarios", "Inversión uterina aguda"],
+                        correctText: "Laceración del canal del parto",
+                        explanation: "La presencia de un útero firmemente contraído tras el alumbramiento junto con hemorragia persistente y antecedentes de instrumentación o macrosomía apunta directamente a una lesión traumática o laceración del canal del parto.",
+                        discardExplanation: [
+                            "<b>Atonía uterina:</b> Causa más frecuente de HPP, pero se caracteriza clínicamente por un útero blando, flácido y no contraído.",
+                            "<b>Retorno de restos placentarios:</b> Cursa clásicamente con subinvolución uterina y sangrado tardío o persistente con útero moderadamente contraído pero con defectos en la cara cotiledonaria.",
+                            "<b>Inversión uterina aguda:</b> Cursa con dolor súbito intenso, sangrado masivo y ausencia de fondo uterino palpable a la exploración abdominal."
+                        ]
+                    },
+                    {
+                        id: "qp_obs_high_3",
+                        q: "Gestante de 28 semanas con diagnóstico previo de diabetes mellitus gestacional manejada inicialmente con dieta y ejercicio, acude a control prenatal con cifras de glucemia en ayuno persistentemente elevadas (> 95 mg/dL) y postprandiales de 1 hora en 145 mg/dL a pesar del apego nutricional estricto por 2 semanas. ¿Cuál es el fármaco hipoglucemiante oral de elección aceptado por las GPC para el manejo inicial en este escenario?",
+                        rawOptions: ["Metformina", "Glibenclamida", "Insulina glargina basal exclusiva", "Acarbosa"],
+                        correctText: "Metformina",
+                        explanation: "Cuando la terapia nutricional fracasa en la diabetes gestacional, las GPC respaldan el inicio de tratamiento farmacológico, siendo la metformina el antidiabético oral de primera línea preferido o la insulina según la severidad.",
+                        discardExplanation: [
+                            "<b>Glibenclamida:</b> Atraviesa la barrera placentaria en mayor grado y puede asociarse a macrosomía e hipoglucemia neonatal severa.",
+                            "<b>Insulina glargina basal exclusiva:</b> La insulina es el estándar de oro histórico, pero la metformina ha ganado aceptación inicial oral; la insulina de elección inicial incluye esquemas prandiales combinados si se usa.",
+                            "<b>Acarbosa:</b> Carece de suficiente evidencia de seguridad y eficacia clínica documentada durante el embarazo."
+                        ]
+                    },
+                    {
+                        id: "qp_obs_high_4",
+                        q: "Paciente de 26 años con embarazo de 11 semanas acude a urgencias por dolor pélvico tipo cólico y sangrado transvaginal moderado. A la exploración física, orificio cervical interno abierto con presencia de tejido ovular palpable en canal endocervical. Ecografía transvaginal muestra saco gestacional irregular descendido en segmento inferior sin actividad cardiaca fetal positiva. ¿Cómo se clasifica este tipo de aborto?",
+                        rawOptions: ["Aborto inevitable / en curso", "Amenaza de aborto", "Aborto incompleto", "Aborto retenido"],
+                        correctText: "Aborto inevitable / en curso",
+                        explanation: "El aborto inevitable o en curso se define por la presencia de sangrado uterino, dolor cólico y dilatación cervical franca con membranas rotas o tejido descendiendo, sin haberse expulsado completamente todos los productos de la concepción.",
+                        discardExplanation: [
+                            "<b>Amenaza de aborto:</b> Se caracteriza por sangrado transvaginal con orificio cervical cerrado y embrión con latido cardiaco presente.",
+                            "<b>Aborto incompleto:</b> Ocurre cuando ya se ha expulsado parcialmente el tejido placentario o fetal, persistiendo restos en el interior de la cavidad uterina.",
+                            "<b>Aborto retenido (missed abortion):</b> Presencia de producto sin vida retenido en el útero con orificio cervical cerrado y ausencia de sangrado importante."
+                        ]
+                    }
+                ],
                 temario: [
                     "Control prenatal", "Amenaza de aborto", "Aborto", "Embarazo ectópico", "Enfermedad trofoblástica gestacional", 
                     "Placenta previa", "Acretismo", "Abrupto placentario/DPPNI", "Rotura uterina", "Hemorragia post parto (HPP)", 
@@ -1091,7 +1191,56 @@
             },
             cirugia: { 
                 flashcards: [], 
-                preguntas: [], 
+                preguntas: [
+                    {
+                        id: "qp_cir_high_1",
+                        q: "Hombre de 45 años, sin antecedentes de importancia, acude a urgencias por dolor abdominal tipo cólico de 24 horas de evolución, que inició en región periumbilical y posteriormente se irrogó a fosa ilíaca derecha. Se acompaña de náuseas, vómito en una ocasión y febrícula. A la exploración física: frecuencia cardiaca 98 lpm, temperatura 38.2°C, dolor a la palpación superficial y profunda en punto de McBurney, signo de Blumberg positivo y psoas positivo. Biometría hemática con leucocitosis de 14,500/uL y predominio de neutrófilos (85%). ¿Cuál es el estudio de imagen inicial de elección para confirmar el diagnóstico en este paciente adulto?",
+                        rawOptions: ["Ultrasonido abdominal con compresión gradual (técnica de Compression)", "Tomografía computada de abdomen simple y con contraste IV", "Placa simple de abdomen de pie y decúbito", "Tránsito esofagogastroduodenal"],
+                        correctText: "Tomografía computada de abdomen simple y con contraste IV",
+                        explanation: "Aunque la clínica es típica de apendicitis aguda, en pacientes adultos o con dudas diagnósticas, la tomografía computada de abdomen con contraste es el estándar con mayor sensibilidad y especificidad diagnóstica según las guías clínicas actuales.",
+                        discardExplanation: [
+                            "<b>Ultrasonido abdominal con compresión gradual:</b> Estudio de primera elección preferido en niños, mujeres embarazadas y delgadas, pero con alta tasa de falsos negativos en adultos obesos.",
+                            "<b>Placa simple de abdomen de pie y decúbito:</b> Baja sensibilidad y especificidad, útil principalmente para descartar neumoperitoneo u obstrucción intestinal.",
+                            "<b>Tránsito esofagogastroduodenal:</b> Estudio contrastado del tubo digestivo alto sin indicación en patología apendicular."
+                        ]
+                    },
+                    {
+                        id: "qp_cir_high_2",
+                        q: "Paciente masculino de 60 años, con antecedentes de obesidad mórbida y tabaquismo crónico, acude por cuadro de obstrucción intestinal alta. A la exploración física se aprecia masa irreductible en región inguinal derecha que se extiende hacia el escroto, dolorosa a la palpación, con cambios de coloración violácea en la piel suprayacente y ausencia de peristalsis local. Signos vitales: TA 100/60 mmHg, FC 115 lpm, temperatura 38.9°C. Se establece diagnóstico de hernia inguinal estrangulada. ¿Cuál es la indicación quirúrgica formal inmediata?",
+                        rawOptions: ["Intervención quirúrgica urgente con abordaje abierto o laparoscópico y evaluación de viabilidad intestinal", "Reducción manual digital inmediata en urgencias seguida de cirugía electiva en 4 semanas", "Tratamiento conservador con compresas tibias y analgesia intravenosa por 24 horas", "Colonoscopia diagnóstica de urgencia previa al abordaje herniario"],
+                        correctText: "Intervención quirúrgica urgente con abordaje abierto o laparoscópico y evaluación de viabilidad intestinal",
+                        explanation: "Una hernia estrangulada con datos de isquemia o compromiso cutáneo constituye una urgencia quirúrgica absoluta para evitar la necrosis y perforación de la asa intestinal atrapada.",
+                        discardExplanation: [
+                            "<b>Reducción manual digital inmediata:</b> Está estrictamente contraindicada ante la sospecha de estrangulación o isquemia, ya que se corre el riesgo de introducir tejido necrosado o perforado hacia la cavidad peritoneal.",
+                            "<b>Tratamiento conservador con compresas tibias:</b> Aumentaría de manera letal el riesgo de peritonitis y choque séptico.",
+                            "<b>Colonoscopia diagnóstica:</b> No tiene utilidad en la resolución del cuadro obstructivo agudo herniario estrangulado."
+                        ]
+                    },
+                    {
+                        id: "qp_cir_high_3",
+                        q: "Femenina de 52 años, con antecedentes de obesidad y dislipidemia, acude por dolor en cuadrante superior derecho de tipo cólico biliar postprandial de fuerte intensidad, irradiado a escápula derecha, acompañado de náuseas y vómitos biliosos. A la exploración: signo de Murphy positivo, temperatura de 37.8°C. Ultrasonido hepático y biliar reporta litiasis vesicular múltiple, pared vesicular engrosada de 5 mm y líquido perivesicular escaso. ¿Cuál es el tratamiento quirúrgico definitivo recomendado y su ventana de oportunidad ideal?",
+                        rawOptions: ["Colecistectomía laparoscópica temprana (dentro de las primeras 72 a 108 horas de inicio de los síntomas)", "Colecistectomía abierta diferida a los 3 meses tras tratamiento antibiótico exclusivo", "Colecistostomía percutánea guiada por ultrasonido de urgencia obligatoria", "Tratamiento médico disolvente con sales biliares por 6 meses"],
+                        correctText: "Colecistectomía laparoscópica temprana (dentro de las primeras 72 a 108 horas de inicio de los síntomas)",
+                        explanation: "La colecistitis aguda litiásica tiene como tratamiento de elección la colecistectomía laparoscópica temprana, la cual reduce la estancia hospitalaria, la morbilidad y los costos globales cuando se realiza dentro de la ventana ideal.",
+                        discardExplanation: [
+                            "<b>Colecistectomía abierta diferida a los 3 meses:</b> Incrementa los reingresos hospitalarios por complicaciones recurrentes y el riesgo de conversión quirúrgica.",
+                            "<b>Colecistostomía percutánea guiada por ultrasonido:</b> Reservada exclusivamente para pacientes con alto riesgo quirúrgico o contraindicación anestésica severa (ASA IV).",
+                            "<b>Tratamiento médico disolvente con sales biliares:</b> Ineficaz para el manejo del cuadro inflamatorio agudo de la vesícula biliar."
+                        ]
+                    },
+                    {
+                        id: "qp_cir_high_4",
+                        q: "Paciente varón de 30 años sufre accidente automovilístico con impacto frontal a alta velocidad. Ingresa a urgencias hemodinámicamente estable pero refiriendo dolor abdominal generalizado. Se realiza FAST (Focused Assessment with Sonography for Trauma) que reporta líquido libre en espacio hepatorrenal y esplenorrenal. Tomografía computada abdominal contrastada confirma lesión grado III de bazo con extravasación de medio de contraste activa y estabilidad hemodinámica mantenida. ¿Cuál es la conducta terapéutica inicial de elección?",
+                        rawOptions: ["Manejo conservador / no operatorio en unidad de cuidados intensivos con monitorización estricta", "Laparotomía exploradora de urgencia y esplenectomía total inmediata", "Embolización arterial transcatéter profiláctica en todos los casos", "Administración de antibióticos profilácticos y alta hospitalaria temprana a las 24 horas"],
+                        correctText: "Manejo conservador / no operatorio en unidad de cuidados intensivos con monitorización estricta",
+                        explanation: "En pacientes hemodinámicamente estables con traumatismo esplénico cerrado, el tratamiento conservador (no operatorio) es el estándar de oro actual para preservar la función inmunológica del bazo, requiriendo vigilancia estrecha.",
+                        discardExplanation: [
+                            "<b>Laparotomía exploradora y esplenectomía total inmediata:</b> Reservada para pacientes hemodinámicamente inestables o con fracaso al manejo conservador.",
+                            "<b>Embolización arterial transcatéter profiláctica:</b> Se indica específicamente si hay signos de sangrado activo (pseudoaneurisma o contraste extravasado), pero el manejo inicial en estables puede ser puramente clínico u observation en UCI.",
+                            "<b>Administración de antibióticos y alta a las 24 horas:</b> Inseguro; requiere vigilancia hospitalaria estricta por al menos 48-72 horas ante el riesgo de resangrado tardío."
+                        ]
+                    }
+                ], 
                 temario: [
                     "Abdomen agudo", "Apendicitis aguda", "Colecistitis aguda", "Colelitiasis", "Coledocolitiasis", 
                     "Colangitis", "Pancreatitis aguda", "Obstrucción intestinal", "Hernias de la pared abdominal", 
@@ -1104,7 +1253,56 @@
             },
             interna: { 
                 flashcards: [], 
-                preguntas: [], 
+                preguntas: [
+                    {
+                        id: "qp_int_high_1",
+                        q: "Hombre de 68 años, fumador crónico, acude por disnea progresiva de esfuerzo de 6 meses de evolución, tos crónica productiva con expectoración blanquecina matutina. A la exploración física: tórax en tonel, disminución de ruidos respiratorios globalmente, sibilancias espiratorias difusas y espiración prolongada. Espirometría post-broncodilatador muestra relación VEF1/CVF de 0.62 y VEF1 del 48% del valor predicho. ¿Cuál es el tratamiento farmacológico inicial de mantenimiento combinado recomendado para reducir exacerbaciones según las guías clínicas?",
+                        rawOptions: ["Broncodilatador de acción prolongada LAMA (Anticolinérgico) o LABA (Beta-agonista)", "Corticoesteroide sistémico oral diario a altas dosis", "Antibioterapia profiláctica continua con azitromicina trimestral", "Oxigenoterapia hiperbárica domiciliaria"],
+                        correctText: "Broncodilatador de acción prolongada LAMA (Anticolinérgico) o LABA (Beta-agonista)",
+                        explanation: "El tratamiento inicial de mantenimiento para la EPOC sintomática con obstrucción moderada a severa consiste en el uso de broncodilatadores de larga duración (LAMA o LABA), prefiriéndose LAMA por su eficacia en la reducción de exacerbaciones.",
+                        discardExplanation: [
+                            "<b>Corticoesteroide sistémico oral diario:</b> No se recomienda su uso crónico debido a sus severos efectos secundarios sistémicos (miopatía, osteoporosis, infecciones).",
+                            "<b>Antibioterapia profiláctica continua:</b> Reservada para pacientes con exacerbaciones frecuentes a pesar de tratamiento optimizado, no como primera línea inicial estándar.",
+                            "<b>Oxigenoterapia hiperbárica domiciliaria:</b> Sin indicación en EPOC estable; la oxigenoterapia domiciliaria se indica solo ante hipoxemia severa crónica documentada (PaO2 < 55 mmHg)."
+                        ]
+                    },
+                    {
+                        id: "qp_int_high_2",
+                        q: "Mujer de 55 años con antecedente de hipertensión arterial sistémica de 10 años de evolución, acude a revisión médica rutinaria asintomática. Presión arterial actual en consultorio de 144/92 mmHg confirmada en dos tomas diferentes. Exámenes de laboratorio con creatinina sérica normal, tasa de filtración glomerular estimada > 60 mL/min/1.73m², examen general de orina sin proteinuria significativa y glucemia en ayunas normal. ¿Cómo se clasifica el estadio de hipertensión arterial según las guías internacionales vigentes y cuál es la conducta inicial?",
+                        rawOptions: ["Hipertensión arterial Estadio 2; iniciar modificación del estilo de vida y tratamiento farmacológico combinado con dos fármacos de diferente mecanismo", "Hipertensión arterial Estadio 1; iniciar únicamente dieta baja en sodio por 6 meses sin medicamentos", "Hipertensión arterial limítrofe; repetir presión arterial en 5 años", "Crisis hipertensiva asintomática; enviar a urgencias hospitalarias de inmediato"],
+                        correctText: "Hipertensión arterial Estadio 2; iniciar modificación del estilo de vida y tratamiento farmacológico combinado con dos fármacos de diferente mecanismo",
+                        explanation: "Una presión arterial sistólica >= 140 mmHg o diastólica >= 90 mmHg clasifica a la paciente en Hipertensión Estadio 2. Las guías actuales recomiendan iniciar tratamiento farmacológico con combinación de dos fármacos desde el inicio en este estadio.",
+                        discardExplanation: [
+                            "<b>Hipertensión Estadio 1 con dieta exclusiva:</b> Incorrecto porque con cifras de 144/92 mmHg se ubica en Estadio 2 y requiere fármacos desde el inicio si hay riesgo cardiovascular.",
+                            "<b>Hipertensión limítrofe:</b> Las cifras superan ampliamente los límites normales y de hipertensión grado 1.",
+                            "<b>Crisis hipertensiva asintomática:</b> No existe daño a órgano blanco agudo; el manejo inadecuado con descenso brusco en urgencias puede precipitar isquemia cerebral o renal."
+                        ]
+                    },
+                    {
+                        id: "qp_int_high_3",
+                        q: "Varón de 62 años, con antecedentes de diabetes mellitus tipo 2 de 15 años de evolución e hipertensión arterial, acude por edemas en extremidades inferiores progresivos de 2 semanas y orinas espumosas. Laboratorios: glucemia basal 140 mg/dL, HbA1c 8.2%, creatinina sérica 1.8 mg/dL, depuración de creatinina estimada disminuida, proteinuria en colección de 24 horas de 4.2 g/24h. ¿Cuál es el diagnóstico clínico y patológico más probable que explica el cuadro?",
+                        rawOptions: ["Nefropatía diabética establecida con síndrome nefrótico", "Glomerulonefritis postestreptocócica aguda", "Insuficiencia renal aguda prerrenal por deshidratación", "Necrosis tubular aguda tóxica"],
+                        correctText: "Nefropatía diabética establecida con síndrome nefrótico",
+                        explanation: "La combinación de diabetes de larga evolución, deterioro de función renal y proteinuria en rango nefrótico (> 3.5 g/24h) con edema periférico es la presentación clásica de la nefropatía diabética avanzada.",
+                        discardExplanation: [
+                            "<b>Glomerulonefritis postestreptocócica aguda:</b> Cuadro inflamatorio agudo típicamente antecedido por infección faríngea o cutánea por estreptococo, con hematuria macroscópica y complemento C3 disminuido.",
+                            "<b>Insuficiencia renal aguda prerrenal:</b> Cursa con elevación de azoados secundaria a hipoperfusión, pero revierte con la administración de líquidos y no presenta proteinuria nefrótica masiva crónica.",
+                            "<b>Necrosis tubular aguda tóxica:</b> Relacionada con exposición a nefrotóxicos o isquemia severa aguda con presencia de cilindros granulosos en el sedimento urinario."
+                        ]
+                    },
+                    {
+                        id: "qp_int_high_4",
+                        q: "Mujer de 38 años acude por cuadro de 3 meses de evolución caracterizado por poliartritis simétrica de pequeñas articulaciones de manos y muñecas, rigidez matutina prolongada mayor de 1 hora, fatiga y febrícula ocasional. A la exploración física: inflamación dolorosa a la palpación de metacarpofalángicas e interfalángicas proximales bilaterales. Exámenes de laboratorio: factor reumatoide positivo a títulos altos y anticuerpos contra péptidos citrulinados cíclicos (Anti-CCP) fuertemente positivos. Radiografía de manos con osteopenia yuxtaarticular. ¿Cuál es el fármaco modificador de la enfermedad (FAME) sintético convencional de primera línea recomendado?",
+                        rawOptions: ["Metotrexato", "Infliximab (Anticuerpo monoclonal anti-TNF)", "Hidroxicloroquina en monoterapia exclusiva", "Colchicina a dosis bajas"],
+                        correctText: "Metotrexato",
+                        explanation: "El metotrexato es considerado el fármaco modificador de la enfermedad (FAME) sintético convencional de primera línea obligado en el tratamiento inicial de la artritis reumatoide.",
+                        discardExplanation: [
+                            "<b>Infliximab (anti-TNF):</b> Tratamiento biológico reservado para pacientes que presentan fracaso o respuesta insuficiente al tratamiento con FAMEs sintéticos convencionales.",
+                            "<b>Hidroxicloroquina en monoterapia:</b> FAME de menor potencia clínica, reservado para casos leves o combinado con metotrexato, pero no como primera opción única en enfermedad erosiva o de alto título serológico.",
+                            "<b>Colchicina:</b> Fármaco antiinflamatorio indicado específicamente para el tratamiento y profilaxis de la gota y fiebre mediterránea familiar, sin papel en artritis reumatoide."
+                        ]
+                    }
+                ], 
                 temario: [
                     "Hipertensión arterial sistémica", "Insuficiencia cardíaca", "Infarto agudo de miocardio", "Arritmias cardíacas", 
                     "Fiebre reumática", "Endocarditis infecciosa", "Enfermedad pulmonar obstructiva crónica (EPOC)", "Asma bronquial", 
@@ -1121,7 +1319,56 @@
             },
             pedia: { 
                 flashcards: [], 
-                preguntas: [], 
+                preguntas: [
+                    {
+                        id: "qp_ped_high_1",
+                        q: "Lactante masculino de 8 meses de edad, llevado a urgencias por cuadro de 2 días de evolución consistente en rinorrea, tos leve, fiebre de 38.5°C y aparición posterior de sibilancias y dificultad respiratoria progresiva. A la exploración física: frecuencia respiratoria 52 rpm, frecuencia cardiaca 140 lpm, saturación de oxígeno al aire ambiente de 88%. Se auscultan sibilancias difusas y estertores crepitantes bilaterales, con tiraje intercostal y subcostal moderado. ¿Cuál es el diagnóstico clínico más probable?",
+                        rawOptions: ["Bronquiolitis aguda", "Asma bronquial del lactante", "Neumonía bacteriana adquirida en la comunidad", "Crup infeccioso (Laringotraqueitis)"],
+                        correctText: "Bronquiolitis aguda",
+                        explanation: "La bronquiolitis aguda es una infección viral aguda de las vías respiratorias inferiores que afecta típicamente a menores de 2 años, caracterizada por obstrucción de la vía aérea pequeña, sibilancias, dificultad respiratoria y crepitantes.",
+                        discardExplanation: [
+                            "<b>Asma bronquial del lactante:</b> Diagnóstico difícil de confirmar en el primer episodio de sibilancias agudas virales; suele requerir episodios recurrentes.",
+                            "<b>Neumonía bacteriana adquirida:</b> Cursa típicamente con fiebre más elevada, aspecto tóxico y consolidación lobar franca radiológica, a diferencia del patrón difuso de la bronquiolitis.",
+                            "<b>Crup infeccioso:</b> Patología de vías aéreas superiores que cursa con tos traqueófona (perruna), estridor inspiratorio y voz ronca."
+                        ]
+                    },
+                    {
+                        id: "qp_ped_high_2",
+                        q: "Recién término de 36 horas de vida extrauterina, producto de gestación normoevolutiva, alimentado exclusivamente con leche materna con adecuada técnica. Presenta coloración amarillenta de piel y escleras que se extiende hasta el abdomen medio. Signos vitales normales, activo, succiona bien. Exámenes de laboratorio: bilirrubina total sérica de 13.5 mg/dL con predominio de fracción indirecta (no conjugada), bilirrubina directa de 0.6 mg/dL, grupo sanguíneo materno O Rh positivo y del neonato A Rh positivo, prueba de Coombs directa negativa. ¿Cuál es el diagnóstico más probable?",
+                        rawOptions: ["Ictericia fisiológica del recién nacido", "Enfermedad hemolítica por incompatibilidad ABO", "Atresia de vías biliares extrahepáticas", "Ictericia asociada a leche materna por inhibidores enzimáticos tardíos"],
+                        correctText: "Ictericia fisiológica del recién nacido",
+                        explanation: "La ictericia fisiológica aparece después de las 24 horas de vida, con predominio de bilirrubina indirecta, valores menores a 15 mg/dL en recién nacidos a término alimentados al seno y Coombs negativa, con resolución espontánea.",
+                        discardExplanation: [
+                            "<b>Enfermedad hemolítica por incompatibilidad ABO:</b> Cursa típicamente con prueba de Coombs directa positiva y elevación rápida de bilirrubinas en las primeras 24 horas de vida.",
+                            "<b>Atresia de vías biliares extrahepáticas:</b> Caracterizada por hiperbilirrubinemia predominantemente directa (conjugada), coluria y acolia persistente.",
+                            "<b>Ictericia asociada a leche materna (síndrome del pezón/leche materna):</b> Se manifiesta de forma tardía a partir de la primera semana de vida, no a las 36 horas."
+                        ]
+                    },
+                    {
+                        id: "qp_ped_high_3",
+                        q: "Preescolar masculino de 4 años, llevado a consulta por fiebre cuantificada en 39.0°C de 6 días de evolución, asociando conjuntivitis bilateral no purulante, exantema polimorfo tronco-extremidades, cambios en extremidades con eritema y edema indurado en palmas y plantas, lengua en fresa y linfadenopatía cervical unilateral de 1.5 cm. ¿Cuál es el tratamiento farmacológico de elección en la fase aguda para prevenir el desarrollo de aneurismas coronarios?",
+                        rawOptions: ["Inmunoglobulina intravenosa (IVIG) en dosis única asociada a ácido acetilsalicílico a dosis antiinflamatorias", "Antibioterapia sistémica con penicilina sódica cristalina intravenosa por 10 días", "Corticoesteroides sistémicos en monoterapia exclusiva a dosis altas", "Tratamiento sintomático exclusivo con paracetamol y observación domiciliaria"],
+                        correctText: "Inmunoglobulina intravenosa (IVIG) en dosis única asociada a ácido acetilsalicílico a dosis antiinflamatorias",
+                        explanation: "El cuadro clínico corresponde a la Enfermedad de Kawasaki. El tratamiento estándar de primera línea dentro de los primeros 10 días de evolución para evitar complicaciones cardiovasculares graves (aneurismas coronarios) es la inmunoglobulina intravenosa y aspirina.",
+                        discardExplanation: [
+                            "<b>Antibioterapia con penicilina:</b> La enfermedad de Kawasaki es una vasculitis sistémica de etiología inflamatoria inmunológica, no una infección bacteriana directa.",
+                            "<b>Corticoesteroides en monoterapia exclusiva:</b> No se consideran el tratamiento inicial estándar aislado, aunque pueden añadirse como terapia coadyuvante en pacientes de alto riesgo o refractarios.",
+                            "<b>Tratamiento sintomático exclusivo:</b> Incrementa de manera drástica el riesgo de desarrollar secuelas coronarias graves a largo plazo."
+                        ]
+                    },
+                    {
+                        id: "qp_ped_high_4",
+                        q: "Lactante de 18 meses, previamente sano, es llevado a urgencias por presentar un cuadro de llanto inconsolable intermitente asociado a episodios de flexión de extremidades inferiores hacia el abdomen, seguido de periodos de letargo y emisión de evacuaciones transrectales hemorrágicas descritas clásicamente con aspecto de jalea de grosella. A la exploración física se palpa masa abdominal en forma de salchicha en cuadrante superior derecho. ¿Cuál es el estudio de imagen inicial de elección tanto diagnóstico como terapéutico?",
+                        rawOptions: ["Enema hidrostático o neumático bajo control fluoroscópico o ecográfico", "Tomografía computada de abdomen contrastada de urgencia", "Radiografía simple de abdomen en decúbito supino", "Ultrasonido Doppler renal bilateral"],
+                        correctText: "Enema hidrostático o neumático bajo control fluoroscópico o ecográfico",
+                        explanation: "El cuadro clínico es característico de invaginación (intususcepción) intestinal. El enema con aire o líquido bajo control visualizado representa el método diagnóstico y terapéutico de primera línea para lograr la desinvaginación no quirúrgica.",
+                        discardExplanation: [
+                            "<b>Tomografía computada abdominal contrastada:</b> No es el estudio inicial; expone al paciente a radiación innecesaria cuando el ultrasonido o el enema diagnóstico son suficientes.",
+                            "<b>Radiografía simple de abdomen:</b> Útil para descartar neumoperitoneo por perforación, pero tiene baja sensibilidad y especificidad diagnóstica para la intususcepción.",
+                            "<b>Ultrasonido Doppler renal:</b> Sin relación con la patología intestinal obstructiva descrita."
+                        ]
+                    }
+                ], 
                 temario: [
                     "Reanimación neonatal", "Ictericia neonatal", "Sepsis neonatal", "Síndrome de dificultad respiratoria del recién nacido", 
                     "Enterocolitis necrosante", "Infección de vías urinarias en pediatría", "Diarrea aguda y deshidratación", 
@@ -2013,8 +2260,7 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            // Divide dinámicamente reconociendo cualquier caso/pregunta nueva
-            const caseBlocks = text.split(/(?=(?:Caso\s+clínico(?:\s*\/\s*Pregunta)?\s*:\s*|\b\d+\.\s*Caso|\bPregunta\s*\d*\s*:))/i);
+            const caseBlocks = text.split(/(?=(?:---CASO---|Caso\s+clínico(?:\s*\/\s*Pregunta)?\s*:\s*|\b\d+\.\s*Caso|\bPregunta\s*\d*\s*:))/i);
             
             caseBlocks.forEach(block => {
                 const trimmed = block.trim();
@@ -2028,11 +2274,10 @@
                 let readingHeader = true;
 
                 lines.forEach(line => {
-                    let cleanLine = line.replace(/^\d+\.\s*/, '');
+                    let cleanLine = line.replace(/^(---CASO---|\d+\.\s*)/, '').trim();
                     let upperLine = cleanLine.toUpperCase();
 
-                    // Coincide con incisos de opción múltiple
-                    let optMatch = cleanLine.match(/^([A-G])[\)\.\:]\s*(.*)/i);
+                    let optMatch = cleanLine.match(/^([A-D])[\)\.\:]\s*(.*)/i);
                     if (optMatch) {
                         readingHeader = false;
                         let letter = optMatch[1].toUpperCase();
@@ -2043,31 +2288,25 @@
 
                     let lowerLine = cleanLine.toLowerCase();
 
-                    // Detecta respuesta correcta explicada
-                    if (lowerLine.startsWith('opción correcta') || upperLine.includes('CORRECTA') || lowerLine.startsWith('respuesta correcta')) {
+                    if (lowerLine.startsWith('correcta:') || lowerLine.startsWith('opción correcta') || upperLine.includes('CORRECTA')) {
                         readingHeader = false;
-                        if (cleanLine.includes('A)') || cleanLine.startsWith('A') || upperLine.includes('INCISO A')) correctOptLetter = 'A';
-                        if (cleanLine.includes('B)') || cleanLine.startsWith('B') || upperLine.includes('INCISO B')) correctOptLetter = 'B';
-                        if (cleanLine.includes('C)') || cleanLine.startsWith('C') || upperLine.includes('INCISO C')) correctOptLetter = 'C';
-                        if (cleanLine.includes('D)') || cleanLine.startsWith('D') || upperLine.includes('INCISO D')) correctOptLetter = 'D';
-                        if (cleanLine.includes('E)') || cleanLine.startsWith('E') || upperLine.includes('INCISO E')) correctOptLetter = 'E';
-                        if (cleanLine.includes('F)') || cleanLine.startsWith('F') || upperLine.includes('INCISO F')) correctOptLetter = 'F';
-                        if (cleanLine.includes('G)') || cleanLine.startsWith('G') || upperLine.includes('INCISO G')) correctOptLetter = 'G';
+                        if (cleanLine.includes('A)') || upperLine.includes('A)') || cleanLine.startsWith('A')) correctOptLetter = 'A';
+                        if (cleanLine.includes('B)') || upperLine.includes('B)') || cleanLine.startsWith('B')) correctOptLetter = 'B';
+                        if (cleanLine.includes('C)') || upperLine.includes('C)') || cleanLine.startsWith('C')) correctOptLetter = 'C';
+                        if (cleanLine.includes('D)') || upperLine.includes('D)') || cleanLine.startsWith('D')) correctOptLetter = 'D';
                         
                         discardList.push(cleanLine);
                         return;
                     }
 
-                    // Detecta descartes y justificaciones
-                    if (lowerLine.startsWith('se descarta') || lowerLine.includes('incorrecta') || lowerLine.startsWith('razón') || lowerLine.startsWith('descarte')) {
+                    if (lowerLine.startsWith('explicacion:') || lowerLine.startsWith('incorrectas:') || lowerLine.startsWith('se descarta') || lowerLine.includes('incorrecta')) {
                         readingHeader = false;
                         discardList.push(cleanLine);
                         return;
                     }
 
-                    // Construcción dinámica del cuerpo de la pregunta/caso
                     if (readingHeader) {
-                        let cleanHeading = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:|pregunta:)\s*/i, '');
+                        let cleanHeading = cleanLine.replace(/^(enunciado:|caso clínico \/ pregunta:|caso clínico:|pregunta:)\s*/i, '');
                         if (cleanHeading) {
                             if (!qText) {
                                 qText = cleanHeading;
@@ -2083,7 +2322,7 @@
                 let optionKeys = Object.keys(optionsMap).sort();
                 if (qText && optionKeys.length >= 2) {
                     let rawOpts = optionKeys.map(k => optionsMap[k]);
-                    let correctTextVal = optionsMap[correctOptLetter] || optionsMap[optionKeys[0]]; 
+                    let correctTextVal = optionsMap[correctOptLetter] || rawOpts[0];
 
                     let finalDiscard = rawOpts.map(opt => {
                         let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, Math.min(opt.length, 10))));
