@@ -581,7 +581,6 @@
             font-weight: 700;
         }
 
-        /* Estilo para el bloque de retroalimentación global */
         .global-feedback-box {
             display: none;
             margin-top: 12px;
@@ -620,7 +619,6 @@
             box-shadow: 0 4px 12px rgba(142,36,170,0.25);
         }
 
-        /* Modales y demás clases... */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -1056,10 +1054,9 @@
                     correctText: "Laparoscopia diagnóstica", 
                     explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
                     discardExplanation: [
-                        "<b>Laparoscopia diagnóstica:</b> CORRECTA. Permite visión directa e histopatología.",
-                        "<b>Ecografía pélvica:</b> INCORRECTA. Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
-                        "<b>Resonancia Magnética:</b> INCORRECTA. Reservada para endometriosis profunda con compromiso visceral.",
-                        "<b>CA-125 sérico:</b> INCORRECTA. Marcador inespecífico; no se recomienda de rutina."
+                        "<b>Ecografía pélvica:</b> Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
+                        "<b>Resonancia Magnética:</b> Reservada para endometriosis profunda con compromiso visceral.",
+                        "<b>CA-125 sérico:</b> Marcador inespecífico; no se recomienda de rutina."
                     ] 
                 }],
                 temario: [
@@ -1079,10 +1076,9 @@
                     correctText: "Placenta Previa", 
                     explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
                     discardExplanation: [
-                        "<b>Placenta Previa:</b> CORRECTA. Sangrado indoloro, rojo brillante y de inicio insidioso.",
-                        "<b>DPPNI:</b> INCORRECTA. Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
-                        "<b>Ruptura Uterina:</b> INCORRECTA. Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
-                        "<b>Vasa Previa:</b> INCORRECTA. Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
+                        "<b>Desprendimiento Prematuro de Placenta (DPPNI):</b> Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
+                        "<b>Ruptura Uterina:</b> Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
+                        "<b>Vasa Previa:</b> Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
                     ] 
                 }],
                 temario: [
@@ -1591,7 +1587,7 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                // Construcción de los motivos de opciones incorrectas para el mini resumen final
+                // Generar de manera limpia y única el resumen para todas las opciones incorrectas
                 let incorrectReasons = shuffledOptions
                     .filter(opt => opt !== correctValue)
                     .map(opt => {
@@ -1600,17 +1596,19 @@
                             let found = q.discardExplanation.find(item => {
                                 let cleanItem = item.toLowerCase();
                                 let cleanOpt = opt.toLowerCase();
-                                return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 12)));
+                                return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 10)));
                             });
-                            if (found) specificFeedback = found;
+                            if (found) {
+                                // Limpia prefijos repetitivos si ya los trae la estructura guardada
+                                specificFeedback = found.replace(/^<b>.*?<\/b>[:\s]*/i, '');
+                            }
                         }
                         if (!specificFeedback) {
-                            specificFeedback = `<b>${opt}:</b> No es la opción indicada para este escenario clínico.`;
+                            specificFeedback = "No es la opción indicada para este escenario clínico.";
                         }
-                        return `<li style="margin-bottom: 6px;">${specificFeedback}</li>`;
+                        return `<li style="margin-bottom: 6px;"><b>${opt}:</b> ${specificFeedback}</li>`;
                     }).join('');
 
-                // Bloque Global de Retroalimentación con mini resumen de por qué las otras fallan
                 let globalFeedbackHTML = `
                     <div class="global-feedback-box">
                         <div style="color: #2E7D32; font-weight: 800; font-size: calc(14px * var(--font-scale)); margin-bottom: 6px;">
@@ -1917,7 +1915,6 @@
         function checkAnswerNotebook(selectedBtn) {
             const container = selectedBtn.closest('.question-card');
             
-            // Bloquea los botones e ilumina
             container.querySelectorAll('.option-btn').forEach(btn => {
                 btn.disabled = true;
                 const isCorrectOption = btn.getAttribute('data-correct') === 'true';
@@ -1929,7 +1926,6 @@
                 }
             });
 
-            // Muestra el recuadro global inferior de feedback
             const globalFeedback = container.querySelector('.global-feedback-box');
             if (globalFeedback) {
                 globalFeedback.classList.add('active');
@@ -2086,7 +2082,7 @@
                     let finalDiscard = rawOpts.map(opt => {
                         let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, 10)));
                         if (found) return found;
-                        return opt === correctTextVal ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA para este escenario clínico.`;
+                        return opt === correctTextVal ? `CORRECTA.` : `INCORRECTA para este escenario clínico.`;
                     });
 
                     customData[sub].preguntas.push({
@@ -2183,7 +2179,7 @@
                 if (o2) options.push(o2);
                 if (o3) options.push(o3);
 
-                let discardArray = disc ? disc.split('\n').filter(Boolean) : options.map(opt => opt === o0 ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`);
+                let discardArray = disc ? disc.split('\n').filter(Boolean) : options.map(opt => opt === o0 ? `CORRECTA.` : `INCORRECTA.`);
 
                 customData[sub].preguntas.push({
                     id: 'p_' + Date.now(),
