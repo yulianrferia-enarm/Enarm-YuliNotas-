@@ -550,6 +550,7 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 6px;
         }
 
         .option-btn {
@@ -1108,7 +1109,7 @@
                     "Hipertensión arterial sistémica", "Insuficiencia cardíaca", "Infarto agudo de miocardio", "Arritmias cardíacas", 
                     "Fiebre reumática", "Endocarditis infecciosa", "Enfermedad pulmonar obstructiva crónica (EPOC)", "Asma bronquial", 
                     "Neumonía adquirida en la comunidad", "Tuberculosis pulmonar", "Tromboembolia pulmonar", "Diabetes mellitus tipo 1", 
-                    "Diabetes mellitus tipo 2", "Cetoacidosis diabética", "Estado hiperosmolar hiperglucémico", "Hipotiroidismo", 
+                    "Diabetes mellitus type 2", "Cetoacidosis diabética", "Estado hiperosmolar hiperglucémico", "Hipotiroidismo", 
                     "Hipertiroidismo", "Enfermedad renal crónica", "Insuficiencia renal aguda", "Glomerulonefritis", 
                     "Artritis reumatoide", "Lupus eritematoso sistémico", "Gota", "Cirrosis hepática", "Hepatitis viral aguda", 
                     "Enfermedad por reflujo gastroesofágico", "Úlcera péptica", "Enfermedad inflamatoria intestinal", "Accidente cerebrovascular", 
@@ -1592,7 +1593,7 @@
                     
                     if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
                         let found = q.discardExplanation.find(item => {
-                            let cleanItem = item.replace(/<\/?[^>]+(>|$)/g, "").toLowerCase();
+                            let cleanItem = item.toLowerCase();
                             let cleanOpt = opt.toLowerCase();
                             return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 12)));
                         });
@@ -1602,7 +1603,7 @@
                     if (!specificFeedback) {
                         specificFeedback = isCorrect 
                             ? `<b>Correcto:</b> ${q.explanation || correctValue}` 
-                            : `<b>Incorrecto:</b> No corresponde a la opción de primera línea para este caso clínico.`;
+                            : `<b>Incorrecto (${opt}):</b> No es la opción de primera línea o indicada para este escenario clínico específico.`;
                     }
 
                     return { text: opt, isCorrect, feedback: specificFeedback };
@@ -1949,8 +1950,8 @@
                     <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
                     <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
                     <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación opción correcta"></textarea>
-                    <textarea id="af-disc" rows="3" placeholder="Retroalimentación opciones incorrectas (ej: A) ... B) ... C) ...)"></textarea>
+                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación general / opción correcta"></textarea>
+                    <textarea id="af-disc" rows="4" placeholder="Razones por opción (ej:&#10;<b>Opción 1:</b> CORRECTA...&#10;<b>Opción 2:</b> INCORRECTA porque...)"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 saveBtn.style.display = 'none';
@@ -2021,7 +2022,7 @@
                             incorrectOpts.push(cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, ''));
                         } else if (cleanLine.toLowerCase().startsWith('retroalimentación opción correcta:') || cleanLine.toLowerCase().startsWith('retroalimentación correcta')) {
                             correctExp = cleanLine.replace(/^(retroalimentación opción correcta:|retroalimentación correcta)\s*/i, '');
-                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas:') || cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas') || cleanLine.startsWith('A)') || cleanLine.startsWith('B)') || cleanLine.startsWith('C)')) {
+                        } else if (cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas:') || cleanLine.toLowerCase().startsWith('retroalimentación opciones incorrectas') || cleanLine.startsWith('<b>') || cleanLine.startsWith('A)') || cleanLine.startsWith('B)') || cleanLine.startsWith('C)') || cleanLine.startsWith('D)')) {
                             discardList.push(cleanLine);
                         } else if (qText && !correctOpt && !cleanLine.toLowerCase().startsWith('opción') && !cleanLine.toLowerCase().startsWith('retroalimentación')) {
                             if (qText && !qText.includes('?')) {
@@ -2043,7 +2044,7 @@
                                 rawOptions: allOpts,
                                 correctText: correctOpt,
                                 explanation: correctExp || `Respuesta correcta: ${correctOpt}`,
-                                discardExplanation: discardList.length > 0 ? discardList : allOpts.map(opt => opt === correctOpt ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA.`)
+                                discardExplanation: discardList.length > 0 ? discardList : allOpts.map(opt => opt === correctOpt ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA. No corresponde a la opción de primera línea.`)
                             });
                             addedQ++;
                         }
