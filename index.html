@@ -1286,8 +1286,12 @@
             } else if (currentTab === 'madera') {
                 badge.textContent = `${countTopicItems(maderaFiles, currentSubject)} Madera`;
             } else if (currentTab === 'flashcards') {
-                const total = (subjectData.flashcards || []).length;
-                let cIdx = cardIndices[currentSubject] || 0;
+                let cards = subjectData.flashcards || [];
+                if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
+                const total = cards.length;
+                if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
+                if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
+                let cIdx = cardIndices[currentSubject][activeCardFilter];
                 badge.textContent = total > 0 ? `${(cIdx % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'resumenes') {
                 badge.textContent = `${countTopicItems(infographicImages, currentSubject)} Infografías`;
