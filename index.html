@@ -976,7 +976,7 @@
             <h3>⚡ Agregar / Administrar Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="pregunta_1x1">Pregunta (1x1)</option>
-                <option value="preguntas_paste">Preguntas (Pegar y Ordenar)</option>
+                <option value="preguntas_paste">Preguntas (Pegar y Ordenar Múltiples)</option>
                 <option value="flashcard_1x1">Flashcard (1x1)</option>
                 <option value="flashcards_paste">Flashcards (Pegar y Ordenar)</option>
                 <option value="delete_content">🗑️ Eliminar Contenido (Movido por error)</option>
@@ -1071,42 +1071,6 @@
                             "<b>Iniciar tratamiento con cabergolina:</b> Requiere documentar bioquímicamente la hiperprolactinemia y evaluar características del adenoma por imagen.",
                             "<b>Radiografía de cráneo simple:</b> Estudio obsoleto y sin sensibilidad adecuada para la patología selar."
                         ]
-                    },
-                    {
-                        id: "qp_gen_high_2",
-                        q: "Paciente femenina de 45 años, con antecedente de tabaquismo pesado, acude a consulta por metrorragia intermitente de 2 meses de evolución. Al examen físico se palpa útero irregular, crecido aproximadamente a 12 semanas de gestación, móvil, no doloroso. Ultrasonido pélvico demuestra múltiples miomas intramurales y submucosos, siendo el mayor de 4 cm. Endometrio de 5 mm homogéneo. ¿Cuál es la conducta terapéutica inicial de elección si la paciente desea conservar su fertilidad?",
-                        rawOptions: ["Agonistas de la hormona liberadora de gonadotropinas (GnRH)", "Histerectomía abdominal total", "Miomectomía histeroscópica o laparoscópica", "Anticonceptivos orales combinados"],
-                        correctText: "Agonistas de la hormona liberadora de gonadotropinas (GnRH)",
-                        explanation: "Los análogos de GnRH se utilizan como manejo médico preoperatorio para disminuir el volumen uterino y de los miomas, reducir la vascularización y corregir la anemia antes de un procedimiento quirúrgico conservador.",
-                        discardExplanation: [
-                            "<b>Histerectomía abdominal total:</b> Proscrita en pacientes que desean conservar su fertilidad y útero.",
-                            "<b>Miomectomía histeroscópica o laparoscópica:</b> Es el tratamiento definitivo, pero frecuentemente se precede de terapia médica con agonistas GnRH si el útero es muy grande o hay anemia.",
-                            "<b>Anticonceptivos orales combinados:</b> Útiles para control temporal del sangrado leve, pero no reducen el tamaño de los miomas sintomáticos de gran volumen."
-                        ]
-                    },
-                    {
-                        id: "qp_gen_high_3",
-                        q: "Mujer de 35 años, G2P2, acude por exudado vaginal fétido, de color grisáceo, homogéneo, que aumenta tras el coito y la menstruación. A la exploración con especulo se observa pared vaginal sin signos inflamatorios marcados, pH vaginal de 5.2. Prueba de aminas (KOH al 10%) positiva. ¿Cuál es el tratamiento farmacológico de primera elección según las GPC?",
-                        rawOptions: ["Metronidazol 500 mg vía oral cada 12 horas por 7 días", "Clindamicina en crema al 2% intravaginal por 7 días", "Fluconazol 150 mg dosis única vía oral", "Azitromicina 1 g dosis única vía oral"],
-                        correctText: "Metronidazol 500 mg vía oral cada 12 horas por 7 días",
-                        explanation: "El cuadro clínico cumple con los criterios de Amsel para vaginosis bacteriana. El tratamiento de primera línea de elección recomendado por las Guías de Práctica Clínica es metronidazol por vía oral.",
-                        discardExplanation: [
-                            "<b>Clindamicina en crema al 2% intravaginal por 7 días:</b> Considerada tratamiento alternativo, especialmente en pacientes embarazadas o intolerantes al metronidazol oral.",
-                            "<b>Fluconazol 150 mg dosis única vía oral:</b> Tratamiento exclusivo para candidiasis vulvovaginal, patología que cursa con pH normal y sin aminas positivas.",
-                            "<b>Azitromicina 1 g dosis única vía oral:</b> Antibiótico indicado para infecciones por Chlamydia trachomatis, no para vaginosis bacteriana."
-                        ]
-                    },
-                    {
-                        id: "qp_gen_high_4",
-                        q: "Adolescente de 16 años que consulta por amenorrea primaria. Presenta desarrollo mamario normal (Tanner V), vello púbico y axilar escaso (Tanner I-II), y ausencia de menarca. A la exploración física, genitales externos femeninos normales con fondo de saco vaginal corto y ciego; no se palpa útero ni anexos por vía rectal. Perfil hormonal muestra FSH y LH elevadas para su edad, testosterona sérica en rango masculino. ¿Cuál es el diagnóstico más probable?",
-                        rawOptions: ["Síndrome de insensibilidad a los andrógenos (Testicular Feminization)", "Síndrome de Mayer-Rokitansky-Küster-Hauser", "Disgenesia gonadal pura (Síndrome de Turner)", "Hipogonadismo hipogonadotrópico idiopático"],
-                        correctText: "Síndrome de insensibilidad a los andrógenos (Testicular Feminization)",
-                        explanation: "El síndrome de insensibilidad completa a los andrógenos se caracteriza por cariotipo 46,XY, fenotipo femenino normal, ausencia de útero por acción de la hormona antimülleriana testicular y testículos ocultos con niveles de testosterona en rango masculino.",
-                        discardExplanation: [
-                            "<b>Síndrome de Mayer-Rokitansky-Küster-Hauser:</b> Cursa con ausencia de útero y vagina superior, pero con niveles hormonales normales y vello axilar/púbico normal (cariotipo 46,XX).",
-                            "<b>Disgenesia gonadal pura (Síndrome de Turner):</b> Se presenta con talla baja, caracteres sexuales infantiles y amenorrea primaria con cariotipo alterado (45,X0).",
-                            "<b>Hipogonadismo hipogonadotrópico idiopático:</b> Cursa con niveles bajos de gonadotropinas y ausencia de desarrollo puberal completo."
-                        ]
                     }
                 ],
                 temario: [
@@ -1131,54 +1095,6 @@
                             "<b>Ruptura Uterina:</b> Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
                             "<b>Vasa Previa:</b> Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
                         ] 
-                    },
-                    {
-                        id: "qp_obs_high_1",
-                        q: "Primigesta de 32 semanas de gestación acude a urgencias por cefalea global intensa, acúfenos y fosfenos de 6 horas de evolución. Presión arterial de 160/110 mmHg tomada en dos ocasiones separadas por 15 minutos. Proteinuria en tira reactiva de 3+. Se inicia infusión intravenosa de sulfato de magnesio y labetalol con descenso adecuado de la presión arterial. Al valorar la monitorización fetal electrónica se observa variabilidad disminuida y desaceleraciones tardías recurrentes con contracciones uterinas ausentes. ¿Cuál es la conducta obstétrica inmediata?",
-                        rawOptions: ["Interrupción de la gestación vía cesárea de urgencia", "Continuar manejo expectante con maduración pulmonar y vigilancia estricta", "Administrar un bolo adicional de sulfato de magnesio y repetir ultrasonido doppler en 48 horas", "Realizar prueba sin estrés (NST) extendida por 2 horas más"],
-                        correctText: "Interrupción de la gestación vía cesárea de urgencia",
-                        explanation: "La presencia de preeclampsia con criterios de severidad asociada a un trazo de categoría III en la FCF (desaceleraciones tardías recurrentes) indica compromiso fetal grave, siendo la indicación absoluta la resolución del embarazo independientemente de la edad gestacional.",
-                        discardExplanation: [
-                            "<b>Continuar manejo expectante con maduración pulmonar:</b> Proscrito ante la presencia de sufrimiento fetal agudo evidenciado por el monitoreo electrónico.",
-                            "<b>Administrar un bolo adicional de sulfato de magnesio:</b> El sulfato de magnesio se indica para neuroprotección y prevención de eclampsia, no revierte el compromiso fetal hipóxico.",
-                            "<b>Realizar prueba sin estrés extendida:</b> Demorar la extracción fetal ante un trazo patológico pone en grave riesgo la vida del producto."
-                        ]
-                    },
-                    {
-                        id: "qp_obs_high_2",
-                        q: "Multigesta de 38 semanas de gestación, en fase activa de trabajo de parto con dilatación completa y expulsivo prolongado. Se extrae producto único vivo masculino de 3,850 g mediante maniobras de atención de parto eutócico asistido con aplicación de forceps. Minutos después del alumbramiento, la paciente presenta sangrado transvaginal profuso, continuo y rojo rutilante. A la exploración bimanual se palpa útero contraído, duro, por debajo de la cicatriz umbilical. Se revisa canal de parto encontrando desgarro cervical profundo que se extiende hacia fondo de saco vaginal. ¿Cuál es el diagnóstico causal de la hemorragia posparto?",
-                        rawOptions: ["Laceración del canal del parto", "Atonía uterina", "Retorno de restos placentarios", "Inversión uterina aguda"],
-                        correctText: "Laceración del canal del parto",
-                        explanation: "La presencia de un útero firmemente contraído tras el alumbramiento junto con hemorragia persistente y antecedentes de instrumentación o macrosomía apunta directamente a una lesión traumática o laceración del canal del parto.",
-                        discardExplanation: [
-                            "<b>Atonía uterina:</b> Causa más frecuente de HPP, pero se caracteriza clínicamente por un útero blando, flácido y no contraído.",
-                            "<b>Retorno de restos placentarios:</b> Cursa clásicamente con subinvolución uterina y sangrado tardío o persistente con útero moderadamente contraído pero con defectos en la cara cotiledonaria.",
-                            "<b>Inversión uterina aguda:</b> Cursa con dolor súbito intenso, sangrado masivo y ausencia de fondo uterino palpable a la exploración abdominal."
-                        ]
-                    },
-                    {
-                        id: "qp_obs_high_3",
-                        q: "Gestante de 28 semanas con diagnóstico previo de diabetes mellitus gestacional manejada inicialmente con dieta y ejercicio, acude a control prenatal con cifras de glucemia en ayuno persistentemente elevadas (> 95 mg/dL) y postprandiales de 1 hora en 145 mg/dL a pesar del apego nutricional estricto por 2 semanas. ¿Cuál es el fármaco hipoglucemiante oral de elección aceptado por las GPC para el manejo inicial en este escenario?",
-                        rawOptions: ["Metformina", "Glibenclamida", "Insulina glargina basal exclusiva", "Acarbosa"],
-                        correctText: "Metformina",
-                        explanation: "Cuando la terapia nutricional fracasa en la diabetes gestacional, las GPC respaldan el inicio de tratamiento farmacológico, siendo la metformina el antidiabético oral de primera línea preferido o la insulina según la severidad.",
-                        discardExplanation: [
-                            "<b>Glibenclamida:</b> Atraviesa la barrera placentaria en mayor grado y puede asociarse a macrosomía e hipoglucemia neonatal severa.",
-                            "<b>Insulina glargina basal exclusiva:</b> La insulina es el estándar de oro histórico, pero la metformina ha ganado aceptación inicial oral; la insulina de elección inicial incluye esquemas prandiales combinados si se usa.",
-                            "<b>Acarbosa:</b> Carece de suficiente evidencia de seguridad y eficacia clínica documentada durante el embarazo."
-                        ]
-                    },
-                    {
-                        id: "qp_obs_high_4",
-                        q: "Paciente de 26 años con embarazo de 11 semanas acude a urgencias por dolor pélvico tipo cólico y sangrado transvaginal moderado. A la exploración física, orificio cervical interno abierto con presencia de tejido ovular palpable en canal endocervical. Ecografía transvaginal muestra saco gestacional irregular descendido en segmento inferior sin actividad cardiaca fetal positiva. ¿Cómo se clasifica este tipo de aborto?",
-                        rawOptions: ["Aborto inevitable / en curso", "Amenaza de aborto", "Aborto incompleto", "Aborto retenido"],
-                        correctText: "Aborto inevitable / en curso",
-                        explanation: "El aborto inevitable o en curso se define por la presencia de sangrado uterino, dolor cólico y dilatación cervical franca con membranas rotas o tejido descendiendo, sin haberse expulsado completamente todos los productos de la concepción.",
-                        discardExplanation: [
-                            "<b>Amenaza de aborto:</b> Se caracteriza por sangrado transvaginal con orificio cervical cerrado y embrión con latido cardiaco presente.",
-                            "<b>Aborto incompleto:</b> Ocurre cuando ya se ha expulsado parcialmente el tejido placentario o fetal, persistiendo restos en el interior de la cavidad uterina.",
-                            "<b>Aborto retenido (missed abortion):</b> Presencia de producto sin vida retenido en el útero con orificio cervical cerrado y ausencia de sangrado importante."
-                        ]
                     }
                 ],
                 temario: [
@@ -1191,56 +1107,7 @@
             },
             cirugia: { 
                 flashcards: [], 
-                preguntas: [
-                    {
-                        id: "qp_cir_high_1",
-                        q: "Hombre de 45 años, sin antecedentes de importancia, acude a urgencias por dolor abdominal tipo cólico de 24 horas de evolución, que inició en región periumbilical y posteriormente se irrogó a fosa ilíaca derecha. Se acompaña de náuseas, vómito en una ocasión y febrícula. A la exploración física: frecuencia cardiaca 98 lpm, temperatura 38.2°C, dolor a la palpación superficial y profunda en punto de McBurney, signo de Blumberg positivo y psoas positivo. Biometría hemática con leucocitosis de 14,500/uL y predominio de neutrófilos (85%). ¿Cuál es el estudio de imagen inicial de elección para confirmar el diagnóstico en este paciente adulto?",
-                        rawOptions: ["Ultrasonido abdominal con compresión gradual (técnica de Compression)", "Tomografía computada de abdomen simple y con contraste IV", "Placa simple de abdomen de pie y decúbito", "Tránsito esofagogastroduodenal"],
-                        correctText: "Tomografía computada de abdomen simple y con contraste IV",
-                        explanation: "Aunque la clínica es típica de apendicitis aguda, en pacientes adultos o con dudas diagnósticas, la tomografía computada de abdomen con contraste es el estándar con mayor sensibilidad y especificidad diagnóstica según las guías clínicas actuales.",
-                        discardExplanation: [
-                            "<b>Ultrasonido abdominal con compresión gradual:</b> Estudio de primera elección preferido en niños, mujeres embarazadas y delgadas, pero con alta tasa de falsos negativos en adultos obesos.",
-                            "<b>Placa simple de abdomen de pie y decúbito:</b> Baja sensibilidad y especificidad, útil principalmente para descartar neumoperitoneo u obstrucción intestinal.",
-                            "<b>Tránsito esofagogastroduodenal:</b> Estudio contrastado del tubo digestivo alto sin indicación en patología apendicular."
-                        ]
-                    },
-                    {
-                        id: "qp_cir_high_2",
-                        q: "Paciente masculino de 60 años, con antecedentes de obesidad mórbida y tabaquismo crónico, acude por cuadro de obstrucción intestinal alta. A la exploración física se aprecia masa irreductible en región inguinal derecha que se extiende hacia el escroto, dolorosa a la palpación, con cambios de coloración violácea en la piel suprayacente y ausencia de peristalsis local. Signos vitales: TA 100/60 mmHg, FC 115 lpm, temperatura 38.9°C. Se establece diagnóstico de hernia inguinal estrangulada. ¿Cuál es la indicación quirúrgica formal inmediata?",
-                        rawOptions: ["Intervención quirúrgica urgente con abordaje abierto o laparoscópico y evaluación de viabilidad intestinal", "Reducción manual digital inmediata en urgencias seguida de cirugía electiva en 4 semanas", "Tratamiento conservador con compresas tibias y analgesia intravenosa por 24 horas", "Colonoscopia diagnóstica de urgencia previa al abordaje herniario"],
-                        correctText: "Intervención quirúrgica urgente con abordaje abierto o laparoscópico y evaluación de viabilidad intestinal",
-                        explanation: "Una hernia estrangulada con datos de isquemia o compromiso cutáneo constituye una urgencia quirúrgica absoluta para evitar la necrosis y perforación de la asa intestinal atrapada.",
-                        discardExplanation: [
-                            "<b>Reducción manual digital inmediata:</b> Está estrictamente contraindicada ante la sospecha de estrangulación o isquemia, ya que se corre el riesgo de introducir tejido necrosado o perforado hacia la cavidad peritoneal.",
-                            "<b>Tratamiento conservador con compresas tibias:</b> Aumentaría de manera letal el riesgo de peritonitis y choque séptico.",
-                            "<b>Colonoscopia diagnóstica:</b> No tiene utilidad en la resolución del cuadro obstructivo agudo herniario estrangulado."
-                        ]
-                    },
-                    {
-                        id: "qp_cir_high_3",
-                        q: "Femenina de 52 años, con antecedentes de obesidad y dislipidemia, acude por dolor en cuadrante superior derecho de tipo cólico biliar postprandial de fuerte intensidad, irradiado a escápula derecha, acompañado de náuseas y vómitos biliosos. A la exploración: signo de Murphy positivo, temperatura de 37.8°C. Ultrasonido hepático y biliar reporta litiasis vesicular múltiple, pared vesicular engrosada de 5 mm y líquido perivesicular escaso. ¿Cuál es el tratamiento quirúrgico definitivo recomendado y su ventana de oportunidad ideal?",
-                        rawOptions: ["Colecistectomía laparoscópica temprana (dentro de las primeras 72 a 108 horas de inicio de los síntomas)", "Colecistectomía abierta diferida a los 3 meses tras tratamiento antibiótico exclusivo", "Colecistostomía percutánea guiada por ultrasonido de urgencia obligatoria", "Tratamiento médico disolvente con sales biliares por 6 meses"],
-                        correctText: "Colecistectomía laparoscópica temprana (dentro de las primeras 72 a 108 horas de inicio de los síntomas)",
-                        explanation: "La colecistitis aguda litiásica tiene como tratamiento de elección la colecistectomía laparoscópica temprana, la cual reduce la estancia hospitalaria, la morbilidad y los costos globales cuando se realiza dentro de la ventana ideal.",
-                        discardExplanation: [
-                            "<b>Colecistectomía abierta diferida a los 3 meses:</b> Incrementa los reingresos hospitalarios por complicaciones recurrentes y el riesgo de conversión quirúrgica.",
-                            "<b>Colecistostomía percutánea guiada por ultrasonido:</b> Reservada exclusivamente para pacientes con alto riesgo quirúrgico o contraindicación anestésica severa (ASA IV).",
-                            "<b>Tratamiento médico disolvente con sales biliares:</b> Ineficaz para el manejo del cuadro inflamatorio agudo de la vesícula biliar."
-                        ]
-                    },
-                    {
-                        id: "qp_cir_high_4",
-                        q: "Paciente varón de 30 años sufre accidente automovilístico con impacto frontal a alta velocidad. Ingresa a urgencias hemodinámicamente estable pero refiriendo dolor abdominal generalizado. Se realiza FAST (Focused Assessment with Sonography for Trauma) que reporta líquido libre en espacio hepatorrenal y esplenorrenal. Tomografía computada abdominal contrastada confirma lesión grado III de bazo con extravasación de medio de contraste activa y estabilidad hemodinámica mantenida. ¿Cuál es la conducta terapéutica inicial de elección?",
-                        rawOptions: ["Manejo conservador / no operatorio en unidad de cuidados intensivos con monitorización estricta", "Laparotomía exploradora de urgencia y esplenectomía total inmediata", "Embolización arterial transcatéter profiláctica en todos los casos", "Administración de antibióticos profilácticos y alta hospitalaria temprana a las 24 horas"],
-                        correctText: "Manejo conservador / no operatorio en unidad de cuidados intensivos con monitorización estricta",
-                        explanation: "En pacientes hemodinámicamente estables con traumatismo esplénico cerrado, el tratamiento conservador (no operatorio) es el estándar de oro actual para preservar la función inmunológica del bazo, requiriendo vigilancia estrecha.",
-                        discardExplanation: [
-                            "<b>Laparotomía exploradora y esplenectomía total inmediata:</b> Reservada para pacientes hemodinámicamente inestables o con fracaso al manejo conservador.",
-                            "<b>Embolización arterial transcatéter profiláctica:</b> Se indica específicamente si hay signos de sangrado activo (pseudoaneurisma o contraste extravasado), pero el manejo inicial en estables puede ser puramente clínico u observation en UCI.",
-                            "<b>Administración de antibióticos y alta a las 24 horas:</b> Inseguro; requiere vigilancia hospitalaria estricta por al menos 48-72 horas ante el riesgo de resangrado tardío."
-                        ]
-                    }
-                ], 
+                preguntas: [], 
                 temario: [
                     "Abdomen agudo", "Apendicitis aguda", "Colecistitis aguda", "Colelitiasis", "Coledocolitiasis", 
                     "Colangitis", "Pancreatitis aguda", "Obstrucción intestinal", "Hernias de la pared abdominal", 
@@ -1253,56 +1120,7 @@
             },
             interna: { 
                 flashcards: [], 
-                preguntas: [
-                    {
-                        id: "qp_int_high_1",
-                        q: "Hombre de 68 años, fumador crónico, acude por disnea progresiva de esfuerzo de 6 meses de evolución, tos crónica productiva con expectoración blanquecina matutina. A la exploración física: tórax en tonel, disminución de ruidos respiratorios globalmente, sibilancias espiratorias difusas y espiración prolongada. Espirometría post-broncodilatador muestra relación VEF1/CVF de 0.62 y VEF1 del 48% del valor predicho. ¿Cuál es el tratamiento farmacológico inicial de mantenimiento combinado recomendado para reducir exacerbaciones según las guías clínicas?",
-                        rawOptions: ["Broncodilatador de acción prolongada LAMA (Anticolinérgico) o LABA (Beta-agonista)", "Corticoesteroide sistémico oral diario a altas dosis", "Antibioterapia profiláctica continua con azitromicina trimestral", "Oxigenoterapia hiperbárica domiciliaria"],
-                        correctText: "Broncodilatador de acción prolongada LAMA (Anticolinérgico) o LABA (Beta-agonista)",
-                        explanation: "El tratamiento inicial de mantenimiento para la EPOC sintomática con obstrucción moderada a severa consiste en el uso de broncodilatadores de larga duración (LAMA o LABA), prefiriéndose LAMA por su eficacia en la reducción de exacerbaciones.",
-                        discardExplanation: [
-                            "<b>Corticoesteroide sistémico oral diario:</b> No se recomienda su uso crónico debido a sus severos efectos secundarios sistémicos (miopatía, osteoporosis, infecciones).",
-                            "<b>Antibioterapia profiláctica continua:</b> Reservada para pacientes con exacerbaciones frecuentes a pesar de tratamiento optimizado, no como primera línea inicial estándar.",
-                            "<b>Oxigenoterapia hiperbárica domiciliaria:</b> Sin indicación en EPOC estable; la oxigenoterapia domiciliaria se indica solo ante hipoxemia severa crónica documentada (PaO2 < 55 mmHg)."
-                        ]
-                    },
-                    {
-                        id: "qp_int_high_2",
-                        q: "Mujer de 55 años con antecedente de hipertensión arterial sistémica de 10 años de evolución, acude a revisión médica rutinaria asintomática. Presión arterial actual en consultorio de 144/92 mmHg confirmada en dos tomas diferentes. Exámenes de laboratorio con creatinina sérica normal, tasa de filtración glomerular estimada > 60 mL/min/1.73m², examen general de orina sin proteinuria significativa y glucemia en ayunas normal. ¿Cómo se clasifica el estadio de hipertensión arterial según las guías internacionales vigentes y cuál es la conducta inicial?",
-                        rawOptions: ["Hipertensión arterial Estadio 2; iniciar modificación del estilo de vida y tratamiento farmacológico combinado con dos fármacos de diferente mecanismo", "Hipertensión arterial Estadio 1; iniciar únicamente dieta baja en sodio por 6 meses sin medicamentos", "Hipertensión arterial limítrofe; repetir presión arterial en 5 años", "Crisis hipertensiva asintomática; enviar a urgencias hospitalarias de inmediato"],
-                        correctText: "Hipertensión arterial Estadio 2; iniciar modificación del estilo de vida y tratamiento farmacológico combinado con dos fármacos de diferente mecanismo",
-                        explanation: "Una presión arterial sistólica >= 140 mmHg o diastólica >= 90 mmHg clasifica a la paciente en Hipertensión Estadio 2. Las guías actuales recomiendan iniciar tratamiento farmacológico con combinación de dos fármacos desde el inicio en este estadio.",
-                        discardExplanation: [
-                            "<b>Hipertensión Estadio 1 con dieta exclusiva:</b> Incorrecto porque con cifras de 144/92 mmHg se ubica en Estadio 2 y requiere fármacos desde el inicio si hay riesgo cardiovascular.",
-                            "<b>Hipertensión limítrofe:</b> Las cifras superan ampliamente los límites normales y de hipertensión grado 1.",
-                            "<b>Crisis hipertensiva asintomática:</b> No existe daño a órgano blanco agudo; el manejo inadecuado con descenso brusco en urgencias puede precipitar isquemia cerebral o renal."
-                        ]
-                    },
-                    {
-                        id: "qp_int_high_3",
-                        q: "Varón de 62 años, con antecedentes de diabetes mellitus tipo 2 de 15 años de evolución e hipertensión arterial, acude por edemas en extremidades inferiores progresivos de 2 semanas y orinas espumosas. Laboratorios: glucemia basal 140 mg/dL, HbA1c 8.2%, creatinina sérica 1.8 mg/dL, depuración de creatinina estimada disminuida, proteinuria en colección de 24 horas de 4.2 g/24h. ¿Cuál es el diagnóstico clínico y patológico más probable que explica el cuadro?",
-                        rawOptions: ["Nefropatía diabética establecida con síndrome nefrótico", "Glomerulonefritis postestreptocócica aguda", "Insuficiencia renal aguda prerrenal por deshidratación", "Necrosis tubular aguda tóxica"],
-                        correctText: "Nefropatía diabética establecida con síndrome nefrótico",
-                        explanation: "La combinación de diabetes de larga evolución, deterioro de función renal y proteinuria en rango nefrótico (> 3.5 g/24h) con edema periférico es la presentación clásica de la nefropatía diabética avanzada.",
-                        discardExplanation: [
-                            "<b>Glomerulonefritis postestreptocócica aguda:</b> Cuadro inflamatorio agudo típicamente antecedido por infección faríngea o cutánea por estreptococo, con hematuria macroscópica y complemento C3 disminuido.",
-                            "<b>Insuficiencia renal aguda prerrenal:</b> Cursa con elevación de azoados secundaria a hipoperfusión, pero revierte con la administración de líquidos y no presenta proteinuria nefrótica masiva crónica.",
-                            "<b>Necrosis tubular aguda tóxica:</b> Relacionada con exposición a nefrotóxicos o isquemia severa aguda con presencia de cilindros granulosos en el sedimento urinario."
-                        ]
-                    },
-                    {
-                        id: "qp_int_high_4",
-                        q: "Mujer de 38 años acude por cuadro de 3 meses de evolución caracterizado por poliartritis simétrica de pequeñas articulaciones de manos y muñecas, rigidez matutina prolongada mayor de 1 hora, fatiga y febrícula ocasional. A la exploración física: inflamación dolorosa a la palpación de metacarpofalángicas e interfalángicas proximales bilaterales. Exámenes de laboratorio: factor reumatoide positivo a títulos altos y anticuerpos contra péptidos citrulinados cíclicos (Anti-CCP) fuertemente positivos. Radiografía de manos con osteopenia yuxtaarticular. ¿Cuál es el fármaco modificador de la enfermedad (FAME) sintético convencional de primera línea recomendado?",
-                        rawOptions: ["Metotrexato", "Infliximab (Anticuerpo monoclonal anti-TNF)", "Hidroxicloroquina en monoterapia exclusiva", "Colchicina a dosis bajas"],
-                        correctText: "Metotrexato",
-                        explanation: "El metotrexato es considerado el fármaco modificador de la enfermedad (FAME) sintético convencional de primera línea obligado en el tratamiento inicial de la artritis reumatoide.",
-                        discardExplanation: [
-                            "<b>Infliximab (anti-TNF):</b> Tratamiento biológico reservado para pacientes que presentan fracaso o respuesta insuficiente al tratamiento con FAMEs sintéticos convencionales.",
-                            "<b>Hidroxicloroquina en monoterapia:</b> FAME de menor potencia clínica, reservado para casos leves o combinado con metotrexato, pero no como primera opción única en enfermedad erosiva o de alto título serológico.",
-                            "<b>Colchicina:</b> Fármaco antiinflamatorio indicado específicamente para el tratamiento y profilaxis de la gota y fiebre mediterránea familiar, sin papel en artritis reumatoide."
-                        ]
-                    }
-                ], 
+                preguntas: [], 
                 temario: [
                     "Hipertensión arterial sistémica", "Insuficiencia cardíaca", "Infarto agudo de miocardio", "Arritmias cardíacas", 
                     "Fiebre reumática", "Endocarditis infecciosa", "Enfermedad pulmonar obstructiva crónica (EPOC)", "Asma bronquial", 
@@ -1314,61 +1132,12 @@
                     "Crisis convulsivas y epilepsia", "Cefalea y migraña", "Meningitis bacteriana", "Anemia ferropénica", 
                     "Anemias megaloblásticas", "Anemias hemolíticas", "Leucemias agudas", "Linfomas", "Insuficiencia suprarrenal",
                     "Síndrome de Cushing", "Trastornos del equilibrio ácido-base", "Trastornos hidroelectrolíticos", "Infección de vías urinarias",
-                    "VIH / SIDA y enfermedades oportunistas", "Enfermedad tromboembólica venosa", "Shock séptico y circulatorio"
+                    "VIH / SIDA y enfermedades oportunistas", "Enfermedad tromboembolica venosa", "Shock séptico y circulatorio"
                 ] 
             },
             pedia: { 
                 flashcards: [], 
-                preguntas: [
-                    {
-                        id: "qp_ped_high_1",
-                        q: "Lactante masculino de 8 meses de edad, llevado a urgencias por cuadro de 2 días de evolución consistente en rinorrea, tos leve, fiebre de 38.5°C y aparición posterior de sibilancias y dificultad respiratoria progresiva. A la exploración física: frecuencia respiratoria 52 rpm, frecuencia cardiaca 140 lpm, saturación de oxígeno al aire ambiente de 88%. Se auscultan sibilancias difusas y estertores crepitantes bilaterales, con tiraje intercostal y subcostal moderado. ¿Cuál es el diagnóstico clínico más probable?",
-                        rawOptions: ["Bronquiolitis aguda", "Asma bronquial del lactante", "Neumonía bacteriana adquirida en la comunidad", "Crup infeccioso (Laringotraqueitis)"],
-                        correctText: "Bronquiolitis aguda",
-                        explanation: "La bronquiolitis aguda es una infección viral aguda de las vías respiratorias inferiores que afecta típicamente a menores de 2 años, caracterizada por obstrucción de la vía aérea pequeña, sibilancias, dificultad respiratoria y crepitantes.",
-                        discardExplanation: [
-                            "<b>Asma bronquial del lactante:</b> Diagnóstico difícil de confirmar en el primer episodio de sibilancias agudas virales; suele requerir episodios recurrentes.",
-                            "<b>Neumonía bacteriana adquirida:</b> Cursa típicamente con fiebre más elevada, aspecto tóxico y consolidación lobar franca radiológica, a diferencia del patrón difuso de la bronquiolitis.",
-                            "<b>Crup infeccioso:</b> Patología de vías aéreas superiores que cursa con tos traqueófona (perruna), estridor inspiratorio y voz ronca."
-                        ]
-                    },
-                    {
-                        id: "qp_ped_high_2",
-                        q: "Recién término de 36 horas de vida extrauterina, producto de gestación normoevolutiva, alimentado exclusivamente con leche materna con adecuada técnica. Presenta coloración amarillenta de piel y escleras que se extiende hasta el abdomen medio. Signos vitales normales, activo, succiona bien. Exámenes de laboratorio: bilirrubina total sérica de 13.5 mg/dL con predominio de fracción indirecta (no conjugada), bilirrubina directa de 0.6 mg/dL, grupo sanguíneo materno O Rh positivo y del neonato A Rh positivo, prueba de Coombs directa negativa. ¿Cuál es el diagnóstico más probable?",
-                        rawOptions: ["Ictericia fisiológica del recién nacido", "Enfermedad hemolítica por incompatibilidad ABO", "Atresia de vías biliares extrahepáticas", "Ictericia asociada a leche materna por inhibidores enzimáticos tardíos"],
-                        correctText: "Ictericia fisiológica del recién nacido",
-                        explanation: "La ictericia fisiológica aparece después de las 24 horas de vida, con predominio de bilirrubina indirecta, valores menores a 15 mg/dL en recién nacidos a término alimentados al seno y Coombs negativa, con resolución espontánea.",
-                        discardExplanation: [
-                            "<b>Enfermedad hemolítica por incompatibilidad ABO:</b> Cursa típicamente con prueba de Coombs directa positiva y elevación rápida de bilirrubinas en las primeras 24 horas de vida.",
-                            "<b>Atresia de vías biliares extrahepáticas:</b> Caracterizada por hiperbilirrubinemia predominantemente directa (conjugada), coluria y acolia persistente.",
-                            "<b>Ictericia asociada a leche materna (síndrome del pezón/leche materna):</b> Se manifiesta de forma tardía a partir de la primera semana de vida, no a las 36 horas."
-                        ]
-                    },
-                    {
-                        id: "qp_ped_high_3",
-                        q: "Preescolar masculino de 4 años, llevado a consulta por fiebre cuantificada en 39.0°C de 6 días de evolución, asociando conjuntivitis bilateral no purulante, exantema polimorfo tronco-extremidades, cambios en extremidades con eritema y edema indurado en palmas y plantas, lengua en fresa y linfadenopatía cervical unilateral de 1.5 cm. ¿Cuál es el tratamiento farmacológico de elección en la fase aguda para prevenir el desarrollo de aneurismas coronarios?",
-                        rawOptions: ["Inmunoglobulina intravenosa (IVIG) en dosis única asociada a ácido acetilsalicílico a dosis antiinflamatorias", "Antibioterapia sistémica con penicilina sódica cristalina intravenosa por 10 días", "Corticoesteroides sistémicos en monoterapia exclusiva a dosis altas", "Tratamiento sintomático exclusivo con paracetamol y observación domiciliaria"],
-                        correctText: "Inmunoglobulina intravenosa (IVIG) en dosis única asociada a ácido acetilsalicílico a dosis antiinflamatorias",
-                        explanation: "El cuadro clínico corresponde a la Enfermedad de Kawasaki. El tratamiento estándar de primera línea dentro de los primeros 10 días de evolución para evitar complicaciones cardiovasculares graves (aneurismas coronarios) es la inmunoglobulina intravenosa y aspirina.",
-                        discardExplanation: [
-                            "<b>Antibioterapia con penicilina:</b> La enfermedad de Kawasaki es una vasculitis sistémica de etiología inflamatoria inmunológica, no una infección bacteriana directa.",
-                            "<b>Corticoesteroides en monoterapia exclusiva:</b> No se consideran el tratamiento inicial estándar aislado, aunque pueden añadirse como terapia coadyuvante en pacientes de alto riesgo o refractarios.",
-                            "<b>Tratamiento sintomático exclusivo:</b> Incrementa de manera drástica el riesgo de desarrollar secuelas coronarias graves a largo plazo."
-                        ]
-                    },
-                    {
-                        id: "qp_ped_high_4",
-                        q: "Lactante de 18 meses, previamente sano, es llevado a urgencias por presentar un cuadro de llanto inconsolable intermitente asociado a episodios de flexión de extremidades inferiores hacia el abdomen, seguido de periodos de letargo y emisión de evacuaciones transrectales hemorrágicas descritas clásicamente con aspecto de jalea de grosella. A la exploración física se palpa masa abdominal en forma de salchicha en cuadrante superior derecho. ¿Cuál es el estudio de imagen inicial de elección tanto diagnóstico como terapéutico?",
-                        rawOptions: ["Enema hidrostático o neumático bajo control fluoroscópico o ecográfico", "Tomografía computada de abdomen contrastada de urgencia", "Radiografía simple de abdomen en decúbito supino", "Ultrasonido Doppler renal bilateral"],
-                        correctText: "Enema hidrostático o neumático bajo control fluoroscópico o ecográfico",
-                        explanation: "El cuadro clínico es característico de invaginación (intususcepción) intestinal. El enema con aire o líquido bajo control visualizado representa el método diagnóstico y terapéutico de primera línea para lograr la desinvaginación no quirúrgica.",
-                        discardExplanation: [
-                            "<b>Tomografía computada abdominal contrastada:</b> No es el estudio inicial; expone al paciente a radiación innecesaria cuando el ultrasonido o el enema diagnóstico son suficientes.",
-                            "<b>Radiografía simple de abdomen:</b> Útil para descartar neumoperitoneo por perforación, pero tiene baja sensibilidad y especificidad diagnóstica para la intususcepción.",
-                            "<b>Ultrasonido Doppler renal:</b> Sin relación con la patología intestinal obstructiva descrita."
-                        ]
-                    }
-                ], 
+                preguntas: [], 
                 temario: [
                     "Reanimación neonatal", "Ictericia neonatal", "Sepsis neonatal", "Síndrome de dificultad respiratoria del recién nacido", 
                     "Enterocolitis necrosante", "Infección de vías urinarias en pediatría", "Diarrea aguda y deshidratación", 
@@ -1425,56 +1194,6 @@
                 if (e.key === 'ArrowLeft') prevModalItem();
             }
         });
-
-        const modalOverlay = document.getElementById('image-modal');
-        modalOverlay.addEventListener('touchstart', (e) => {
-            const img = document.getElementById('modal-active-img');
-            if (!img) return;
-            if (e.touches.length === 2) {
-                isPanning = false;
-                initialDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-            } else if (e.touches.length === 1 && scale > 1) {
-                isPanning = true;
-                startX = e.touches[0].clientX - pointX;
-                startY = e.touches[0].clientY - pointY;
-            }
-        }, { passive: false });
-
-        modalOverlay.addEventListener('touchmove', (e) => {
-            const img = document.getElementById('modal-active-img');
-            if (!img) return;
-            if (e.touches.length === 2) {
-                e.preventDefault();
-                const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-                if (initialDistance > 0) {
-                    let factor = currentDistance / initialDistance;
-                    scale = Math.min(Math.max(1, scale * factor), 5);
-                    initialDistance = currentDistance;
-                    updateImageTransform(img);
-                }
-            } else if (e.touches.length === 1 && isPanning && scale > 1) {
-                e.preventDefault();
-                pointX = e.touches[0].clientX - startX;
-                pointY = e.touches[0].clientY - startY;
-                updateImageTransform(img);
-            }
-        }, { passive: false });
-
-        modalOverlay.addEventListener('touchend', (e) => {
-            if (e.touches.length < 2) initialDistance = 0;
-            if (e.touches.length === 0) isPanning = false;
-        });
-
-        function updateImageTransform(img) {
-            img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-        }
-
-        function resetZoom(e) {
-            if (e) e.stopPropagation();
-            scale = 1; pointX = 0; pointY = 0;
-            const img = document.getElementById('modal-active-img');
-            if (img) updateImageTransform(img);
-        }
 
         function changeFontSize(delta) {
             currentFontScale = Math.min(Math.max(currentFontScale + delta, 0.8), 1.6);
@@ -1596,12 +1315,291 @@
             renderContent();
         }
 
-        function setCardFilter(filter) {
-            activeCardFilter = filter;
-            if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
-            cardIndices[currentSubject][filter] = 0;
-            localStorage.setItem('yn_card_indices', JSON.stringify(cardIndices));
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                changeAdminFields();
+            }
+        }
+
+        function changeAdminFields() {
+            const type = document.getElementById('admin-type').value;
+            const container = document.getElementById('admin-fields');
+            
+            if (type === 'pregunta_1x1') {
+                container.innerHTML = `
+                    <textarea id="adm-q" placeholder="Caso clínico / Pregunta..." rows="3"></textarea>
+                    <input type="text" id="adm-opt0" placeholder="Opción A (Correcta preferentemente)">
+                    <input type="text" id="adm-opt1" placeholder="Opción B">
+                    <input type="text" id="adm-opt2" placeholder="Opción C">
+                    <input type="text" id="adm-opt3" placeholder="Opción D">
+                    <input type="text" id="adm-correct" placeholder="Texto exacto de la opción correcta">
+                    <textarea id="adm-exp" placeholder="Retroalimentación de la opción correcta..." rows="2"></textarea>
+                    <textarea id="adm-disc" placeholder="Retroalimentación de opciones incorrectas (cada una separada por salto de línea)..." rows="3"></textarea>
+                `;
+            } else if (type === 'preguntas_paste') {
+                container.innerHTML = `
+                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega varios casos clínicos seguidos. El sistema detectará automáticamente cada pregunta, sus 4 opciones y sus retroalimentaciones.</p>
+                    <textarea id="adm-paste-text" placeholder="Pega aquí tus múltiples preguntas y casos clínicos tipo ENARM..." rows="10"></textarea>
+                `;
+            } else if (type === 'flashcard_1x1') {
+                container.innerHTML = `
+                    <textarea id="adm-fc-q" placeholder="Pregunta / Concepto (Frente)..." rows="2"></textarea>
+                    <textarea id="adm-fc-a" placeholder="Respuesta (Reverso)..." rows="2"></textarea>
+                    <input type="text" id="adm-fc-tag" placeholder="Etiqueta (ej. normal, high)">
+                `;
+            } else if (type === 'flashcards_paste') {
+                container.innerHTML = `
+                    <textarea id="adm-fc-paste" placeholder="Pregunta | Respuesta (una por renglón)..." rows="6"></textarea>
+                `;
+            } else if (type === 'delete_content') {
+                let customSub = customData[currentSubject] || { preguntas: [], flashcards: [] };
+                let html = `<p style="font-size:12px; font-weight:700; margin-bottom:8px;">Preguntas agregadas personalizadas:</p>`;
+                if (customSub.preguntas && customSub.preguntas.length > 0) {
+                    customSub.preguntas.forEach((p, idx) => {
+                        html += `
+                            <div class="delete-item-row">
+                                <span>[Pregunta] ${p.q.substring(0, 40)}...</span>
+                                <button class="btn-mini-delete" onclick="deleteCustomItem('preguntas', ${idx})">Eliminar</button>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<p style="font-size:11px; color:var(--text-muted);">No hay preguntas personalizadas en esta materia.</p>`;
+                }
+
+                html += `<p style="font-size:12px; font-weight:700; margin:12px 0 8px 0;">Flashcards agregadas personalizadas:</p>`;
+                if (customSub.flashcards && customSub.flashcards.length > 0) {
+                    customSub.flashcards.forEach((f, idx) => {
+                        html += `
+                            <div class="delete-item-row">
+                                <span>[Flashcard] ${f.q.substring(0, 40)}...</span>
+                                <button class="btn-mini-delete" onclick="deleteCustomItem('flashcards', ${idx})">Eliminar</button>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<p style="font-size:11px; color:var(--text-muted);">No hay flashcards personalizadas en esta materia.</p>`;
+                }
+                container.innerHTML = html;
+            }
+        }
+
+        function saveAdminContent() {
+            const type = document.getElementById('admin-type').value;
+            const sub = document.getElementById('admin-subject').value;
+
+            if (!customData[sub]) customData[sub] = { preguntas: [], flashcards: [] };
+
+            if (type === 'pregunta_1x1') {
+                const q = document.getElementById('adm-q').value.trim();
+                const o0 = document.getElementById('adm-opt0').value.trim();
+                const o1 = document.getElementById('adm-opt1').value.trim();
+                const o2 = document.getElementById('adm-opt2').value.trim();
+                const o3 = document.getElementById('adm-opt3').value.trim();
+                const correctText = document.getElementById('adm-correct').value.trim();
+                const exp = document.getElementById('adm-exp').value.trim();
+                const discText = document.getElementById('adm-disc').value.trim();
+
+                if (!q || !o0 || !correctText) {
+                    alert('Por favor completa al menos la pregunta, las opciones y la respuesta correcta.');
+                    return;
+                }
+
+                const rawOptions = [o0, o1, o2, o3].filter(o => o !== '');
+                const discardExplanation = discText ? discText.split('\n').filter(d => d.trim() !== '') : [];
+
+                customData[sub].preguntas.push({
+                    id: 'custom_qp_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+                    q,
+                    rawOptions,
+                    correctText,
+                    explanation: exp || "Respuesta correcta basada en guías clínicas.",
+                    discardExplanation
+                });
+                alert('¡Pregunta guardada con éxito!');
+            } else if (type === 'preguntas_paste') {
+                const text = document.getElementById('adm-paste-text').value.trim();
+                if (!text) return alert('Pega algún texto.');
+
+                // Algoritmo robusto para separar múltiples casos clínicos / preguntas
+                // Divide por patrones como número seguido de punto o paréntesis (ej. "1.", "2)", "Pregunta", etc.) o bloques con A), B), C), D)
+                let blocks = text.split(/(?=\b\d+[\.\)]\s)|\n(?=[Q\d]+\.\s)|(?=Caso:)|(?=Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente|Lactante|Preescolar|Escolar|Varón)/gi);
+                if (blocks.length <= 1) {
+                    blocks = text.split(/\n\s*\n/); // Si no hay numeración clara, divide por párrafos dobles
+                }
+
+                let addedCount = 0;
+                blocks.forEach((block, bIdx) => {
+                    let cleanBlock = block.trim();
+                    if (cleanBlock.length < 20) return;
+
+                    // Extraer opciones A, B, C, D
+                    let optMatches = cleanBlock.match(/[A-D][\.\)]\s*([^\n]+)/g);
+                    if (!optMatches || optMatches.length < 2) return;
+
+                    let rawOptions = optMatches.map(o => o.replace(/^[A-D][\.\)]\s*/, '').trim());
+                    
+                    // Limpiar el enunciado quitando las opciones y posibles respuestas/retroalimentaciones
+                    let qText = cleanBlock;
+                    optMatches.forEach(opt => {
+                        qText = qText.replace(opt, '');
+                    });
+
+                    // Intentar detectar respuesta correcta
+                    let correctText = rawOptions[0]; // por defecto la primera
+                    let corrMatch = cleanBlock.match(/(?:Respuesta|Correcta|Rpta)[:\s]*([A-D]|.+)/i);
+                    if (corrMatch) {
+                        let cVal = corrMatch[1].trim();
+                        if (/^[A-D]$/i.test(cVal)) {
+                            let idx = cVal.toUpperCase() === 'A' ? 0 : cVal.toUpperCase() === 'B' ? 1 : cVal.toUpperCase() === 'C' ? 2 : 3;
+                            if (rawOptions[idx]) correctText = rawOptions[idx];
+                        } else {
+                            correctText = cVal;
+                        }
+                    }
+
+                    // Extraer explicaciones
+                    let expMatch = cleanBlock.match(/(?:Explicación|Retroalimentación|Comentario)[:\s]*([^\n]+(?:\n[^\n]+){0,4})/i);
+                    let explanation = expMatch ? expMatch[1].trim() : "Caso clínico de alta dificultad tipo ENARM analizado con GPC.";
+
+                    customData[sub].preguntas.push({
+                        id: 'paste_qp_' + Date.now() + '_' + bIdx + '_' + Math.floor(Math.random()*1000),
+                        q: qText.replace(/^[0-9]+[\.\)]\s*/, '').trim(),
+                        rawOptions,
+                        correctText,
+                        explanation,
+                        discardExplanation: [
+                            "<b>Opción incorrecta 1:</b> No cumple con los criterios diagnósticos específicos del cuadro clínico descrito.",
+                            "<b>Opción incorrecta 2:</b> Indicada para escenarios clínicos diferentes según la normativa vigente.",
+                            "<b>Opción incorrecta 3:</b> Presenta menor sensibilidad y especificidad diagnóstica/terapéutica en este contexto."
+                        ]
+                    });
+                    addedCount++;
+                });
+
+                if (addedCount > 0) {
+                    alert(`¡Se han importado y dividido ${addedCount} preguntas/casos clínicos con éxito!`);
+                } else {
+                    // Si el split masivo no pudo estructurar de forma automática, guarda el bloque completo como una pregunta editable
+                    customData[sub].preguntas.push({
+                        id: 'paste_qp_' + Date.now(),
+                        q: text,
+                        rawOptions: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                        correctText: "Opción A",
+                        explanation: "Revisar el enunciado clínico completo.",
+                        discardExplanation: ["Opción incorrecta.", "Opción incorrecta.", "Opción incorrecta."]
+                    });
+                    alert('Se guardó el texto ingresado como 1 caso clínico debido al formato. Asegúrate de incluir opciones A, B, C, D.');
+                }
+            } else if (type === 'flashcard_1x1') {
+                const q = document.getElementById('adm-fc-q').value.trim();
+                const a = document.getElementById('adm-fc-a').value.trim();
+                const tag = document.getElementById('adm-fc-tag').value.trim() || 'normal';
+
+                if (!q || !a) return alert('Completa pregunta y respuesta.');
+
+                customData[sub].flashcards.push({
+                    id: 'custom_fc_' + Date.now(),
+                    q, a, tag
+                });
+                alert('¡Flashcard guardada!');
+            } else if (type === 'flashcards_paste') {
+                const text = document.getElementById('adm-fc-paste').value.trim();
+                if (!text) return alert('Pega texto.');
+
+                const lines = text.split('\n');
+                let count = 0;
+                lines.forEach((line, idx) => {
+                    const parts = line.split('|');
+                    if (parts.length >= 2) {
+                        customData[sub].flashcards.push({
+                            id: 'paste_fc_' + Date.now() + '_' + idx,
+                            q: parts[0].trim(),
+                            a: parts[1].trim(),
+                            tag: 'normal'
+                        });
+                        count++;
+                    }
+                });
+                alert(`¡Se importaron ${count} flashcards!`);
+            }
+
+            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
             renderContent();
+            toggleAdminPanel();
+        }
+
+        function deleteCustomItem(type, index) {
+            if (customData[currentSubject] && customData[currentSubject][type]) {
+                customData[currentSubject][type].splice(index, 1);
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                changeAdminFields();
+                renderContent();
+            }
+        }
+
+        function exportBackup() {
+            const backup = {
+                customData, topicChecklist, deletedTopics, ankiReviews, cardDifficulty, questionSchedule,
+                gpcImages, infographicImages, pdfNotes, maderaFiles, diaposLinks
+            };
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `YuliNotas_Backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const backup = JSON.parse(evt.target.result);
+                    if (backup.customData) {
+                        customData = backup.customData;
+                        localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                    }
+                    if (backup.topicChecklist) {
+                        topicChecklist = backup.topicChecklist;
+                        localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+                    }
+                    if (backup.deletedTopics) {
+                        deletedTopics = backup.deletedTopics;
+                        localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(deletedTopics));
+                    }
+                    if (backup.gpcImages) {
+                        gpcImages = backup.gpcImages;
+                        localStorage.setItem('yn_gpc_images_v3', JSON.stringify(gpcImages));
+                    }
+                    if (backup.infographicImages) {
+                        infographicImages = backup.infographicImages;
+                        localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
+                    }
+                    if (backup.pdfNotes) {
+                        pdfNotes = backup.pdfNotes;
+                        localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
+                    }
+                    if (backup.maderaFiles) {
+                        maderaFiles = backup.maderaFiles;
+                        localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
+                    }
+                    if (backup.diaposLinks) {
+                        diaposLinks = backup.diaposLinks;
+                        localStorage.setItem('yn_diapos_links_v1', JSON.stringify(diaposLinks));
+                    }
+                    alert('¡Respaldo cargado con éxito!');
+                    renderContent();
+                } catch (err) {
+                    alert('Archivo de respaldo inválido.');
+                }
+            };
+            reader.readAsText(file);
         }
 
         function uploadTopicFile(e, type, topicName) {
@@ -1855,90 +1853,81 @@
                     }).join('');
 
                 let globalFeedbackHTML = `
-                    <div class="global-feedback-box">
+                    <div class="global-feedback-box" id="feedback-box">
                         <div style="color: #2E7D32; font-weight: 800; font-size: calc(14px * var(--font-scale)); margin-bottom: 6px;">
                             ✓ Respuesta Correcta
                         </div>
                         <div style="margin-bottom: 8px; color: var(--text-dark); font-weight: 700; font-size: calc(13px * var(--font-scale));">
                             ${correctValue}
                         </div>
-                        <div style="margin-bottom: 14px; color: var(--text-dark);">
-                            ${q.explanation || 'Opción de primera línea para este caso.'}
+                        <div style="margin-bottom: 12px; line-height: 1.5;">
+                            <b>Explicación:</b> ${q.explanation || "Respuesta correcta basada en GPC."}
                         </div>
-                        <div style="border-top: 1px solid var(--border-color); padding-top: 10px;">
-                            <strong style="color: var(--text-muted); font-size: calc(11.5px * var(--font-scale)); display: block; margin-bottom: 8px;">
-                                ¿Por qué las demás no son correctas?
-                            </strong>
-                            <ul style="margin: 0; padding-left: 18px; color: var(--text-dark); font-size: calc(12px * var(--font-scale));">
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 8px;">
+                            <div style="font-weight: 700; margin-bottom: 4px; color: var(--text-muted);">Retroalimentación de opciones incorrectas:</div>
+                            <ul style="padding-left: 16px; font-size: calc(12px * var(--font-scale)); color: var(--text-muted);">
                                 ${incorrectReasons}
                             </ul>
                         </div>
                     </div>
+                    <button class="next-q-btn" id="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                 `;
+
+                let optionsHTML = shuffledOptions.map((opt) => {
+                    return `<button class="option-btn" onclick="checkAnswer(this, '${opt.replace(/'/g, "\\'")}', '${correctValue.replace(/'/g, "\\'")}')">${opt}</button>`;
+                }).join('');
 
                 area.innerHTML = `
                     <div class="question-card">
                         <div class="question-text">${q.q}</div>
-                        ${shuffledOptions.map((opt, idx) => `
-                            <div class="option-container">
-                                <button class="option-btn" data-correct="${opt === correctValue}" onclick="checkAnswerNotebook(this)">${String.fromCharCode(65 + idx)}) ${opt}</button>
-                            </div>
-                        `).join('')}
+                        <div class="option-container">
+                            ${optionsHTML}
+                        </div>
                         ${globalFeedbackHTML}
-                        <button id="next-q-btn" class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                     </div>
                 `;
-            } else if (currentTab === 'madera') {
-                area.innerHTML = renderTopicGridView('madera');
             } else if (currentTab === 'flashcards') {
                 let cards = subjectData.flashcards || [];
                 if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-
+                
                 if (cards.length === 0) {
-                    area.innerHTML = `
-                        <div class="flashcard-filter-bar">
-                            <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
-                        </div>
-                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
-                    `;
+                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards en este filtro.</p>`;
                     return;
                 }
 
                 if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
                 if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
                 let cIdx = cardIndices[currentSubject][activeCardFilter];
-
                 const card = cards[cIdx % cards.length];
-                const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
-                const currentDiff = cardDifficulty[card.id] || 'normal';
+                let currentDiff = cardDifficulty[card.id] || 'normal';
 
                 area.innerHTML = `
                     <div class="flashcard-filter-bar">
-                        <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
+                        <button class="filter-chip ${activeCardFilter === 'all' ? 'active' : ''}" onclick="setCardFilter('all')">Todas</button>
+                        <button class="filter-chip ${activeCardFilter === 'hard' ? 'active' : ''}" onclick="setCardFilter('hard')">🔴 Difíciles</button>
                     </div>
                     <div class="flashcard" onclick="this.classList.toggle('flipped')">
                         <div class="flashcard-inner">
                             <div class="flashcard-front">
-                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
-                                ${card.q}
+                                <span class="card-tag-badge">${card.tag || 'ENARM'}</span>
+                                <div>${card.q}</div>
                             </div>
                             <div class="flashcard-back">
                                 <span class="card-tag-badge">Respuesta</span>
-                                ${card.a}
+                                <div>${card.a}</div>
                             </div>
                         </div>
                     </div>
-                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
                     <div class="anki-controls">
-                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
-                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
-                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
+                        <button class="anki-btn anki-hard" onclick="rateCard('${card.id}', 'hard')">Difícil</button>
+                        <button class="anki-btn anki-good" onclick="rateCard('${card.id}', 'good')">Bien</button>
+                        <button class="anki-btn anki-easy" onclick="rateCard('${card.id}', 'easy')">Fácil</button>
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
                 area.innerHTML = renderTopicGridView('info');
+            } else if (currentTab === 'madera') {
+                area.innerHTML = renderTopicGridView('madera');
             } else if (currentTab === 'esquemas') {
                 area.innerHTML = renderTopicGridView('gpc');
             } else if (currentTab === 'yulinotas') {
@@ -1948,236 +1937,25 @@
             } else if (currentTab === 'simulacro') {
                 renderSimulacroView(area);
             } else if (currentTab === 'temario') {
-                const resourcesRow1 = ['gpc', 'cto', 'drre', 'yuli'];
-                const labelsRow1 = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas'];
-                const resourcesRow2 = ['clase', 'madera', 'punto', 'diapos'];
-                const labelsRow2 = ['Clase', 'Madera', 'Punto ENARM', 'Diapos'];
-
-                area.innerHTML = subjectData.temario.map((t, idx) => {
-                    const topicKey = `${currentSubject}_${idx}`;
-                    return `
-                        <div class="topic-card">
-                            <div class="topic-header">${t}</div>
-                            <div class="topic-checklist">
-                                ${resourcesRow1.map((res, rIdx) => {
-                                    const checkKey = `${topicKey}_${res}`;
-                                    return `
-                                        <div class="check-item">
-                                            <span>${labelsRow1[rIdx]}</span>
-                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                            <div class="topic-checklist" style="margin-top: 4px;">
-                                ${resourcesRow2.map((res, rIdx) => {
-                                    const checkKey = `${topicKey}_${res}`;
-                                    return `
-                                        <div class="check-item">
-                                            <span>${labelsRow2[rIdx]}</span>
-                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                renderTemarioView(area);
             }
         }
 
-        function renderSimulacroView(container) {
-            if (simTimerInterval) clearInterval(simTimerInterval);
-
-            if (!simState || !simState.active) {
-                container.innerHTML = `
-                    <div class="sim-setup-card">
-                        <h3>🩺 Simulacro ENARM</h3>
-                        <p>Evalúa tus conocimientos bajo condiciones de examen con temporizador automático y retroalimentación final.</p>
-                        <div style="font-size: calc(12px * var(--font-scale)); font-weight:700; color:var(--text-dark);">Selecciona el número de preguntas:</div>
-                        <div class="sim-btn-group">
-                            <button class="sim-option-btn selected" id="sim-opt-50" onclick="setSimCount(50)">50 Preg.</button>
-                            <button class="sim-option-btn" id="sim-opt-100" onclick="setSimCount(100)">100 Preg.</button>
-                            <button class="sim-option-btn" id="sim-opt-280" onclick="setSimCount(280)">280 Preg. (ENARM)</button>
-                        </div>
-                        <button class="sim-start-btn" onclick="startSimulacro()">Comenzar Examen</button>
-                    </div>
-                `;
-                window.selectedSimCount = 50;
-                return;
-            }
-
-            if (simState.finished) {
-                let correctCount = simState.answers.filter((ans, idx) => ans === simState.questions[idx].correctOptionIndex).length;
-                let totalQ = simState.questions.length;
-                let pct = Math.round((correctCount / totalQ) * 100);
-
-                container.innerHTML = `
-                    <div class="sim-results-container">
-                        <h3>🎯 Resultados del Simulacro</h3>
-                        <div class="sim-score-box">
-                            <div style="font-size:calc(13px * var(--font-scale)); color:var(--text-muted);">Calificación Final</div>
-                            <div class="sim-score-num">${correctCount} / ${totalQ} (${pct}%)</div>
-                            <p style="font-size:calc(12px * var(--font-scale));">${pct >= 65 ? '¡Excelente puntaje! Estás muy cerca de lograrlo.' : 'Sigue repasando los temas con menor puntaje.'}</p>
-                        </div>
-                        <button class="sim-start-btn" style="margin: 0 auto;" onclick="resetSimulacro()">🔄 Nuevo Simulacro</button>
-                    </div>
-                `;
-                return;
-            }
-
-            let qData = simState.questions[simState.currentIndex];
-            let userAns = simState.answers[simState.currentIndex];
-
-            container.innerHTML = `
-                <div class="sim-header-bar">
-                    <span>Pregunta ${simState.currentIndex + 1} de ${simState.questions.length}</span>
-                    <span class="sim-timer" id="sim-timer-display">--:--</span>
-                </div>
-                <div class="question-card">
-                    <div class="question-text">${qData.q}</div>
-                    ${qData.shuffledOptions.map((opt, idx) => {
-                        let btnClass = "option-btn";
-                        if (userAns !== undefined) {
-                            if (idx === qData.correctOptionIndex) btnClass += " correct";
-                            else if (idx === userAns) btnClass += " incorrect";
-                        }
-                        return `
-                            <button class="${btnClass}" ${userAns !== undefined ? 'disabled' : ''} onclick="answerSimulacro(${idx})">
-                                ${String.fromCharCode(65 + idx)}) ${opt.text}
-                            </button>
-                        `;
-                    }).join('')}
-                    ${userAns !== undefined ? `
-                        <div class="global-feedback-box active" style="margin-top:8px;">
-                            ${qData.explanation}
-                        </div>
-                    ` : ''}
-                    <div style="display: flex; gap: 8px; margin-top: 14px;">
-                        ${simState.currentIndex > 0 ? `<button class="upload-mini-btn" style="background:#555;" onclick="navigateSim(-1)">Anterior</button>` : ''}
-                        ${simState.currentIndex < simState.questions.length - 1 ? `<button class="upload-mini-btn" onclick="navigateSim(1)">Siguiente ➔</button>` : `<button class="upload-mini-btn" style="background:#2E7D32;" onclick="finishSimulacro()">Finalizar Examen</button>`}
-                    </div>
-                </div>
-            `;
-
-            startSimTimer();
-        }
-
-        function setSimCount(count) {
-            window.selectedSimCount = count;
-            document.querySelectorAll('.sim-option-btn').forEach(btn => btn.classList.remove('selected'));
-            document.getElementById(`sim-opt-${count}`).classList.add('selected');
-        }
-
-        function startSimulacro() {
-            const data = getData();
-            let allQuestions = [];
-            Object.keys(data).forEach(sub => {
-                if (data[sub].preguntas) {
-                    data[sub].preguntas.forEach(q => allQuestions.push(q));
-                }
-            });
-
-            if (allQuestions.length === 0) return alert('No hay suficientes preguntas registradas para iniciar un simulacro.');
-
-            let shuffledPool = shuffleArray(allQuestions);
-            let count = Math.min(window.selectedSimCount || 50, shuffledPool.length);
-            let selectedQuestions = shuffledPool.slice(0, count).map(q => {
-                let rawList = q.rawOptions || q.options || [];
-                let correctVal = q.correctText || rawList[q.correct || 0];
-                let optionsObj = rawList.map(opt => ({ text: opt, isCorrect: (opt === correctVal) }));
-                let shuffledOpts = shuffleArray(optionsObj);
-                let correctIdx = shuffledOpts.findIndex(o => o.isCorrect);
-
-                return {
-                    q: q.q,
-                    shuffledOptions: shuffledOpts,
-                    correctOptionIndex: correctIdx,
-                    explanation: q.explanation || `Respuesta correcta: ${correctVal}`
-                };
-            });
-
-            simState = {
-                active: true,
-                finished: false,
-                questions: selectedQuestions,
-                answers: new Array(selectedQuestions.length).fill(undefined),
-                currentIndex: 0,
-                timeLeft: count * 60 
-            };
-
-            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
-            renderContent();
-        }
-
-        function answerSimulacro(optionIdx) {
-            if (!simState || simState.answers[simState.currentIndex] !== undefined) return;
-            simState.answers[simState.currentIndex] = optionIdx;
-            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
-            renderContent();
-        }
-
-        function navigateSim(direction) {
-            if (!simState) return;
-            simState.currentIndex = Math.max(0, Math.min(simState.questions.length - 1, simState.currentIndex + direction));
-            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
-            renderContent();
-        }
-
-        function startSimTimer() {
-            if (!simState || simState.finished) return;
-            simTimerInterval = setInterval(() => {
-                if (simState.timeLeft > 0) {
-                    simState.timeLeft--;
-                    let mins = Math.floor(simState.timeLeft / 60);
-                    let secs = simState.timeLeft % 60;
-                    let display = document.getElementById('sim-timer-display');
-                    if (display) {
-                        display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                    }
-                } else {
-                    clearInterval(simTimerInterval);
-                    finishSimulacro();
-                }
-            }, 1000);
-        }
-
-        function finishSimulacro() {
-            if (!simState) return;
-            if (simTimerInterval) clearInterval(simTimerInterval);
-            simState.finished = true;
-            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
-            renderContent();
-        }
-
-        function resetSimulacro() {
-            if (simTimerInterval) clearInterval(simTimerInterval);
-            simState = null;
-            localStorage.removeItem('yn_sim_state');
-            renderContent();
-        }
-
-        function checkAnswerNotebook(selectedBtn) {
-            const container = selectedBtn.closest('.question-card');
+        function checkAnswer(buttonElem, selectedOpt, correctOpt) {
+            const container = buttonElem.parentElement;
+            const buttons = container.querySelectorAll('.option-btn');
             
-            container.querySelectorAll('.option-btn').forEach(btn => {
+            buttons.forEach(btn => {
                 btn.disabled = true;
-                const isCorrectOption = btn.getAttribute('data-correct') === 'true';
-
-                if (isCorrectOption) {
+                if (btn.textContent.trim() === correctOpt.trim()) {
                     btn.classList.add('correct');
-                } else {
+                } else if (btn.textContent.trim() === selectedOpt.trim()) {
                     btn.classList.add('incorrect');
                 }
             });
 
-            const globalFeedback = container.querySelector('.global-feedback-box');
-            if (globalFeedback) {
-                globalFeedback.classList.add('active');
-            }
-
-            const nextBtn = document.getElementById('next-q-btn');
-            if (nextBtn) nextBtn.style.display = 'block';
+            document.getElementById('feedback-box').classList.add('active');
+            document.getElementById('next-q-btn').style.display = 'block';
         }
 
         function nextQuestion() {
@@ -2187,345 +1965,206 @@
             renderContent();
         }
 
-        function toggleAdminPanel() {
-            const panel = document.getElementById('admin-panel');
-            panel.classList.toggle('active');
-            changeAdminFields();
-        }
-
-        function changeAdminFields() {
-            const type = document.getElementById('admin-type').value;
-            const container = document.getElementById('admin-fields');
-            const saveBtn = document.getElementById('admin-save-btn');
-            const sub = document.getElementById('admin-subject').value;
-
-            if (type === 'flashcard_1x1') {
-                saveBtn.style.display = 'block';
-                saveBtn.textContent = 'Guardar Flashcard';
-                container.innerHTML = `
-                    <input type="text" id="af-q" placeholder="Frente (¿...?)">
-                    <textarea id="af-a" rows="3" placeholder="Reverso (Respuesta)"></textarea>
-                `;
-            } else if (type === 'pregunta_1x1') {
-                saveBtn.style.display = 'block';
-                saveBtn.textContent = 'Guardar Pregunta';
-                container.innerHTML = `
-                    <textarea id="af-q" rows="3" placeholder="Caso clínico / Pregunta"></textarea>
-                    <input type="text" id="af-o0" placeholder="Opción Correcta">
-                    <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
-                    <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
-                    <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación general / opción correcta"></textarea>
-                    <textarea id="af-disc" rows="4" placeholder="Razones por opción (ej:&#10;<b>Opción 1:</b> CORRECTA...&#10;<b>Opción 2:</b> INCORRECTA porque...)"></textarea>
-                `;
-            } else if (type === 'preguntas_paste') {
-                saveBtn.style.display = 'none';
-                container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus casos clínicos estructurados:</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="Caso clínico / Pregunta: ..."></textarea>
-                    <button type="button" onclick="processPastedPreguntas()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Preguntas</button>
-                `;
-            } else if (type === 'flashcards_paste') {
-                saveBtn.style.display = 'none';
-                container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tu lista de flashcards:</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="* Frente: ¿...?"></textarea>
-                    <button type="button" onclick="processPastedFlashcards()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Flashcards</button>
-                `;
-            } else if (type === 'delete_content') {
-                saveBtn.style.display = 'none';
-                let subCustom = customData[sub] || { flashcards: [], preguntas: [] };
-                let fcList = subCustom.flashcards || [];
-                let qList = subCustom.preguntas || [];
-
-                let html = `<p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Contenido personalizado:</p>`;
-                if (fcList.length === 0 && qList.length === 0) {
-                    html += `<p style="font-size: calc(11px * var(--font-scale)); font-style:italic;">No hay contenido personalizado.</p>`;
-                } else {
-                    fcList.forEach((fc, idx) => {
-                        html += `<div class="delete-item-row"><span>[FC] ${fc.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'flashcards', ${idx})">Eliminar</button></div>`;
-                    });
-                    qList.forEach((q, idx) => {
-                        html += `<div class="delete-item-row"><span>[Pregunta] ${q.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'preguntas', ${idx})">Eliminar</button></div>`;
-                    });
-                }
-                container.innerHTML = html;
-            }
-        }
-
-        function processPastedPreguntas() {
-            const text = document.getElementById('paste-raw-text').value;
-            if (!text.trim()) return alert('Por favor pega algún texto.');
-            const sub = document.getElementById('admin-subject').value;
-            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
-
-            let addedQ = 0;
-            const caseBlocks = text.split(/(?=(?:---CASO---|Caso\s+clínico(?:\s*\/\s*Pregunta)?\s*:\s*|\b\d+\.\s*Caso|\bPregunta\s*\d*\s*:))/i);
-            
-            caseBlocks.forEach(block => {
-                const trimmed = block.trim();
-                if (!trimmed) return;
-
-                let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
-                let qText = "";
-                let optionsMap = {}; 
-                let discardList = [];
-                let correctOptLetter = "";
-                let readingHeader = true;
-
-                lines.forEach(line => {
-                    let cleanLine = line.replace(/^(---CASO---|\d+\.\s*)/, '').trim();
-                    let upperLine = cleanLine.toUpperCase();
-
-                    let optMatch = cleanLine.match(/^([A-D])[\)\.\:]\s*(.*)/i);
-                    if (optMatch) {
-                        readingHeader = false;
-                        let letter = optMatch[1].toUpperCase();
-                        let content = optMatch[2].trim();
-                        optionsMap[letter] = content;
-                        return;
-                    }
-
-                    let lowerLine = cleanLine.toLowerCase();
-
-                    if (lowerLine.startsWith('correcta:') || lowerLine.startsWith('opción correcta') || upperLine.includes('CORRECTA')) {
-                        readingHeader = false;
-                        if (cleanLine.includes('A)') || upperLine.includes('A)') || cleanLine.startsWith('A')) correctOptLetter = 'A';
-                        if (cleanLine.includes('B)') || upperLine.includes('B)') || cleanLine.startsWith('B')) correctOptLetter = 'B';
-                        if (cleanLine.includes('C)') || upperLine.includes('C)') || cleanLine.startsWith('C')) correctOptLetter = 'C';
-                        if (cleanLine.includes('D)') || upperLine.includes('D)') || cleanLine.startsWith('D')) correctOptLetter = 'D';
-                        
-                        discardList.push(cleanLine);
-                        return;
-                    }
-
-                    if (lowerLine.startsWith('explicacion:') || lowerLine.startsWith('incorrectas:') || lowerLine.startsWith('se descarta') || lowerLine.includes('incorrecta')) {
-                        readingHeader = false;
-                        discardList.push(cleanLine);
-                        return;
-                    }
-
-                    if (readingHeader) {
-                        let cleanHeading = cleanLine.replace(/^(enunciado:|caso clínico \/ pregunta:|caso clínico:|pregunta:)\s*/i, '');
-                        if (cleanHeading) {
-                            if (!qText) {
-                                qText = cleanHeading;
-                            } else {
-                                qText += " " + cleanHeading;
-                            }
-                        }
-                    } else {
-                        discardList.push(cleanLine);
-                    }
-                });
-
-                let optionKeys = Object.keys(optionsMap).sort();
-                if (qText && optionKeys.length >= 2) {
-                    let rawOpts = optionKeys.map(k => optionsMap[k]);
-                    let correctTextVal = optionsMap[correctOptLetter] || rawOpts[0];
-
-                    let finalDiscard = rawOpts.map(opt => {
-                        let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, Math.min(opt.length, 10))));
-                        if (found) return found;
-                        return opt === correctTextVal ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA para este escenario clínico.`;
-                    });
-
-                    customData[sub].preguntas.push({
-                        id: 'p_paste_' + Date.now() + Math.random(),
-                        q: qText,
-                        rawOptions: rawOpts,
-                        correctText: correctTextVal,
-                        explanation: discardList.join(' ') || `Respuesta correcta: ${correctTextVal}`,
-                        discardExplanation: finalDiscard
-                    });
-                    addedQ++;
-                }
-            });
-
-            if (addedQ > 0) {
-                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se agregaron ${addedQ} preguntas exitosamente!`);
-                renderContent();
-                toggleAdminPanel();
-            } else {
-                alert('No se pudo procesar el formato. Asegúrate de incluir las opciones con sus incisos (A, B, C...).');
-            }
-        }
-
-        function processPastedFlashcards() {
-            const text = document.getElementById('paste-raw-text').value;
-            if (!text.trim()) return alert('Por favor pega algún texto.');
-            const sub = document.getElementById('admin-subject').value;
-            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
-
-            let addedFc = 0;
-            const lines = text.split('\n');
-            let currentQ = "";
-            let currentA = "";
-
-            lines.forEach(line => {
-                let clean = line.trim();
-                if (clean.toLowerCase().includes('frente:') || clean.startsWith('* F') || clean.startsWith('- F')) {
-                    if (currentQ && currentA) {
-                        customData[sub].flashcards.push({ id: 'fc_' + Date.now() + Math.random(), q: currentQ, a: currentA, tag: 'normal' });
-                        addedFc++;
-                    }
-                    currentQ = clean.replace(/^[\*\-\•]?\s*frente:\s*/i, '');
-                    currentA = "";
-                } else if (clean.toLowerCase().includes('reverso:') || clean.startsWith('* R') || clean.startsWith('- R')) {
-                    currentA = clean.replace(/^[\*\-\•]?\s*reverso:\s*/i, '');
-                } else if (currentA !== "") {
-                    currentA += " " + clean;
-                } else if (currentQ !== "") {
-                    currentQ += " " + clean;
-                }
-            });
-
-            if (currentQ && currentA) {
-                customData[sub].flashcards.push({ id: 'fc_' + Date.now() + Math.random(), q: currentQ, a: currentA, tag: 'normal' });
-                addedFc++;
-            }
-
-            if (addedFc > 0) {
-                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se agregaron ${addedFc} flashcards exitosamente!`);
-                renderContent();
-                toggleAdminPanel();
-            } else {
-                alert('No se pudieron procesar las flashcards. Revisa el formato.');
-            }
-        }
-
-        function saveAdminContent() {
-            const type = document.getElementById('admin-type').value;
-            const sub = document.getElementById('admin-subject').value;
-            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
-
-            if (type === 'flashcard_1x1') {
-                const q = document.getElementById('af-q').value.trim();
-                const a = document.getElementById('af-a').value.trim();
-                if (!q || !a) return alert('Completa ambos campos.');
-                customData[sub].flashcards.push({ id: 'fc_' + Date.now(), q, a, tag: 'normal' });
-                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert('Flashcard guardada con éxito.');
-                renderContent();
-                toggleAdminPanel();
-            } else if (type === 'pregunta_1x1') {
-                const q = document.getElementById('af-q').value.trim();
-                const o0 = document.getElementById('af-o0').value.trim();
-                const o1 = document.getElementById('af-o1').value.trim();
-                const o2 = document.getElementById('af-o2').value.trim();
-                const o3 = document.getElementById('af-o3').value.trim();
-                const exp = document.getElementById('af-exp').value.trim();
-                const disc = document.getElementById('af-disc').value.trim();
-
-                if (!q || !o0 || !o1) return alert('Llena al menos la pregunta, la opción correcta y una incorrecta.');
-                let options = [o0, o1];
-                if (o2) options.push(o2);
-                if (o3) options.push(o3);
-
-                let discardArray = disc ? disc.split('\n').filter(Boolean) : options.map(opt => opt === o0 ? `CORRECTA.` : `INCORRECTA.`);
-
-                customData[sub].preguntas.push({
-                    id: 'p_' + Date.now(),
-                    q,
-                    rawOptions: options,
-                    correctText: o0,
-                    explanation: exp || `Respuesta correcta: ${o0}`,
-                    discardExplanation: discardArray
-                });
-
-                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert('Pregunta guardada con éxito.');
-                renderContent();
-                toggleAdminPanel();
-            }
-        }
-
-        function deleteCustomItem(sub, type, idx) {
-            if (!confirm('¿Eliminar este elemento personalizado?')) return;
-            customData[sub][type].splice(idx, 1);
-            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-            changeAdminFields();
-            renderContent();
-        }
-
-        function toggleCheck(checkKey) {
-            topicChecklist[checkKey] = !topicChecklist[checkKey];
-            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
-            updateCornerBadge();
-        }
-
-        function processAnki(cardId, days, diff) {
-            cardDifficulty[cardId] = diff;
+        function rateCard(cardId, rating) {
+            cardDifficulty[cardId] = rating === 'hard' ? 'hard' : 'normal';
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
 
-            let next = new Date();
-            next.setDate(next.getDate() + days);
-            
-            ankiReviews[cardId] = { nextDate: next.toLocaleDateString('es-MX') };
-            localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
-            
             if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
             if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
             cardIndices[currentSubject][activeCardFilter]++;
             localStorage.setItem('yn_card_indices', JSON.stringify(cardIndices));
-            
             renderContent();
         }
 
-        function exportBackup() {
-            const dataToExport = {
-                customData,
-                topicChecklist,
-                deletedTopics,
-                ankiReviews,
-                cardDifficulty,
-                questionSchedule,
-                gpcImages,
-                infographicImages,
-                pdfNotes,
-                maderaFiles,
-                diaposLinks
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+        function renderTemarioView(area) {
+            const data = getData();
+            const topics = (data[currentSubject] || {}).temario || [];
+            
+            area.innerHTML = `
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    ${topics.map((topic, tIdx) => {
+                        const topicKey = `${currentSubject}_${tIdx}`;
+                        const resources = [
+                            { key: 'gpc', label: 'GPC' },
+                            { key: 'cto', label: 'CTO' },
+                            { key: 'drre', label: 'Dr. Ré' },
+                            { key: 'yuli', label: 'Yuli' },
+                            { key: 'clase', label: 'Clase' },
+                            { key: 'madera', label: 'Madera' },
+                            { key: 'punto', label: 'Punto' },
+                            { key: 'diapos', label: 'Diapos' }
+                        ];
+
+                        return `
+                            <div class="topic-card">
+                                <div class="topic-header">${topic}</div>
+                                <div class="topic-checklist">
+                                    ${resources.map(res => {
+                                        const checkId = `${topicKey}_${res.key}`;
+                                        const isChecked = topicChecklist[checkId] ? 'checked' : '';
+                                        return `
+                                            <label class="check-item">
+                                                <input type="checkbox" ${isChecked} onchange="toggleTopicCheck('${checkId}')">
+                                                <span>${res.label}</span>
+                                            </label>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
         }
 
-        function importBackup(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const imported = JSON.parse(evt.target.result);
-                    if (imported.customData) localStorage.setItem('yn_custom_data', JSON.stringify(imported.customData));
-                    if (imported.topicChecklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.topicChecklist));
-                    if (imported.deletedTopics) localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(imported.deletedTopics));
-                    if (imported.ankiReviews) localStorage.setItem('yn_anki', JSON.stringify(imported.ankiReviews));
-                    if (imported.cardDifficulty) localStorage.setItem('yn_card_diff', JSON.stringify(imported.cardDifficulty));
-                    if (imported.questionSchedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.questionSchedule));
-                    if (imported.gpcImages) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.gpcImages));
-                    if (imported.infographicImages) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.infographicImages));
-                    if (imported.pdfNotes) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.pdfNotes));
-                    if (imported.maderaFiles) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.maderaFiles));
-                    if (imported.diaposLinks) localStorage.setItem('yn_diapos_links_v1', JSON.stringify(imported.diaposLinks));
+        function toggleTopicCheck(checkId) {
+            topicChecklist[checkId] = !topicChecklist[checkId];
+            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+            updateCornerBadge();
+        }
 
-                    alert('¡Copia de seguridad restaurada con éxito!');
-                    location.reload();
-                } catch (err) {
-                    alert('El archivo seleccionado no es válido.');
+        function renderSimulacroView(area) {
+            if (!simState || !simState.active) {
+                area.innerHTML = `
+                    <div class="sim-setup-card">
+                        <h3>Simulacro ENARM YuliNotas</h3>
+                        <p>Evalúa tus conocimientos con un simulacro cronometrado de alta dificultad con casos clínicos reales.</p>
+                        <div class="sim-btn-group">
+                            <button class="sim-option-btn selected" id="sim-count-10" onclick="setSimCount(10)">10 Preguntas</button>
+                            <button class="sim-option-btn" id="sim-count-20" onclick="setSimCount(20)">20 Preguntas</button>
+                        </div>
+                        <button class="sim-start-btn" onclick="startSimulacro()">Iniciar Simulacro</button>
+                    </div>
+                `;
+            } else {
+                if (simState.finished) {
+                    area.innerHTML = `
+                        <div class="sim-results-container">
+                            <h3>Resultados del Simulacro</h3>
+                            <div class="sim-score-box">
+                                <p>Puntaje Final</p>
+                                <div class="sim-score-num">${simState.score} / ${simState.questions.length}</div>
+                                <p>${Math.round((simState.score / simState.questions.length) * 100)}% de aciertos</p>
+                            </div>
+                            <button class="sim-start-btn" onclick="resetSimulacro()">Nuevo Simulacro</button>
+                        </div>
+                    `;
+                } else {
+                    const currentQ = simState.questions[simState.currentIndex];
+                    let rawList = currentQ.rawOptions || currentQ.options || [];
+                    let correctValue = currentQ.correctText || rawList[currentQ.correct || 0];
+                    let shuffledOptions = shuffleArray(rawList);
+
+                    let optionsHTML = shuffledOptions.map((opt) => {
+                        return `<button class="option-btn" onclick="answerSim(this, '${opt.replace(/'/g, "\\'")}', '${correctValue.replace(/'/g, "\\'")}')">${opt}</button>`;
+                    }).join('');
+
+                    area.innerHTML = `
+                        <div class="sim-header-bar">
+                            <span>Pregunta ${simState.currentIndex + 1} de ${simState.questions.length}</span>
+                            <span class="sim-timer" id="sim-timer-disp">--:--</span>
+                        </div>
+                        <div class="question-card">
+                            <div class="question-text">${currentQ.q}</div>
+                            <div class="option-container">
+                                ${optionsHTML}
+                            </div>
+                        </div>
+                    `;
                 }
-            };
-            reader.readAsText(file);
+            }
         }
 
-        renderContent();
+        let tempSimCount = 10;
+        function setSimCount(count) {
+            tempSimCount = count;
+            document.getElementById('sim-count-10').classList.toggle('selected', count === 10);
+            document.getElementById('sim-count-20').classList.toggle('selected', count === 20);
+        }
+
+        function startSimulacro() {
+            const data = getData();
+            let allQ = [];
+            Object.values(data).forEach(sub => {
+                if (sub.preguntas) allQ.push(...sub.preguntas);
+            });
+
+            allQ = shuffleArray(allQ).slice(0, tempSimCount);
+            if (allQ.length === 0) return alert('No hay preguntas disponibles para el simulacro.');
+
+            simState = {
+                active: true,
+                finished: false,
+                questions: allQ,
+                currentIndex: 0,
+                score: 0,
+                timeLeft: tempSimCount * 90 // 90 segundos por pregunta
+            };
+            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+            renderContent();
+            startSimTimer();
+        }
+
+        function startSimTimer() {
+            if (simTimerInterval) clearInterval(simTimerInterval);
+            simTimerInterval = setInterval(() => {
+                if (!simState || !simState.active || simState.finished) {
+                    clearInterval(simTimerInterval);
+                    return;
+                }
+                simState.timeLeft--;
+                const min = Math.floor(simState.timeLeft / 60);
+                const sec = simState.timeLeft % 60;
+                const timerElem = document.getElementById('sim-timer-disp');
+                if (timerElem) {
+                    timerElem.textContent = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+                }
+                if (simState.timeLeft <= 0) {
+                    clearInterval(simTimerInterval);
+                    simState.finished = true;
+                    localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+                    renderContent();
+                }
+            }, 1000);
+        }
+
+        function answerSim(buttonElem, selectedOpt, correctOpt) {
+            const container = buttonElem.parentElement;
+            const buttons = container.querySelectorAll('.option-btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            if (selectedOpt.trim() === correctOpt.trim()) {
+                buttonElem.classList.add('correct');
+                simState.score++;
+            } else {
+                buttonElem.classList.add('incorrect');
+                buttons.forEach(btn => {
+                    if (btn.textContent.trim() === correctOpt.trim()) btn.classList.add('correct');
+                });
+            }
+
+            setTimeout(() => {
+                simState.currentIndex++;
+                if (simState.currentIndex >= simState.questions.length) {
+                    simState.finished = true;
+                    if (simTimerInterval) clearInterval(simTimerInterval);
+                }
+                localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+                renderContent();
+            }, 1200);
+        }
+
+        function resetSimulacro() {
+            simState = null;
+            localStorage.removeItem('yn_sim_state');
+            if (simTimerInterval) clearInterval(simTimerInterval);
+            renderContent();
+        }
+
+        // Inicializar vista
+        selectSubject(currentSubject);
+        selectTab(currentTab);
     </script>
 </body>
 </html>
