@@ -1111,7 +1111,7 @@
                     "Neumonía adquirida en la comunidad", "Tuberculosis pulmonar", "Tromboembolia pulmonar", "Diabetes mellitus tipo 1", 
                     "Diabetes mellitus type 2", "Cetoacidosis diabética", "Estado hiperosmolar hiperglucémico", "Hipotiroidismo", 
                     "Hipertiroidismo", "Enfermedad renal crónica", "Insuficiencia renal aguda", "Glomerulonefritis", 
-                    "Artritis reumatoide", "Lupus eritematoso sistémico", "Gota", "Cirrosis hepática", "Hepatitis viral aguda", 
+                    "Artritis reumateide", "Lupus eritematoso sistémico", "Gota", "Cirrosis hepática", "Hepatitis viral aguda", 
                     "Enfermedad por reflujo gastroesofágico", "Úlcera péptica", "Enfermedad inflamatoria intestinal", "Accidente cerebrovascular", 
                     "Crisis convulsivas y epilepsia", "Cefalea y migraña", "Meningitis bacteriana", "Anemia ferropénica", 
                     "Anemias megaloblásticas", "Anemias hemolíticas", "Leucemias agudas", "Linfomas", "Insuficiencia suprarrenal",
@@ -1587,7 +1587,6 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                // Generar de manera limpia y única el resumen para todas las opciones incorrectas
                 let incorrectReasons = shuffledOptions
                     .filter(opt => opt !== correctValue)
                     .map(opt => {
@@ -1599,7 +1598,6 @@
                                 return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 10)));
                             });
                             if (found) {
-                                // Limpia prefijos repetitivos si ya los trae la estructura guardada
                                 specificFeedback = found.replace(/^<b>.*?<\/b>[:\s]*/i, '');
                             }
                         }
@@ -1977,7 +1975,7 @@
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
                     <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus casos clínicos estructurados:</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="Caso Clínico: ..."></textarea>
+                    <textarea id="paste-raw-text" rows="8" placeholder="Caso clínico / Pregunta: ..."></textarea>
                     <button type="button" onclick="processPastedPreguntas()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Preguntas</button>
                 `;
             } else if (type === 'flashcards_paste') {
@@ -2015,7 +2013,8 @@
             if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
 
             let addedQ = 0;
-            const caseBlocks = text.split(/(?=\b\d+\.\s*Caso clínico|\bCaso clínico|\bCaso clínico \/ Pregunta:)/i);
+            // Divide dinámicamente reconociendo cualquier caso/pregunta nueva
+            const caseBlocks = text.split(/(?=(?:Caso\s+clínico(?:\s*\/\s*Pregunta)?\s*:\s*|\b\d+\.\s*Caso|\bPregunta\s*\d*\s*:))/i);
             
             caseBlocks.forEach(block => {
                 const trimmed = block.trim();
@@ -2026,26 +2025,27 @@
                 let optionsMap = {}; 
                 let discardList = [];
                 let correctOptLetter = "";
+                let readingHeader = true;
 
                 lines.forEach(line => {
                     let cleanLine = line.replace(/^\d+\.\s*/, '');
                     let upperLine = cleanLine.toUpperCase();
 
-                    let optMatch = cleanLine.match(/^([A-G])[\)\.\:]\s*(.*)/);
+                    // Coincide con incisos de opción múltiple
+                    let optMatch = cleanLine.match(/^([A-G])[\)\.\:]\s*(.*)/i);
                     if (optMatch) {
+                        readingHeader = false;
                         let letter = optMatch[1].toUpperCase();
                         let content = optMatch[2].trim();
-                        if (content.toLowerCase().includes('correcta') || content.toLowerCase().includes('incorrecta')) {
-                            let parts = content.split(/[:\.]\s*(?=[A-Z])/);
-                            optionsMap[letter] = parts[0].trim();
-                            discardList.push(`<b>Opción ${letter}:</b> ${content}`);
-                        } else {
-                            optionsMap[letter] = content;
-                        }
+                        optionsMap[letter] = content;
                         return;
                     }
 
-                    if (cleanLine.toLowerCase().startsWith('opción correcta') || upperLine.includes('CORRECTA')) {
+                    let lowerLine = cleanLine.toLowerCase();
+
+                    // Detecta respuesta correcta explicada
+                    if (lowerLine.startsWith('opción correcta') || upperLine.includes('CORRECTA') || lowerLine.startsWith('respuesta correcta')) {
+                        readingHeader = false;
                         if (cleanLine.includes('A)') || cleanLine.startsWith('A') || upperLine.includes('INCISO A')) correctOptLetter = 'A';
                         if (cleanLine.includes('B)') || cleanLine.startsWith('B') || upperLine.includes('INCISO B')) correctOptLetter = 'B';
                         if (cleanLine.includes('C)') || cleanLine.startsWith('C') || upperLine.includes('INCISO C')) correctOptLetter = 'C';
@@ -2058,31 +2058,37 @@
                         return;
                     }
 
-                    if (cleanLine.toLowerCase().startsWith('se descarta') || cleanLine.toLowerCase().includes('incorrecta')) {
+                    // Detecta descartes y justificaciones
+                    if (lowerLine.startsWith('se descarta') || lowerLine.includes('incorrecta') || lowerLine.startsWith('razón') || lowerLine.startsWith('descarte')) {
+                        readingHeader = false;
                         discardList.push(cleanLine);
                         return;
                     }
 
-                    if (!qText) {
-                        qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
+                    // Construcción dinámica del cuerpo de la pregunta/caso
+                    if (readingHeader) {
+                        let cleanHeading = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:|pregunta:)\s*/i, '');
+                        if (cleanHeading) {
+                            if (!qText) {
+                                qText = cleanHeading;
+                            } else {
+                                qText += " " + cleanHeading;
+                            }
+                        }
                     } else {
-                        qText += " " + cleanLine;
+                        discardList.push(cleanLine);
                     }
                 });
 
                 let optionKeys = Object.keys(optionsMap).sort();
                 if (qText && optionKeys.length >= 2) {
                     let rawOpts = optionKeys.map(k => optionsMap[k]);
-                    let correctTextVal = optionsMap['G'] || optionsMap[optionKeys[0]]; 
-
-                    if (correctOptLetter && optionsMap[correctOptLetter]) {
-                        correctTextVal = optionsMap[correctOptLetter];
-                    }
+                    let correctTextVal = optionsMap[correctOptLetter] || optionsMap[optionKeys[0]]; 
 
                     let finalDiscard = rawOpts.map(opt => {
-                        let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, 10)));
+                        let found = discardList.find(d => d.toLowerCase().includes(opt.toLowerCase().substring(0, Math.min(opt.length, 10))));
                         if (found) return found;
-                        return opt === correctTextVal ? `CORRECTA.` : `INCORRECTA para este escenario clínico.`;
+                        return opt === correctTextVal ? `<b>${opt}:</b> CORRECTA.` : `<b>${opt}:</b> INCORRECTA para este escenario clínico.`;
                     });
 
                     customData[sub].preguntas.push({
@@ -2090,7 +2096,7 @@
                         q: qText,
                         rawOptions: rawOpts,
                         correctText: correctTextVal,
-                        explanation: `Respuesta correcta: ${correctTextVal}`,
+                        explanation: discardList.join(' ') || `Respuesta correcta: ${correctTextVal}`,
                         discardExplanation: finalDiscard
                     });
                     addedQ++;
@@ -2227,6 +2233,57 @@
             localStorage.setItem('yn_card_indices', JSON.stringify(cardIndices));
             
             renderContent();
+        }
+
+        function exportBackup() {
+            const dataToExport = {
+                customData,
+                topicChecklist,
+                deletedTopics,
+                ankiReviews,
+                cardDifficulty,
+                questionSchedule,
+                gpcImages,
+                infographicImages,
+                pdfNotes,
+                maderaFiles,
+                diaposLinks
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    if (imported.customData) localStorage.setItem('yn_custom_data', JSON.stringify(imported.customData));
+                    if (imported.topicChecklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.topicChecklist));
+                    if (imported.deletedTopics) localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(imported.deletedTopics));
+                    if (imported.ankiReviews) localStorage.setItem('yn_anki', JSON.stringify(imported.ankiReviews));
+                    if (imported.cardDifficulty) localStorage.setItem('yn_card_diff', JSON.stringify(imported.cardDifficulty));
+                    if (imported.questionSchedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.questionSchedule));
+                    if (imported.gpcImages) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.gpcImages));
+                    if (imported.infographicImages) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.infographicImages));
+                    if (imported.pdfNotes) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.pdfNotes));
+                    if (imported.maderaFiles) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.maderaFiles));
+                    if (imported.diaposLinks) localStorage.setItem('yn_diapos_links_v1', JSON.stringify(imported.diaposLinks));
+
+                    alert('¡Copia de seguridad restaurada con éxito!');
+                    location.reload();
+                } catch (err) {
+                    alert('El archivo seleccionado no es válido.');
+                }
+            };
+            reader.readAsText(file);
         }
 
         renderContent();
