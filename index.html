@@ -581,7 +581,7 @@
             font-weight: 700;
         }
 
-        /* Nuevo estilo para el bloque de retroalimentación global */
+        /* Estilo para el bloque de retroalimentación global */
         .global-feedback-box {
             display: none;
             margin-top: 12px;
@@ -603,22 +603,6 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Estilos conservados para el simulacro */
-        .option-feedback {
-            display: none;
-            padding: 10px 14px;
-            font-size: calc(11.5px * var(--font-scale));
-            color: var(--text-dark);
-            line-height: 1.45;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .option-feedback.correct-feedback {
-            border-left: 4px solid #28A745;
-            background: #E9F7EF;
-            color: #155724;
         }
 
         .next-q-btn {
@@ -1607,7 +1591,7 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                // Construcción de los motivos de opciones incorrectas para el mini resumen
+                // Construcción de los motivos de opciones incorrectas para el mini resumen final
                 let incorrectReasons = shuffledOptions
                     .filter(opt => opt !== correctValue)
                     .map(opt => {
@@ -1626,7 +1610,7 @@
                         return `<li style="margin-bottom: 6px;">${specificFeedback}</li>`;
                     }).join('');
 
-                // Bloque Global de Retroalimentación
+                // Bloque Global de Retroalimentación con mini resumen de por qué las otras fallan
                 let globalFeedbackHTML = `
                     <div class="global-feedback-box">
                         <div style="color: #2E7D32; font-weight: 800; font-size: calc(14px * var(--font-scale)); margin-bottom: 6px;">
@@ -1640,7 +1624,7 @@
                         </div>
                         <div style="border-top: 1px solid var(--border-color); padding-top: 10px;">
                             <strong style="color: var(--text-muted); font-size: calc(11.5px * var(--font-scale)); display: block; margin-bottom: 8px;">
-                                ¿Por qué las demás son incorrectas?
+                                ¿Por qué las demás no son correctas?
                             </strong>
                             <ul style="margin: 0; padding-left: 18px; color: var(--text-dark); font-size: calc(12px * var(--font-scale));">
                                 ${incorrectReasons}
@@ -1822,7 +1806,7 @@
                         `;
                     }).join('')}
                     ${userAns !== undefined ? `
-                        <div class="option-feedback correct-feedback" style="display:block; margin-top:8px;">
+                        <div class="global-feedback-box active" style="margin-top:8px;">
                             ${qData.explanation}
                         </div>
                     ` : ''}
@@ -2231,7 +2215,6 @@
             updateCornerBadge();
         }
 
-        // Función processAnki y arranque completados
         function processAnki(cardId, days, diff) {
             cardDifficulty[cardId] = diff;
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
@@ -2250,7 +2233,6 @@
             renderContent();
         }
 
-        // Inicializar al cargar la página
         renderContent();
     </script>
 </body>
