@@ -507,7 +507,6 @@
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
-        /* Preguntas y Estilo con retroalimentación por opción */
         .question-card {
             display: flex;
             flex-direction: column;
@@ -812,7 +811,6 @@
             cursor: pointer;
         }
 
-        /* Estilos del Simulacro ENARM */
         .sim-setup-card {
             text-align: center;
             padding: 20px 10px;
@@ -1917,8 +1915,7 @@
                     let qText = "";
                     let correctOpt = "";
                     let incorrectOpts = [];
-                    let retroCorrect = "";
-                    let retroIncorrect = "";
+                    let discardList = [];
 
                     lines.forEach(line => {
                         let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
@@ -1930,9 +1927,9 @@
                             let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
                             if (optVal) incorrectOpts.push(optVal);
                         } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
-                            retroCorrect = cleanLine;
+                            discardList.push(`<b>Correcto:</b> ${cleanLine.replace(/^correcto:\s*/i, '')}`);
                         } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
-                            retroIncorrect = cleanLine;
+                            discardList.push(`<b>Incorrecto:</b> ${cleanLine.replace(/^incorrecto:\s*/i, '')}`);
                         } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
                             qText += " " + cleanLine;
                         }
@@ -1940,17 +1937,13 @@
 
                     if (qText && correctOpt) {
                         let allOptions = [correctOpt, ...incorrectOpts];
-                        let explanation = (retroCorrect || retroIncorrect) ? `${retroCorrect}<br>${retroIncorrect}` : "Caso clínico procesado correctamente.";
-                        let discardList = [];
-                        if (retroCorrect) discardList.push(`<b>Correcto:</b> ${retroCorrect.replace(/^correcto:\s*/i, '')}`);
-                        if (retroIncorrect) discardList.push(`<b>Incorrecto:</b> ${retroIncorrect.replace(/^incorrecto:\s*/i, '')}`);
 
                         customData[sub].preguntas.push({
                             id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
                             q: qText.trim(),
                             rawOptions: allOptions,
                             correctText: correctOpt,
-                            explanation: explanation,
+                            explanation: "Revisa la retroalimentación detallada de cada opción abajo.",
                             discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
                         });
                         addedQ++;
