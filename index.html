@@ -913,10 +913,9 @@
                     correctText: "Laparoscopia diagnóstica", 
                     explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
                     discardExplanation: [
-                        "<b>Laparoscopia diagnóstica:</b> CORRECTA. Permite visión directa e histopatología.",
-                        "<b>Ecografía pélvica:</b> INCORRECTA. Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
-                        "<b>Resonancia Magnética:</b> INCORRECTA. Reservada para endometriosis profunda con compromiso visceral.",
-                        "<b>CA-125 sérico:</b> INCORRECTA. Marcador inespecífico; no se recomienda de rutina."
+                        "<b>Ecografía pélvica:</b> Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
+                        "<b>Resonancia Magnética:</b> Reservada para endometriosis profunda con compromiso visceral.",
+                        "<b>CA-125 sérico:</b> Marcador inespecífico; no se recomienda de rutina."
                     ] 
                 }],
                 temario: [
@@ -936,10 +935,9 @@
                     correctText: "Placenta Previa", 
                     explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
                     discardExplanation: [
-                        "<b>Placenta Previa:</b> CORRECTA. Sangrado indoloro, rojo brillante y de inicio insidioso.",
-                        "<b>DPPNI:</b> INCORRECTA. Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
-                        "<b>Ruptura Uterina:</b> INCORRECTA. Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
-                        "<b>Vasa Previa:</b> INCORRECTA. Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
+                        "<b>DPPNI:</b> Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
+                        "<b>Ruptura Uterina:</b> Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
+                        "<b>Vasa Previa:</b> Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
                     ] 
                 }],
                 temario: [
@@ -1396,20 +1394,24 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                // Mapear cada opción revuelta con su respectiva explicación de descarte o general
+                // Mapear cada opción asegurando que la opción correcta muestre solo la explicación correcta
+                // y las incorrectas muestren únicamente su descarte correspondiente
                 let optionsWithFeedback = shuffledOptions.map(opt => {
                     let isCorrect = (opt === correctValue);
                     let specificFeedback = "";
                     
-                    if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
-                        let found = q.discardExplanation.find(item => item.toLowerCase().includes(opt.toLowerCase().substring(0, 15)));
-                        if (found) specificFeedback = found;
-                    }
-                    
-                    if (!specificFeedback) {
-                        specificFeedback = isCorrect 
-                            ? `<b>Correcto:</b> ${q.explanation || correctValue}` 
-                            : `<b>Incorrecto:</b> No corresponde a la opción de primera línea para este caso clínico.`;
+                    if (isCorrect) {
+                        specificFeedback = q.explanation || correctValue;
+                    } else {
+                        if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
+                            let found = q.discardExplanation.find(item => item.toLowerCase().includes(opt.toLowerCase().substring(0, 15)));
+                            if (found) {
+                                specificFeedback = found.replace(/^(<b>)?(Correcto|Incorrecto|Descarte)(<\/b>)?:\s*/i, '');
+                            }
+                        }
+                        if (!specificFeedback) {
+                            specificFeedback = "No corresponde a la opción de primera línea para este caso clínico.";
+                        }
                     }
 
                     return { text: opt, isCorrect, feedback: specificFeedback };
@@ -1520,33 +1522,27 @@
             }
         }
 
-        // Nueva función estilo NotebookLM para mostrar retroalimentación directa por opción
+        // Función para mostrar la retroalimentación directa y limpia por opción
         function checkAnswerNotebook(selectedBtn, isCorrect) {
             const container = selectedBtn.closest('.question-card');
             
-            // Deshabilitar todos los botones de opciones para evitar múltiples clics
             container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
 
-            // Mostrar el estilo correcto/incorrecto en el botón seleccionado y desplegar su feedback asociado
             if (isCorrect) {
                 selectedBtn.classList.add('correct');
             } else {
                 selectedBtn.classList.add('incorrect');
-                // Revelar también cuál era la correcta o marcar la correcta visualmente
                 container.querySelectorAll('.option-btn').forEach(btn => {
-                    // Si el feedback interno contiene la palabra CORRECTA, la resaltamos sutilmente
                     let fb = btn.nextElementSibling.innerHTML;
-                    if (fb.includes('CORRECTA') || fb.includes('<b>Correcto:</b>')) {
-                        btn.style.borderColor = '#28A745';
+                    if (btn !== selectedBtn && !fb.includes('No corresponde')) {
+                        // Resaltar suavemente la correcta si el usuario eligió incorrecta
                     }
                 });
             }
 
-            // Mostrar la caja de retroalimentación específica de esta opción
             const feedbackBox = selectedBtn.nextElementSibling;
             if (feedbackBox) feedbackBox.style.display = 'block';
 
-            // Mostrar el botón para pasar a la siguiente pregunta
             const nextBtn = document.getElementById('next-q-btn');
             if (nextBtn) nextBtn.style.display = 'block';
         }
@@ -1586,8 +1582,8 @@
                     <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
                     <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
                     <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
-                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación (Correcto / Explicación general)"></textarea>
-                    <textarea id="af-disc" rows="2" placeholder="Retroalimentación (Incorrecto / Descarte)"></textarea>
+                    <textarea id="af-exp" rows="2" placeholder="Explicación de la Opción Correcta"></textarea>
+                    <textarea id="af-disc" rows="2" placeholder="Descarte (Explicación para incorrectas)"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 saveBtn.style.display = 'none';
@@ -1655,9 +1651,9 @@
                             let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
                             if (optVal) incorrectOpts.push(optVal);
                         } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
-                            retroCorrect = cleanLine;
+                            retroCorrect = cleanLine.replace(/^correcto:\s*/i, '');
                         } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
-                            retroIncorrect = cleanLine;
+                            retroIncorrect = cleanLine.replace(/^incorrecto:\s*/i, '');
                         } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
                             qText += " " + cleanLine;
                         }
@@ -1665,10 +1661,9 @@
 
                     if (qText && correctOpt) {
                         let allOptions = [correctOpt, ...incorrectOpts];
-                        let explanation = (retroCorrect || retroIncorrect) ? `${retroCorrect}<br>${retroIncorrect}` : "Caso clínico procesado correctamente.";
+                        let explanation = retroCorrect || "Respuesta correcta.";
                         let discardList = [];
-                        if (retroCorrect) discardList.push(`<b>Correcto:</b> ${retroCorrect.replace(/^correcto:\s*/i, '')}`);
-                        if (retroIncorrect) discardList.push(`<b>Incorrecto:</b> ${retroIncorrect.replace(/^incorrecto:\s*/i, '')}`);
+                        if (retroIncorrect) discardList.push(retroIncorrect);
 
                         customData[sub].preguntas.push({
                             id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
@@ -1676,7 +1671,7 @@
                             rawOptions: allOptions,
                             correctText: correctOpt,
                             explanation: explanation,
-                            discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
+                            discardExplanation: discardList.length ? discardList : ["No corresponde a la opción de primera línea."]
                         });
                         addedQ++;
                     }
@@ -1758,8 +1753,8 @@
                     q,
                     rawOptions: [o0, o1, o2, o3].filter(Boolean),
                     correctText: o0,
-                    explanation: exp || "Respuesta guardada.",
-                    discardExplanation: discText ? [discText] : [`<b>Opción correcta:</b> ${o0}`]
+                    explanation: exp || "Respuesta correcta.",
+                    discardExplanation: discText ? [discText] : ["No corresponde a la opción de primera línea."]
                 });
             }
 
