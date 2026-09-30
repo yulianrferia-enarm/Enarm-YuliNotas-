@@ -1059,18 +1059,6 @@
                             "<b>Resonancia Magnética:</b> Reservada para endometriosis profunda con compromiso visceral.",
                             "<b>CA-125 sérico:</b> Marcador inespecífico; no se recomienda de rutina."
                         ] 
-                    },
-                    {
-                        id: "qp_gen_high_1",
-                        q: "Mujer de 28 años G1P0, acude a revisión por amenograma secundario de 5 meses y galactorrea bilateral espontánea, no dolorosa. No refiere cefalea ni alteraciones visuales. Se realiza prueba de embarazo negativa y perfil tiroideo normal con TSH de 2.1 mUI/L. ¿Cuál es el siguiente paso diagnóstico más apropiado?",
-                        rawOptions: ["Determinación de prolactina sérica", "Resonancia magnética de silla turca con contraste", "Iniciar tratamiento con cabergolina", "Radiografía de cráneo simple"],
-                        correctText: "Determinación de prolactina sérica",
-                        explanation: "Ante la presencia de galactorrea y amenorrea secundaria con TSH normal y embarazo descartado, el paso inicial fundamental es confirmar la hiperprolactinemia midiendo los niveles séricos de prolactina antes de realizar estudios de imagen.",
-                        discardExplanation: [
-                            "<b>Resonancia magnética de silla turca con contraste:</b> Se solicita tras confirmar la elevación de prolactina para descartar un prolactinoma.",
-                            "<b>Iniciar tratamiento con cabergolina:</b> Requiere documentar bioquímicamente la hiperprolactinemia y evaluar características del adenoma por imagen.",
-                            "<b>Radiografía de cráneo simple:</b> Estudio obsoleto y sin sensibilidad adecuada para la patología selar."
-                        ]
                     }
                 ],
                 temario: [
@@ -1336,12 +1324,12 @@
                     <input type="text" id="adm-opt3" placeholder="Opción D">
                     <input type="text" id="adm-correct" placeholder="Texto exacto de la opción correcta">
                     <textarea id="adm-exp" placeholder="Retroalimentación de la opción correcta..." rows="2"></textarea>
-                    <textarea id="adm-disc" placeholder="Retroalimentación de opciones incorrectas (cada una separada por salto de línea)..." rows="3"></textarea>
+                    <textarea id="adm-disc" placeholder="Retroalimentación de opciones incorrectas..." rows="3"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 container.innerHTML = `
-                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega varios casos clínicos seguidos. El sistema detectará automáticamente cada pregunta, sus 4 opciones y sus retroalimentaciones.</p>
-                    <textarea id="adm-paste-text" placeholder="Pega aquí tus múltiples preguntas y casos clínicos tipo ENARM..." rows="10"></textarea>
+                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega varios casos clínicos seguidos generados por Gemini. El sistema separará automáticamente cada pregunta.</p>
+                    <textarea id="adm-paste-text" placeholder="Pega aquí el texto completo con múltiples preguntas..." rows="10"></textarea>
                 `;
             } else if (type === 'flashcard_1x1') {
                 container.innerHTML = `
@@ -1423,36 +1411,37 @@
                 const text = document.getElementById('adm-paste-text').value.trim();
                 if (!text) return alert('Pega algún texto.');
 
-                // Algoritmo robusto para separar múltiples casos clínicos / preguntas
-                // Divide por patrones como número seguido de punto o paréntesis (ej. "1.", "2)", "Pregunta", etc.) o bloques con A), B), C), D)
-                let blocks = text.split(/(?=\b\d+[\.\)]\s)|\n(?=[Q\d]+\.\s)|(?=Caso:)|(?=Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente|Lactante|Preescolar|Escolar|Varón)/gi);
+                // NUEVA LÓGICA ULTRA-ROBUSTA: Divide por numeración numérica (1., 2.) o encabezados de casos de Gemini
+                let blocks = text.split(/\n\s*(?=\d+[\.\)]\s|Caso\s*\d*[:\.]|Pregunta\s*\d*[:\.]|Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente)/gi);
+                
                 if (blocks.length <= 1) {
-                    blocks = text.split(/\n\s*\n/); // Si no hay numeración clara, divide por párrafos dobles
+                    blocks = text.split(/\n\s*\n(?=[A-Da-d][\.\)]|\d+[\.\)])/);
                 }
 
                 let addedCount = 0;
                 blocks.forEach((block, bIdx) => {
                     let cleanBlock = block.trim();
-                    if (cleanBlock.length < 20) return;
+                    // Limpia asteriscos de markdown (**) si Gemini los incluyó
+                    cleanBlock = cleanBlock.replace(/\*\*/g, '');
+                    if (cleanBlock.length < 15) return;
 
                     // Extraer opciones A, B, C, D
-                    let optMatches = cleanBlock.match(/[A-D][\.\)]\s*([^\n]+)/g);
+                    let optMatches = cleanBlock.match(/[A-Da-d][\.\)]\s*([^\n]+)/g);
                     if (!optMatches || optMatches.length < 2) return;
 
-                    let rawOptions = optMatches.map(o => o.replace(/^[A-D][\.\)]\s*/, '').trim());
+                    let rawOptions = optMatches.map(o => o.replace(/^[A-Da-d][\.\)]\s*/, '').trim());
                     
-                    // Limpiar el enunciado quitando las opciones y posibles respuestas/retroalimentaciones
                     let qText = cleanBlock;
                     optMatches.forEach(opt => {
                         qText = qText.replace(opt, '');
                     });
+                    qText = qText.replace(/[A-Da-d][\.\)]\s*$/g, '').trim();
 
-                    // Intentar detectar respuesta correcta
-                    let correctText = rawOptions[0]; // por defecto la primera
-                    let corrMatch = cleanBlock.match(/(?:Respuesta|Correcta|Rpta)[:\s]*([A-D]|.+)/i);
+                    let correctText = rawOptions[0];
+                    let corrMatch = cleanBlock.match(/(?:Respuesta|Correcta|Rpta)[:\s]*([A-Da-d]|.+)/i);
                     if (corrMatch) {
                         let cVal = corrMatch[1].trim();
-                        if (/^[A-D]$/i.test(cVal)) {
+                        if (/^[A-Da-d]$/i.test(cVal)) {
                             let idx = cVal.toUpperCase() === 'A' ? 0 : cVal.toUpperCase() === 'B' ? 1 : cVal.toUpperCase() === 'C' ? 2 : 3;
                             if (rawOptions[idx]) correctText = rawOptions[idx];
                         } else {
@@ -1460,9 +1449,8 @@
                         }
                     }
 
-                    // Extraer explicaciones
                     let expMatch = cleanBlock.match(/(?:Explicación|Retroalimentación|Comentario)[:\s]*([^\n]+(?:\n[^\n]+){0,4})/i);
-                    let explanation = expMatch ? expMatch[1].trim() : "Caso clínico de alta dificultad tipo ENARM analizado con GPC.";
+                    let explanation = expMatch ? expMatch[1].trim() : "Caso clínico analizado conforme a Normativa GPC / ENARM.";
 
                     customData[sub].preguntas.push({
                         id: 'paste_qp_' + Date.now() + '_' + bIdx + '_' + Math.floor(Math.random()*1000),
@@ -1471,27 +1459,27 @@
                         correctText,
                         explanation,
                         discardExplanation: [
-                            "<b>Opción incorrecta 1:</b> No cumple con los criterios diagnósticos específicos del cuadro clínico descrito.",
-                            "<b>Opción incorrecta 2:</b> Indicada para escenarios clínicos diferentes según la normativa vigente.",
-                            "<b>Opción incorrecta 3:</b> Presenta menor sensibilidad y especificidad diagnóstica/terapéutica en este contexto."
+                            "<b>Opción incorrecta:</b> No corresponde al manejo o diagnóstico de primera elección.",
+                            "<b>Opción incorrecta:</b> Indicado en escenarios clínicos distintos.",
+                            "<b>Opción incorrecta:</b> Cae en un criterio de exclusión para esta patología."
                         ]
                     });
                     addedCount++;
                 });
 
                 if (addedCount > 0) {
-                    alert(`¡Se han importado y dividido ${addedCount} preguntas/casos clínicos con éxito!`);
+                    alert(`¡Se han importado y separado ${addedCount} casos clínicos con éxito! 🎉`);
                 } else {
-                    // Si el split masivo no pudo estructurar de forma automática, guarda el bloque completo como una pregunta editable
+                    // Fallback directo si el bloque no pudo seccionarse pero trae texto
                     customData[sub].preguntas.push({
                         id: 'paste_qp_' + Date.now(),
-                        q: text,
+                        q: text.replace(/\*\*/g, ''),
                         rawOptions: ["Opción A", "Opción B", "Opción C", "Opción D"],
                         correctText: "Opción A",
-                        explanation: "Revisar el enunciado clínico completo.",
+                        explanation: "Revisar el enunciado clínico.",
                         discardExplanation: ["Opción incorrecta.", "Opción incorrecta.", "Opción incorrecta."]
                     });
-                    alert('Se guardó el texto ingresado como 1 caso clínico debido al formato. Asegúrate de incluir opciones A, B, C, D.');
+                    alert('Se guardó el bloque completo. Recuerda que cada pregunta debe tener opciones A), B), C), D).');
                 }
             } else if (type === 'flashcard_1x1') {
                 const q = document.getElementById('adm-fc-q').value.trim();
@@ -2098,7 +2086,7 @@
                 questions: allQ,
                 currentIndex: 0,
                 score: 0,
-                timeLeft: tempSimCount * 90 // 90 segundos por pregunta
+                timeLeft: tempSimCount * 90
             };
             localStorage.setItem('yn_sim_state', JSON.stringify(simState));
             renderContent();
@@ -2162,7 +2150,6 @@
             renderContent();
         }
 
-        // Inicializar vista
         selectSubject(currentSubject);
         selectTab(currentTab);
     </script>
