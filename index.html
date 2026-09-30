@@ -816,7 +816,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 70%;
+            max-width: 75%;
         }
 
         .btn-mini-delete {
@@ -825,7 +825,7 @@
             border: none;
             padding: 4px 8px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             cursor: pointer;
         }
@@ -1636,10 +1636,10 @@
                     html += `<p style="font-size: calc(11px * var(--font-scale)); font-style:italic;">No hay contenido personalizado.</p>`;
                 } else {
                     fcList.forEach((fc, idx) => {
-                        html += `<div class="delete-item-row"><span>[FC] ${fc.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'flashcards', ${idx})">Eliminar</button></div>`;
+                        html += `<div class="delete-item-row"><span>[FC] ${fc.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'flashcards', ${idx})">✕</button></div>`;
                     });
                     qList.forEach((q, idx) => {
-                        html += `<div class="delete-item-row"><span>[Pregunta] ${q.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'preguntas', ${idx})">Eliminar</button></div>`;
+                        html += `<div class="delete-item-row"><span>[Pregunta] ${q.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'preguntas', ${idx})">✕</button></div>`;
                     });
                 }
                 container.innerHTML = html;
