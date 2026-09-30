@@ -15,6 +15,7 @@
             --border-color: #E5E5EA;
             --info-bg: #FAFAFA;
             --font-scale: 1;
+            --content-padding: 16px;
         }
 
         body.dark-mode {
@@ -45,7 +46,7 @@
         .app-header {
             background-color: var(--card-bg);
             color: var(--text-dark);
-            padding: 12px 16px;
+            padding: 12px var(--content-padding);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
@@ -57,6 +58,8 @@
             justify-content: space-between;
             align-items: center;
             gap: 6px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .app-header h1 {
@@ -89,7 +92,7 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 12px 16px;
+            padding: 12px var(--content-padding);
         }
 
         .section-title {
@@ -97,7 +100,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-muted);
-            margin: 4px 0 6px 4px;
+            margin: 4px 0 6px 0;
             font-weight: 700;
         }
 
@@ -170,7 +173,7 @@
         .content-panel {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 16px;
+            padding: var(--content-padding);
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             min-height: 380px;
             border: 1px solid var(--border-color);
@@ -190,17 +193,12 @@
             font-weight: 800;
         }
 
-        /* Cuadrícula General de Tarjetas por Tema */
         .direct-topics-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, 1fr) !important;
             gap: 12px;
-        }
-
-        @media (max-width: 550px) {
-            .direct-topics-grid {
-                grid-template-columns: 1fr;
-            }
+            width: 100%;
+            align-items: stretch;
         }
 
         .topic-direct-card {
@@ -210,23 +208,31 @@
             padding: 12px;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             gap: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            width: 100%;
+            overflow: hidden;
+            height: 100%;
         }
 
         .topic-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
         }
 
         .topic-card-title {
             font-size: calc(12px * var(--font-scale));
             font-weight: 700;
             color: var(--text-dark);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 85%;
         }
 
-        /* Contenedor del Carrusel de Vista Previa */
         .topic-preview-container {
             position: relative;
             width: 100%;
@@ -238,14 +244,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .topic-preview-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
             display: block;
             cursor: pointer;
+            background: #00000008;
         }
 
         .topic-preview-container iframe {
@@ -265,14 +274,14 @@
 
         .thumb-delete-btn {
             position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(229, 57, 53, 0.9);
+            top: 6px;
+            right: 6px;
+            background: rgba(229, 57, 53, 0.95);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             font-size: 10px;
             font-weight: bold;
             cursor: pointer;
@@ -280,26 +289,29 @@
             align-items: center;
             justify-content: center;
             z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .carousel-nav-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             color: white;
             border: none;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            font-size: 11px;
+            font-size: 12px;
             cursor: pointer;
             z-index: 4;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.2s;
         }
 
+        .carousel-nav-btn:hover { background: rgba(0, 0, 0, 0.85); }
         .carousel-prev { left: 6px; }
         .carousel-next { right: 6px; }
 
@@ -314,52 +326,69 @@
             cursor: pointer;
             text-align: center;
             width: 100%;
-            margin-top: 4px;
+            margin-top: auto;
         }
 
-        /* Diapos en Tarjetas */
-        .diapos-mini-box {
+        .diapos-list-container {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
+            width: 100%;
         }
 
-        .diapos-mini-input-row {
+        .diapos-list-row {
+            background: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
             display: flex;
-            gap: 4px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
         }
 
-        .diapos-mini-input-row input {
+        .diapos-list-title {
+            font-size: calc(12px * var(--font-scale));
+            font-weight: 700;
+            color: var(--text-dark);
             flex: 1;
-            padding: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .diapos-action-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1.2;
+            justify-content: flex-end;
+        }
+
+        .diapos-list-row input {
+            width: 100%;
+            max-width: 240px;
+            padding: 6px 10px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-dark);
-            border-radius: 6px;
-            font-size: calc(10.5px * var(--font-scale));
+            border-radius: 8px;
+            font-size: calc(11px * var(--font-scale));
         }
 
-        .diapos-saved-badge {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            gap: 8px;
-        }
-
-        .diapos-saved-badge a {
+        .diapos-saved-link {
             color: var(--primary-color);
             font-weight: 700;
             font-size: calc(11px * var(--font-scale));
             text-decoration: none;
-            word-break: break-all;
-            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
         }
 
-        .diapos-saved-badge a:hover { text-decoration: underline; }
+        .diapos-saved-link:hover { text-decoration: underline; }
 
         .diapo-delete-btn {
             background: #E53935;
@@ -377,7 +406,6 @@
             justify-content: center;
         }
 
-        /* Flashcards */
         .flashcard-filter-bar {
             display: flex;
             gap: 6px;
@@ -479,12 +507,12 @@
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
-        /* Preguntas */
+        /* Preguntas y Estilo NotebookLM por Opción */
         .question-card {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            padding-top: 16px;
+            padding-top: 4px;
         }
 
         .question-text {
@@ -492,6 +520,12 @@
             font-weight: 600;
             line-height: 1.4;
             margin-bottom: 6px;
+        }
+
+        .option-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .option-btn {
@@ -504,6 +538,7 @@
             font-size: calc(13px * var(--font-scale));
             cursor: pointer;
             transition: all 0.2s ease;
+            width: 100%;
         }
 
         .option-btn.correct {
@@ -520,21 +555,20 @@
             font-weight: 700;
         }
 
-        .explanation-box {
+        .option-feedback {
             display: none;
             background: var(--info-bg);
-            border-left: 4px solid var(--primary-color);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: calc(12px * var(--font-scale));
+            border-left: 3px solid var(--primary-color);
+            padding: 8px 12px;
+            border-radius: 0 0 8px 8px;
+            font-size: calc(11.5px * var(--font-scale));
             color: var(--text-dark);
-            margin-top: 10px;
-            line-height: 1.5;
+            margin-bottom: 4px;
+            line-height: 1.4;
         }
 
-        .explanation-box div { margin-bottom: 6px; }
-
         .next-q-btn {
+            display: none;
             margin-top: 12px;
             padding: 10px;
             background: var(--primary-color);
@@ -547,7 +581,6 @@
             width: 100%;
         }
 
-        /* Modal visor de imagen / PDF en pantalla completa con Zoom */
         .image-modal-overlay {
             display: none;
             position: fixed;
@@ -664,13 +697,13 @@
             z-index: 1003;
         }
 
-        /* Temario */
         .topic-card {
             background: var(--info-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 10px;
+            width: 100%;
         }
 
         .topic-header {
@@ -709,7 +742,6 @@
             cursor: pointer;
         }
 
-        /* Admin Panel */
         .admin-panel {
             display: none;
             background: var(--card-bg);
@@ -717,6 +749,7 @@
             padding: 16px;
             margin-bottom: 20px;
             border: 2px solid var(--primary-color);
+            width: 100%;
         }
 
         .admin-panel.active { display: block; }
@@ -799,7 +832,6 @@
 
     <div class="container">
 
-        <!-- Panel Creador -->
         <div id="admin-panel" class="admin-panel">
             <h3>⚡ Agregar / Administrar Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
@@ -823,7 +855,6 @@
             <button id="admin-save-btn" onclick="saveAdminContent()">Guardar Contenido</button>
         </div>
 
-        <!-- 1. MATERIAS -->
         <div class="section-title">Materia</div>
         <div class="subjects-grid">
             <button class="subject-btn btn-gineco" onclick="selectSubject('gineco')">Ginecología</button>
@@ -833,7 +864,7 @@
             <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
         </div>
 
-        <!-- 2. PESTAÑAS -->
+        <div class="section-title">Apartados</div>
         <div class="tabs-nav">
             <button class="tab-btn btn-tab-preguntas" onclick="selectTab('preguntas')">Preguntas</button>
             <button class="tab-btn btn-tab-flashcards" onclick="selectTab('flashcards')">Flashcards</button>
@@ -851,7 +882,6 @@
         </div>
     </div>
 
-    <!-- Modal Visor Pantalla Completa -->
     <div id="image-modal" class="image-modal-overlay">
         <button class="image-modal-close-btn" onclick="closeImageModal()">✕ Cerrar</button>
         <button class="modal-reset-zoom-btn" onclick="resetZoom(event)">↺ Tamaño Normal</button>
@@ -920,107 +950,9 @@
                     "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
-            cirugia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Hepatoblastoma", "Carcinoma hepatocelular", "Abdomen agudo", "Apendicitis aguda", "Patología biliar", 
-                    "Colecistitis crónica litiásica", "Coledocolitiasis", "Colangitis", "Enfermedad diverticular", 
-                    "Trastornos motores del esófago", "Acalasia", "Espasmo esofágico difuso", "Enfermedad por reflujo gastroesofágico (ERGE)", 
-                    "Esófago de Barret", "Dispepsia funcional", "Carcinoma epidermoide de esófago", "Gastritis", "Úlcera péptica", 
-                    "Enfermedad ulcerosa péptica", "Úlcera péptica perforada", "Síndrome de Zollinger Ellison", "Cáncer gástrico (adenocarcinoma)", 
-                    "Obesidad y cirugía bariátrica", "Obesidad", "Hernia umbilical", "Hernias inguinales y femorales", "Hernia ventral", 
-                    "Esplenectomía", "Pancreatitis aguda", "Pancreatitis crónica", "Adenocarcinoma de páncreas", "Enfermedad arterial periférica", 
-                    "Oclusión arterial aguda", "Insuficiencia venosa crónica", "Mordedura de serpiente", "Mordedura por arañas", 
-                    "Intoxicación por picadura de alacrán", "Picadura por himenópteros", "Patología perianal: enfermedad hemorroidal", 
-                    "Absceso anal", "Fistula anal", "Fisura anal", "Oclusión intestinal", "Vólvulo de colon", "Isquemia intestinal", 
-                    "Cáncer de colon", "Tumor de intestino delgado", "Trasplante de hígado", "Quemaduras", "Quemaduras por frío", 
-                    "Úlceras por presión", "Derrame pleural", "Infección de sitio quirúrgico", "Dehiscencia de herida quirúrgica", 
-                    "ATLS", "Trauma de tórax", "Trauma de abdomen", "Traumatismo craneoencefálico", "Hematoma epidural", "Hematoma subdural", 
-                    "Contusiones y hematomas intracerebrales", "Herniación uncal", "Neuralgia del trigémino", "Síndrome de hipertensión intracraneal", 
-                    "Síndrome de herniación cerebral", "Síndrome de hipertensión intracraneal benigna", "Hidrocefalia", 
-                    "Hidrocefalia crónica del adulto", "Absceso cerebral", "Tumores cerebrales", "Blefaritis", "Chalazión y orzuelo", 
-                    "Ectoprión", "Triquiasis", "Endoprión", "Síndrome de ojo seco", "Dacriocistitis", "Estenosis congénita de la vía lagrimal", 
-                    "Retinopatía diabética (RD)", "Retinopatía hipertensiva", "Oclusión venosa de la retina", 
-                    "Desprendimiento de retina regmatógeno no traumático", "Desprendimiento de retina seroso", "Ambliopía", 
-                    "Estrabismo concomitante convergente", "Parálisis oculomotoras", "Glaucoma primario de ángulo abierto", 
-                    "Glaucoma de ángulo estrecho", "Glaucoma congénito", "Uveitis", "Catarata", "Catarata congénita", "Conjuntivitis", 
-                    "Pterigión", "Queratitis infecciosa", "Queratocono", "Escleritis", "Episcleritis", "Trauma ocular", "Campimetría", 
-                    "Neuritis óptica", "Retinopatía del prematuro", "Hiperplasia prostática benigna", "Cáncer de próstata", 
-                    "Litiasis renal", "Cólico renoureteral", "Bacteriuria asintomática e infección del tracto urinario en el embarazo", 
-                    "Cáncer renal", "Cáncer de vejiga", "Infección de vías urinarias", "Cáncer de testículo", "Trasplante renal", 
-                    "Vértigo", "Vértigo postural paroxístico benigno (VPPB)", "Enfermedad de Ménière", "Neuronitis vestibular", 
-                    "Neurinoma del acústico", "Hipoacusia", "Hipoacusia del recién nacido", "Ototoxicidad", "Fracturas faciales", 
-                    "Fracturas del peñasco", "Fracturas nasales", "Fracturas mandibulares", "Parálisis facial", "Epistaxis", 
-                    "Rinitis alérgica", "Rinitis no alérgica", "Sinusitis aguda", "Pólipos nasales", "Patología maligna de senos paranasales", 
-                    "Carcinoma epidermoide de laringe", "Patología benigna de cuerdas vocales", "Papilomatosis laringea juvenil", 
-                    "Faringitis", "Absceso profundo de cuello", "Síndrome de apnea obstructiva del sueño", "Otitis externa aguda", 
-                    "Otoesclerosis", "Otitis media", "Angiofibroma juvenil", "Artritis séptica en niños y adultos", "Fracturas de miembro superior", 
-                    "Fracturas intracapsulares del extremo proximal del fémur", "Osteosarcoma", "Sarcoma de Ewing", "Codo de niñera", 
-                    "Síndrome del tunel del carpo", "Lesiones ligamentarias de rodilla", "Síndrome doloroso de hombro", 
-                    "Fracturas de miembro inferior", "Patologías de columna", "Esguince de tobillo"
-                ] 
-            },
-            interna: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Insuficiencia cardíaca", "Bradiarritmias", "Taquiarritmias", "Fibrilación auricular", "Síndrome coronario agudo", 
-                    "Valvulopatías", "Cardiomiopatías", "Pericarditis aguda", "Hipertensión arterial sistémica", "Basic Life Support", 
-                    "Advanced Cardiovascular Life Support", "Enfermedades micóticas", "Toxicodermias", "Eritema multiforme mayor o síndrome de Stevens Jonhson", 
-                    "Acné", "Alopecia androgénica", "Alopecia areata", "Psoriasis", "Tumores cutáneos benignos", "Carcinoma basocelular", 
-                    "Melanoma maligno", "Enfermedad diarreica aguda en adultos", "Síndrome de colon irritable", "Enfermedad inflamatoria intestinal", 
-                    "Alteraciones de metabolismo bilirrubina", "Abscesos hepáticos", "Absceso amebiano", "Hepatitis aguda", 
-                    "Hemorragia digestiva alta por varices esofágicas", "Hipertiroidismo o tirotoxicosis", "Nódulo tiroideo", "Tiroiditis", 
-                    "Sindrome de Cushing", "Insuficiencia suprarrenal", "Hiperaldosteronismo", "Feocromocitoma", "Diabetes mellitus", 
-                    "Cetoacidosis diabética", "Síndrome hiperglucémico hiperosmolar", "Pie diabético", "Anemia", "Leucemia mieloide crónica", 
-                    "Leucemia linfática crónica (LLC)", "Leucemias agudas", "Linfoma no Hodgkin", "Linfoma Hodgkin", "Policitemia vera", 
-                    "Trombocitemia", "Mieloma múltiple", "Alteraciones de la coagulación", "Trombocitopenia", "Insuficiencia renal prerenal", 
-                    "IRA parenquimatosa", "IRA postrenal", "Enfermedad renal crónica", "Síndrome nefrítico", "Síndrome nefrótico", 
-                    "Glomerulonefritis", "Nefropatía diabética", "Lupus eritematoso sistémico", "Vasculitis", "Enfermedad de Goodpasture", 
-                    "Trastornos tubulares", "Microangiopatías trombóticas", "Enfermedad pulmonar obstructiva crónica", "Exacerbaciones EPOC", 
-                    "Enfermedad tromboembólica venosa", "Cáncer de pulmón", "Asma en adulto", "Enfermedades intersticiales", "Sarcoidosis", 
-                    "Panarteritis nodosa clásica", "Enfermedad de Behcet", "Artropatía por cristales", "Artritis reumatoide", 
-                    "Factor reumatoide y ANA negativos", "Espondilitis anquilosante", "Artrosis", "Demencias", "Alzheimer", 
-                    "Enfermedad vascular cerebral", "Hemorragia intraparenquimatosa", "Hemorragia subaracnoidea", "Síndrome de Guillain-Barré", 
-                    "Miastenia gravis", "Crisis miasténica", "Cefaleas", "Endocarditis infecciosa", "Tuberculosis pulmonar", "Neumonía", 
-                    "Neumoconiosis", "Tétanos", "Botulismo", "Difteria", "Rabia", "Enfermedad gonocócica", "Chlamydia trachomatis", 
-                    "Sífilis", "Verrugas genitales", "Neoplasia intraepitelial anal", "Tumor de Buschke-Löwenstein", "Borreliosis de Lyme", 
-                    "Leptospirosis", "Carbunco", "Tularemia", "Erisipeloide", "Peste", "Virus de Inmunodeficiencia Humana VIH/sida", 
-                    "Paludismo", "Tripanosomiasis", "Leishmaniasis", "Rickettsia", "Brucelosis", "Nocardiosis", "Actinomicosis", 
-                    "Intoxicación por agroquímicos", "Intoxicación por opiáceos y benzodiacepinas", "Intoxicación por metales pesados", 
-                    "Intoxicación etílica", "Intoxicación por acetaminofén (paracetamol)", "Intoxicación por CO", "Fiebre reumática", 
-                    "Dengue", "Chikungunya", "Zika", "Covid-19", "Herpes zoster", "Viruela del mono", "Peritonitis infecciosa", "Lepra", 
-                    "Sepsis y choque séptico", "Dislipidemias", "Golpe de calor", "Depresión mayor", "Ansiedad", "Esquizofrenia", "Trastornos alimentarios"
-                ] 
-            },
-            pedia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Recién nacido sano", "Reanimación neonatal", "Patología respiratoria neonatal", 
-                    "Síndrome de dificultad respiratoria o enfermedad membrana hialina", "Taquipnea transitoria del recién nacido", 
-                    "Síndrome de aspiración meconial", "Enfermedad hemorrágica del recién nacido", "Hipoglucemia neonatal", 
-                    "Atresia esofágica", "Atresia de coanas", "Gastrosquisis y onfalocele", "Divertículo de Meckel", "Hernia diafragmática", 
-                    "Enterocolitis necrotizante", "Sepsis neonatal", "Recién nacido con fiebre y sin evidencia de infección", 
-                    "Encefalopatía hipóxico-isquémica", "Ictericia neonatal", "TORCH", "Control y seguimiento de la salud en la niña y el niño menor de 5 años", 
-                    "Otitis media aguda", "Infección de vías respiratorias altas", "Rinosinusitis aguda", "Vacunas", "Desnutrición", 
-                    "Raquitismo carencial", "Neumonía bacteriana adquirida en la comunidad en menores de 18 Años", 
-                    "Síndrome de muerte súbita del lactante (SMSL)", "Bronquiolitis aguda", "Sibilante recurrente", "Asma", "Fibrosis quística", 
-                    "Enfermedad por reflujo gastroesofágico", "Invaginación intestinal", "Estenosis hipertrófica del píloro", "Talla baja", 
-                    "Pubertad", "Sobrepeso y obesidad", "Mal descenso testicular", "Escroto agudo", "Reflujo vesico-ureteral", 
-                    "Infección de vías urinarias <18 años", "Enfermedades exantemáticas", "Enfermedad de Kawasaki", "Diarrea aguda", 
-                    "VIH en el binomio", "Epilepsia y crisis febriles", "Parálisis braquial", "Infecciones del SNC", "Encefalitis", 
-                    "Displasia del desarrollo de la cadera", "Artritis séptica", "Sinovitis transitoria", "Enfermedad de Legg Calve-Perthes", 
-                    "Epifisiólisis femoral proximal", "Osteosarcoma", "Sarcoma de Ewing", "Osteocondroma", "Osteoma osteoide", 
-                    "Pronación dolorosa/codo de niñera", "Enfermedad Osgood Schlatter/apofisitis de tracción de rodilla", "Dermatitis atópica", 
-                    "Dermatitis seborreica", "Dermatitis del área del pañal", "Infecciones cutánea bacterianas", "Impétigo", "Escabiasis", 
-                    "Pediculosis capitis", "Maltrato infantil", "Neuroblastoma", "Tumor de Wilms", "Trastorno por déficit de atención e hiperactividad (TDAH)", 
-                    "Parálisis cerebral infantil (PCI)", "Diarrea crónica", "Alergia a la proteína de la leche de vaca", "Intolerancia a la lactosa en niños", 
-                    "Enfermedad celíaca", "Síndrome de Down", "Síndrome de Turner", "Cardiopatias congenitas", "Persistencia del conducto arterioso", 
-                    "Retinoblastoma", "Ingesta de causticos", "Metabolismo y enfermedades pediátricas", "Lactancia materna"
-                ] 
-            }
+            cirugia: { flashcards: [], preguntas: [], temario: ["Abdomen agudo", "Apendicitis aguda", "Patología biliar"] },
+            interna: { flashcards: [], preguntas: [], temario: ["Insuficiencia cardíaca", "Hipertensión arterial sistémica"] },
+            pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "Ictericia neonatal"] }
         };
 
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
@@ -1032,7 +964,7 @@
         
         let questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
         let cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
-        let previewIndices = {}; // Controla la imagen actual en la vista previa por cada tema
+        let previewIndices = {};
 
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
@@ -1048,7 +980,6 @@
 
         let currentModalList = [];
         let currentModalIndex = 0;
-
         let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, initialDistance = 0, isPanning = false;
 
         if (isDarkMode) document.body.classList.add('dark-mode');
@@ -1268,7 +1199,7 @@
                             localStorage.setItem(storageKey, JSON.stringify(targetStorage));
                             renderContent();
                         } catch (err) {
-                            alert('Los archivos son muy pesados para la memoria del navegador. Intenta subir menos fotos a la vez.');
+                            alert('Los archivos son muy pesados para la memoria del navegador.');
                         }
                     }
                 };
@@ -1370,27 +1301,21 @@
             
             if (type === 'diapos') {
                 return `
-                    <div class="direct-topics-grid">
+                    <div class="diapos-list-container">
                         ${topics.map((topic) => {
                             const savedLink = (diaposLinks[currentSubject] && diaposLinks[currentSubject][topic]) ? diaposLinks[currentSubject][topic] : '';
                             const inputId = `diapo_input_${topic.replace(/\s+/g, '_')}`;
 
                             return `
-                                <div class="topic-direct-card">
-                                    <div class="topic-card-header">
-                                        <div class="topic-card-title">📌 ${topic}</div>
-                                    </div>
-                                    <div class="diapos-mini-box">
+                                <div class="diapos-list-row">
+                                    <div class="diapos-list-title">📌 ${topic}</div>
+                                    <div class="diapos-action-area">
                                         ${savedLink ? `
-                                            <div class="diapos-saved-badge">
-                                                <a href="${savedLink}" target="_blank">🔗 Ver Diapositivas</a>
-                                                <button class="diapo-delete-btn" onclick="deleteDiapoLink('${topic}')">✕</button>
-                                            </div>
+                                            <a class="diapos-saved-link" href="${savedLink}" target="_blank" title="${savedLink}">🔗 ${savedLink}</a>
+                                            <button class="diapo-delete-btn" onclick="deleteDiapoLink('${topic}')">✕</button>
                                         ` : `
-                                            <div class="diapos-mini-input-row">
-                                                <input type="url" id="${inputId}" placeholder="Link web o Drive">
-                                                <button class="upload-mini-btn" style="width:auto; padding:6px 10px; margin-top:0;" onclick="saveDiapoLink('${topic}', '${inputId}')">OK</button>
-                                            </div>
+                                            <input type="url" id="${inputId}" placeholder="Pega el link aquí...">
+                                            <button class="upload-mini-btn" style="width:auto; padding:6px 12px; margin-top:0;" onclick="saveDiapoLink('${topic}', '${inputId}')">Guardar</button>
                                         `}
                                     </div>
                                 </div>
@@ -1413,7 +1338,7 @@
                         if (previewIndices[topic] === undefined) previewIndices[topic] = 0;
                         let pIdx = previewIndices[topic] % (items.length || 1);
 
-                        let previewHtml = `<div class="empty-preview-text">Sin archivos subidos</div>`;
+                        let previewHtml = `<div class="empty-preview-text">Sin archivos</div>`;
                         if (items.length > 0) {
                             const currentItem = items[pIdx];
                             const isPdfObj = (typeof currentItem === 'object' && currentItem.isPdf) || (typeof currentItem === 'object' && currentItem.name);
@@ -1470,25 +1395,36 @@
                 let rawList = q.rawOptions || q.options || [];
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
-                let correctNewIndex = shuffledOptions.indexOf(correctValue);
+                
+                // Mapear cada opción revuelta con su respectiva explicación de descarte o general
+                let optionsWithFeedback = shuffledOptions.map(opt => {
+                    let isCorrect = (opt === correctValue);
+                    let specificFeedback = "";
+                    
+                    if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
+                        let found = q.discardExplanation.find(item => item.toLowerCase().includes(opt.toLowerCase().substring(0, 15)));
+                        if (found) specificFeedback = found;
+                    }
+                    
+                    if (!specificFeedback) {
+                        specificFeedback = isCorrect 
+                            ? `<b>Correcto:</b> ${q.explanation || correctValue}` 
+                            : `<b>Incorrecto:</b> No corresponde a la opción de primera línea para este caso clínico.`;
+                    }
 
-                let discardHtml = q.discardExplanation && Array.isArray(q.discardExplanation) 
-                    ? q.discardExplanation.map(desc => `<div>• ${desc}</div>`).join('') 
-                    : `<div>• <b>Opción correcta:</b> ${correctValue}</div>`;
+                    return { text: opt, isCorrect, feedback: specificFeedback };
+                });
 
                 area.innerHTML = `
                     <div class="question-card">
                         <div class="question-text">${q.q}</div>
-                        ${shuffledOptions.map((opt, idx) => `
-                            <button class="option-btn" onclick="checkAnswer(this, ${idx}, ${correctNewIndex}, '${q.id}')">${String.fromCharCode(65 + idx)})${opt}</button>
+                        ${optionsWithFeedback.map((item, idx) => `
+                            <div class="option-container">
+                                <button class="option-btn" onclick="checkAnswerNotebook(this, ${item.isCorrect})">${String.fromCharCode(65 + idx)})${item.text}</button>
+                                <div class="option-feedback">${item.feedback}</div>
+                            </div>
                         `).join('')}
-                        <div id="explanation-box" class="explanation-box">
-                            <strong>Retroalimentación Desglosada:</strong>
-                            <div style="margin-bottom:8px;">${q.explanation || ''}</div>
-                            <strong style="display:block; margin-top:8px;">Descarte de Opciones:</strong>
-                            ${discardHtml}
-                            <button class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
-                        </div>
+                        <button id="next-q-btn" class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                     </div>
                 `;
             } else if (currentTab === 'madera') {
@@ -1584,25 +1520,35 @@
             }
         }
 
-        function checkAnswer(selectedBtn, selectedIdx, correctIdx, qId) {
-            const parent = selectedBtn.parentElement;
-            parent.querySelectorAll('.option-btn').forEach((btn, idx) => {
-                btn.disabled = true;
-                if (idx === correctIdx) btn.classList.add('correct');
-            });
+        // Nueva función estilo NotebookLM para mostrar retroalimentación directa por opción
+        function checkAnswerNotebook(selectedBtn, isCorrect) {
+            const container = selectedBtn.closest('.question-card');
+            
+            // Deshabilitar todos los botones de opciones para evitar múltiples clics
+            container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
 
-            const isCorrect = selectedIdx === correctIdx;
-            if (!isCorrect) {
-                selectedBtn.classList.add('incorrect');
-                questionSchedule[qId] = { weight: ((questionSchedule[qId] || {}).weight || 0) + 5, status: 'Frecuente (Repasar pronto)' };
+            // Mostrar el estilo correcto/incorrecto en el botón seleccionado y desplegar su feedback asociado
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
             } else {
-                questionSchedule[qId] = { weight: Math.max(((questionSchedule[qId] || {}).weight || 0) - 2, 0), status: 'Dominada' };
+                selectedBtn.classList.add('incorrect');
+                // Revelar también cuál era la correcta o marcar la correcta visualmente
+                container.querySelectorAll('.option-btn').forEach(btn => {
+                    // Si el feedback interno contiene la palabra CORRECTA, la resaltamos sutilmente
+                    let fb = btn.nextElementSibling.innerHTML;
+                    if (fb.includes('CORRECTA') || fb.includes('<b>Correcto:</b>')) {
+                        btn.style.borderColor = '#28A745';
+                    }
+                });
             }
 
-            localStorage.setItem('yn_question_schedule', JSON.stringify(questionSchedule));
+            // Mostrar la caja de retroalimentación específica de esta opción
+            const feedbackBox = selectedBtn.nextElementSibling;
+            if (feedbackBox) feedbackBox.style.display = 'block';
 
-            const expBox = document.getElementById('explanation-box');
-            if (expBox) expBox.style.display = 'block';
+            // Mostrar el botón para pasar a la siguiente pregunta
+            const nextBtn = document.getElementById('next-q-btn');
+            if (nextBtn) nextBtn.style.display = 'block';
         }
 
         function nextQuestion() {
@@ -1647,20 +1593,14 @@
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
                     <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus casos clínicos estructurados:</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="Caso Clínico: ...
-* Caso clínico / Pregunta: ...
-* Opción Correcta: ...
-* Opción Incorrecta 1: ...
-* Correcto: ...
-* Incorrecto: ..."></textarea>
+                    <textarea id="paste-raw-text" rows="8" placeholder="Caso Clínico: ..."></textarea>
                     <button type="button" onclick="processPastedPreguntas()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Preguntas</button>
                 `;
             } else if (type === 'flashcards_paste') {
                 saveBtn.style.display = 'none';
                 container.innerHTML = `
-                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tu lista de flashcards (Frente / Reverso):</p>
-                    <textarea id="paste-raw-text" rows="8" placeholder="* Frente: ¿...?
-* Reverso: ..."></textarea>
+                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tu lista de flashcards:</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="* Frente: ¿...?"></textarea>
                     <button type="button" onclick="processPastedFlashcards()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Flashcards</button>
                 `;
             } else if (type === 'delete_content') {
@@ -1669,26 +1609,15 @@
                 let fcList = subCustom.flashcards || [];
                 let qList = subCustom.preguntas || [];
 
-                let html = `<p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Contenido personalizado en ${subjectsConfig[sub].title}:</p>`;
-                
+                let html = `<p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Contenido personalizado:</p>`;
                 if (fcList.length === 0 && qList.length === 0) {
-                    html += `<p style="font-size: calc(11px * var(--font-scale)); font-style:italic;">No hay contenido personalizado en esta materia para eliminar.</p>`;
+                    html += `<p style="font-size: calc(11px * var(--font-scale)); font-style:italic;">No hay contenido personalizado.</p>`;
                 } else {
                     fcList.forEach((fc, idx) => {
-                        html += `
-                            <div class="delete-item-row">
-                                <span>[FC] ${fc.q}</span>
-                                <button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'flashcards', ${idx})">Eliminar</button>
-                            </div>
-                        `;
+                        html += `<div class="delete-item-row"><span>[FC] ${fc.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'flashcards', ${idx})">Eliminar</button></div>`;
                     });
                     qList.forEach((q, idx) => {
-                        html += `
-                            <div class="delete-item-row">
-                                <span>[Pregunta] ${q.q}</span>
-                                <button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'preguntas', ${idx})">Eliminar</button>
-                            </div>
-                        `;
+                        html += `<div class="delete-item-row"><span>[Pregunta] ${q.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'preguntas', ${idx})">Eliminar</button></div>`;
                     });
                 }
                 container.innerHTML = html;
@@ -1793,34 +1722,13 @@
                 }
             });
 
-            if (addedFC === 0) {
-                let parts = text.split(/frente\s*[:\-]/i);
-                parts.forEach(part => {
-                    if (!part.trim()) return;
-                    let subParts = part.split(/reverso\s*[:\-]/i);
-                    if (subParts.length >= 2) {
-                        let f = subParts[0].replace(/^[\*\-\•]\s*/, '').trim();
-                        let r = subParts[1].split(/frente\s*[:\-]/i)[0].replace(/^[\*\-\•]\s*/, '').trim();
-                        if (f && r) {
-                            customData[sub].flashcards.push({
-                                id: 'fc_pasted_' + Math.random().toString(36).substring(2, 9),
-                                q: f,
-                                a: r,
-                                tag: 'texto'
-                            });
-                            addedFC++;
-                        }
-                    }
-                });
-            }
-
             if (addedFC > 0) {
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                alert(`¡Se agregaron ${addedFC} flashcards a ${subjectsConfig[sub].title}!`);
+                alert(`¡Se agregaron ${addedFC} flashcards!`);
                 toggleAdminPanel();
                 renderContent();
             } else {
-                alert('No se detectaron flashcards con formato Frente / Reverso.');
+                alert('No se detectaron flashcards.');
             }
         }
 
@@ -1832,7 +1740,7 @@
             if (type === 'flashcard_1x1') {
                 const q = document.getElementById('af-q').value;
                 const a = document.getElementById('af-a').value;
-                if (!q || !a) return alert('Completa los campos de Frente y Reverso.');
+                if (!q || !a) return alert('Completa los campos.');
                 customData[sub].flashcards.push({ id: 'custom_fc_' + Date.now(), q, a });
             } else if (type === 'pregunta_1x1') {
                 const q = document.getElementById('af-q').value;
@@ -1843,14 +1751,14 @@
                 const exp = document.getElementById('af-exp').value;
                 const discText = document.getElementById('af-disc').value;
 
-                if (!q || !o0 || !o1) return alert('Completa la pregunta y al menos la opción correcta y una incorrecta.');
+                if (!q || !o0 || !o1) return alert('Completa la pregunta.');
                 
                 customData[sub].preguntas.push({
                     id: 'qcustom_' + Date.now(),
                     q,
                     rawOptions: [o0, o1, o2, o3].filter(Boolean),
                     correctText: o0,
-                    explanation: exp || "Respuesta guardada correctamente.",
+                    explanation: exp || "Respuesta guardada.",
                     discardExplanation: discText ? [discText] : [`<b>Opción correcta:</b> ${o0}`]
                 });
             }
@@ -1862,7 +1770,7 @@
         }
 
         function deleteCustomItem(sub, category, idx) {
-            if (!confirm('¿Estás segura de eliminar este elemento?')) return;
+            if (!confirm('¿Eliminar elemento?')) return;
             if (customData[sub] && customData[sub][category]) {
                 customData[sub][category].splice(idx, 1);
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
@@ -1884,7 +1792,6 @@
                 ankiReviews[cardId] = { nextDate: nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
                 localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
             }
-            
             cardDifficulty[cardId] = diffTag;
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
 
@@ -1892,7 +1799,6 @@
             if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
             cardIndices[currentSubject][activeCardFilter]++;
             localStorage.setItem('yn_card_indices', JSON.stringify(cardIndices));
-
             renderContent();
         }
 
@@ -1913,19 +1819,9 @@
                 yn_diapos_links_v1: diaposLinks,
                 yn_font_scale: currentFontScale
             };
-
             const jsonString = JSON.stringify(backupData, null, 2);
             const blob = new Blob([jsonString], { type: "application/json" });
             const fileName = `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`;
-
-            if (navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                const file = new File([blob], fileName, { type: "application/json" });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share({ files: [file], title: 'Respaldar YuliNotas' }).catch(() => {});
-                    return;
-                }
-            }
-
             const url = URL.createObjectURL(blob);
             const downloadAnchor = document.createElement('a');
             downloadAnchor.href = url;
@@ -1939,7 +1835,6 @@
         function importBackup(e) {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(evt) {
                 try {
@@ -1980,7 +1875,7 @@
                     alert('¡Progreso importado con éxito!');
                     renderContent();
                 } catch (err) {
-                    alert('Error al leer el archivo de respaldo.');
+                    alert('Error al leer el archivo.');
                 }
             };
             reader.readAsText(file);
