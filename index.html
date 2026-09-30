@@ -1054,11 +1054,7 @@
                         rawOptions: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
                         correctText: "Laparoscopia diagnóstica", 
                         explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
-                        discardExplanation: [
-                            "<b>Ecografía pélvica:</b> Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
-                            "<b>Resonancia Magnética:</b> Reservada para endometriosis profunda con compromiso visceral.",
-                            "<b>CA-125 sérico:</b> Marcador inespecífico; no se recomienda de rutina."
-                        ] 
+                        discardExplanation: "Los estudios de imagen y marcadores séricos no descartan los implantes peritoneales ni reemplazan la visualización directa por laparoscopia."
                     }
                 ],
                 temario: [
@@ -1078,11 +1074,7 @@
                         rawOptions: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
                         correctText: "Placenta Previa", 
                         explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
-                        discardExplanation: [
-                            "<b>Desprendimiento Prematuro de Placenta (DPPNI):</b> Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
-                            "<b>Ruptura Uterina:</b> Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
-                            "<b>Vasa Previa:</b> Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
-                        ] 
+                        discardExplanation: "El DPPNI y la ruptura uterina cursan con dolor abdominal y contracciones o alteraciones dinámicas, a diferencia de la placenta previa que es indolora."
                     }
                 ],
                 temario: [
@@ -1323,8 +1315,8 @@
                     <input type="text" id="adm-opt2" placeholder="Opción C">
                     <input type="text" id="adm-opt3" placeholder="Opción D">
                     <input type="text" id="adm-correct" placeholder="Texto exacto de la opción correcta">
-                    <textarea id="adm-exp" placeholder="Retroalimentación de la opción correcta..." rows="2"></textarea>
-                    <textarea id="adm-disc" placeholder="Retroalimentación de opciones incorrectas..." rows="3"></textarea>
+                    <textarea id="adm-exp" placeholder="Explicación de la respuesta correcta..." rows="2"></textarea>
+                    <textarea id="adm-disc" placeholder="Resumen corto de por qué son incorrectas las demás..." rows="2"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 container.innerHTML = `
@@ -1396,7 +1388,6 @@
                 }
 
                 const rawOptions = [o0, o1, o2, o3].filter(o => o !== '');
-                const discardExplanation = discText ? discText.split('\n').filter(d => d.trim() !== '') : [];
 
                 customData[sub].preguntas.push({
                     id: 'custom_qp_' + Date.now() + '_' + Math.floor(Math.random()*1000),
@@ -1404,14 +1395,13 @@
                     rawOptions,
                     correctText,
                     explanation: exp || "Respuesta correcta basada en guías clínicas.",
-                    discardExplanation
+                    discardExplanation: discText || "No corresponden al manejo o diagnóstico de primera elección para este caso."
                 });
                 alert('¡Pregunta guardada con éxito!');
             } else if (type === 'preguntas_paste') {
                 const text = document.getElementById('adm-paste-text').value.trim();
                 if (!text) return alert('Pega algún texto.');
 
-                // SEPARACIÓN LITERAL Y EXACTA: Divide por bloques detectando el inicio de cada pregunta (números, "Caso", "Paciente", etc.)
                 let rawBlocks = text.split(/(?=\n\s*(?:\d+[\.\)]|Caso\s*\d*[:\.]|Pregunta\s*\d*[:\.]|Paciente|Femenina|Masculino|Mujer|Hombre|Gestante|Adolescente))/gi);
                 if (rawBlocks.length <= 1) {
                     rawBlocks = text.split(/\n\s*\n+(?=[A-Da-d][\.\)]|\d+[\.\)])/);
@@ -1425,7 +1415,6 @@
                     let cleanBlock = block.trim();
                     if (cleanBlock.length < 10) return;
 
-                    // Extraer Opciones literales A, B, C, D
                     let optMatches = cleanBlock.match(/[A-Da-d][\.\)]\s*([^\n]+)/g);
                     let rawOptions = [];
                     if (optMatches && optMatches.length >= 2) {
@@ -1434,7 +1423,6 @@
                         rawOptions = ["Opción A", "Opción B", "Opción C", "Opción D"];
                     }
 
-                    // Extraer Enunciado de la pregunta (todo lo que está antes de las opciones)
                     let qText = cleanBlock;
                     if (optMatches && optMatches.length > 0) {
                         let firstOptIndex = cleanBlock.indexOf(optMatches[0]);
@@ -1445,21 +1433,12 @@
                     qText = qText.replace(/^[0-9]+[\.\)]\s*/, '').trim();
                     if (!qText) qText = "Caso clínico ENARM";
 
-                    // Extraer Explicación / Retroalimentación literal provista por el usuario
                     let explanation = "Respuesta correcta basada en GPC.";
                     let expMatch = cleanBlock.match(/(?:Explicación|Retroalimentación|Comentario|Justificación)[:\s]*([\s\S]*?)(?=(?:Por qué se descartan|Opciones incorrectas|$))/i);
                     if (expMatch && expMatch[1].trim()) {
                         explanation = expMatch[1].trim().replace(/\*\*/g, '');
-                    } else {
-                        // Si no trae etiqueta explícita, tomamos los párrafos finales como explicación
-                        let lines = cleanBlock.split('\n');
-                        let lastLines = lines.filter(l => !l.match(/^[A-Da-d][\.\)]/) && l.length > 15);
-                        if (lastLines.length > 1) {
-                            explanation = lastLines[lastLines.length - 1].trim();
-                        }
                     }
 
-                    // Extraer Respuesta Correcta literal
                     let correctText = rawOptions[0];
                     let corrMatch = cleanBlock.match(/(?:Respuesta|Correcta|Rpta)[:\s]*([A-Da-d]|.+)/i);
                     if (corrMatch) {
@@ -1468,22 +1447,15 @@
                             let idx = cVal.toUpperCase() === 'A' ? 0 : cVal.toUpperCase() === 'B' ? 1 : cVal.toUpperCase() === 'C' ? 2 : 3;
                             if (rawOptions[idx]) correctText = rawOptions[idx];
                         } else {
-                            // Buscar coincidencia parcial con el texto de alguna opción
                             let foundOpt = rawOptions.find(o => o.toLowerCase().includes(cVal.toLowerCase()) || cVal.toLowerCase().includes(o.toLowerCase()));
                             if (foundOpt) correctText = foundOpt;
                         }
                     }
 
-                    // Extraer justificación de descartes de manera literal
-                    let discardExplanation = [];
+                    let discardExplanation = "No corresponden al manejo o diagnóstico de primera elección para este escenario clínico.";
                     let discMatch = cleanBlock.match(/(?:Por qué se descartan las demás opciones|Opciones incorrectas|Descartes)[:\s]*([\s\S]*)/i);
                     if (discMatch && discMatch[1].trim()) {
-                        let discTextRaw = discMatch[1].trim();
-                        let discLines = discTextRaw.split('\n').filter(l => l.trim() !== '');
-                        discardExplanation = discLines;
-                    } else {
-                        // Generar líneas de descarte basadas en las opciones que no son la correcta
-                        discardExplanation = rawOptions.filter(o => o !== correctText).map(opt => `<b>${opt}:</b> No corresponde al manejo o diagnóstico de primera elección.`);
+                        discardExplanation = discMatch[1].trim().replace(/\*\*/g, '');
                     }
 
                     customData[sub].preguntas.push({
@@ -1498,9 +1470,9 @@
                 });
 
                 if (addedCount > 0) {
-                    alert(`¡Se han guardado ${addedCount} preguntas de forma literal con éxito! 🎉`);
+                    alert(`¡Se han guardado ${addedCount} preguntas con éxito! 🎉`);
                 } else {
-                    alert('No se pudieron procesar las preguntas. Asegúrate de incluir la pregunta y sus opciones.');
+                    alert('No se pudieron procesar las preguntas.');
                     return;
                 }
             } else if (type === 'flashcard_1x1') {
@@ -1842,42 +1814,27 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                let incorrectReasons = shuffledOptions
-                    .filter(opt => opt !== correctValue)
-                    .map(opt => {
-                        let specificFeedback = "";
-                        if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
-                            let found = q.discardExplanation.find(item => {
-                                let cleanItem = item.toLowerCase();
-                                let cleanOpt = opt.toLowerCase();
-                                return cleanItem.includes(cleanOpt.substring(0, Math.min(cleanOpt.length, 10)));
-                            });
-                            if (found) {
-                                specificFeedback = found.replace(/^<b>.*?<\/b>[:\s]*/i, '');
-                            }
-                        }
-                        if (!specificFeedback) {
-                            specificFeedback = "No es la opción indicada para este escenario clínico.";
-                        }
-                        return `<li style="margin-bottom: 6px;"><b>${opt}:</b> ${specificFeedback}</li>`;
-                    }).join('');
+                let discardText = q.discardExplanation;
+                if (Array.isArray(discardText)) {
+                    discardText = discardText.join(' ');
+                }
+                if (!discardText) {
+                    discardText = "No corresponden al manejo o diagnóstico de primera elección para este escenario clínico.";
+                }
 
                 let globalFeedbackHTML = `
                     <div class="global-feedback-box" id="feedback-box">
-                        <div style="color: #2E7D32; font-weight: 800; font-size: calc(14px * var(--font-scale)); margin-bottom: 6px;">
-                            ✓ Respuesta Correcta
+                        <div style="color: #2E7D32; font-weight: 800; font-size: calc(13px * var(--font-scale)); margin-bottom: 4px;">
+                            ✓ Explicación de la respuesta correcta:
                         </div>
-                        <div style="margin-bottom: 8px; color: var(--text-dark); font-weight: 700; font-size: calc(13px * var(--font-scale));">
-                            ${correctValue}
-                        </div>
-                        <div style="margin-bottom: 12px; line-height: 1.5;">
-                            <b>Explicación:</b> ${q.explanation || "Respuesta correcta basada en GPC."}
+                        <div style="margin-bottom: 10px; line-height: 1.45;">
+                            ${q.explanation || "Respuesta correcta basada en GPC."}
                         </div>
                         <div style="border-top: 1px solid var(--border-color); padding-top: 8px;">
-                            <div style="font-weight: 700; margin-bottom: 4px; color: var(--text-muted);">Retroalimentación de opciones incorrectas:</div>
-                            <ul style="padding-left: 16px; font-size: calc(12px * var(--font-scale)); color: var(--text-muted);">
-                                ${incorrectReasons}
-                            </ul>
+                            <div style="font-weight: 700; margin-bottom: 3px; color: var(--text-muted); font-size: calc(11.5px * var(--font-scale));">Por qué las otras son incorrectas:</div>
+                            <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); line-height: 1.4;">
+                                ${discardText}
+                            </p>
                         </div>
                     </div>
                     <button class="next-q-btn" id="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
