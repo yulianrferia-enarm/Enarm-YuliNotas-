@@ -58,8 +58,8 @@
             justify-content: space-between;
             align-items: center;
             gap: 6px;
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%; /* Ocupa todo el ancho */
+            margin: 0;
         }
 
         .app-header h1 {
@@ -92,8 +92,8 @@
         .btn-review-mode.active-review { background: #2E7D32; outline: 2px solid #FFF; }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%; /* Adaptado a pantalla completa */
+            margin: 0;
             padding: 12px var(--content-padding);
         }
 
@@ -108,7 +108,7 @@
 
         .subjects-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(5, 1fr); /* Se distribuyen mejor en pantallas amplias */
             gap: 10px;
             margin-bottom: 16px;
             width: 100%;
@@ -180,6 +180,7 @@
             min-height: 380px;
             border: 1px solid var(--border-color);
             position: relative;
+            width: 100%;
         }
 
         .corner-badge {
@@ -197,7 +198,7 @@
 
         .direct-topics-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr) !important;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important; /* Se ajusta de forma dinámica según el ancho de pantalla */
             gap: 12px;
             width: 100%;
             align-items: stretch;
@@ -436,6 +437,7 @@
             min-height: 180px;
             margin-bottom: 12px;
             cursor: pointer;
+            width: 100%;
         }
 
         .flashcard-inner {
@@ -514,6 +516,7 @@
             flex-direction: column;
             gap: 10px;
             padding-top: 4px;
+            width: 100%;
         }
 
         .question-text {
@@ -527,6 +530,7 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            width: 100%;
         }
 
         .option-btn {
@@ -566,6 +570,7 @@
             font-size: calc(12px * var(--font-scale));
             line-height: 1.5;
             color: var(--text-dark);
+            width: 100%;
         }
 
         .feedback-block-title {
@@ -740,6 +745,7 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             margin-bottom: 4px;
+            width: 100%;
         }
 
         .check-item {
@@ -812,6 +818,7 @@
             margin-bottom: 6px !important;
             font-size: calc(12px * var(--font-scale)) !important;
             gap: 12px !important;
+            width: 100% !important;
         }
 
         .delete-item-row span {
@@ -891,7 +898,7 @@
             <button class="subject-btn btn-obste" onclick="selectSubject('obste')">Obstetricia</button>
             <button class="subject-btn btn-interna" onclick="selectSubject('interna')">Medicina Interna</button>
             <button class="subject-btn btn-cirugia" onclick="selectSubject('cirugia')">Cirugía General</button>
-            <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')" style="grid-column: span 2;">Pediatría</button>
+            <button class="subject-btn btn-pedia" onclick="selectSubject('pedia')">Pediatría</button>
         </div>
 
         <div class="section-title">Apartados</div>
