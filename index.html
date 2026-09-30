@@ -1535,7 +1535,6 @@
             }
         }
 
-        // Lógica de validación con retroalimentación limpia y separada corregida
         function checkAnswerNotebook(selectedBtn, selectedText) {
             const container = selectedBtn.closest('.question-card');
             
@@ -1554,10 +1553,8 @@
             const discardTextEl = document.getElementById('feedback-discard-text');
             const bottomSection = document.getElementById('bottom-feedback-section');
 
-            // 1. En la parte de Opción Correcta: Únicamente la respuesta correcta y su explicación principal limpia
             correctTextEl.innerHTML = `<b>${activeQ.correctValue}:</b> ${activeQ.explanation}`;
 
-            // 2. En la parte de Descarte: Únicamente se muestran los descartes de las demás
             if (activeQ.discardExplanation && activeQ.discardExplanation.length > 0) {
                 discardTextEl.innerHTML = activeQ.discardExplanation.map(item => `<div style="margin-bottom: 4px;">• ${item}</div>`).join('');
             } else {
