@@ -1256,7 +1256,6 @@
         }
 
         function deleteDiapoLink(topicName) {
-            if (!confirm('¿Eliminar el link de diapos de este tema?')) return;
             if (diaposLinks[currentSubject] && diaposLinks[currentSubject][topicName]) {
                 delete diaposLinks[currentSubject][topicName];
                 localStorage.setItem('yn_diapos_links_v1', JSON.stringify(diaposLinks));
@@ -1412,7 +1411,6 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                // Limpiamos la explicación por si viene con el prefijo duplicado dentro del texto
                 let cleanExplanation = q.explanation || "Respuesta correcta validada.";
                 let prefixRegex = new RegExp(`^(${escapeRegExp(correctValue)})[:\\s\\-]+`, 'i');
                 cleanExplanation = cleanExplanation.replace(prefixRegex, '').trim();
@@ -1435,7 +1433,6 @@
                             `;
                         }).join('')}
                         
-                        <!-- Apartado inferior limpio: Correcto arriba, descarte abajo -->
                         <div id="bottom-feedback-section" class="bottom-feedback-section">
                             <div class="feedback-block-title">Opción Correcta:</div>
                             <div id="feedback-correct-text" class="feedback-block-content"></div>
@@ -1792,7 +1789,6 @@
         }
 
         function deleteCustomItem(sub, category, idx) {
-            if (!confirm('¿Eliminar elemento?')) return;
             if (customData[sub] && customData[sub][category]) {
                 customData[sub][category].splice(idx, 1);
                 localStorage.setItem('yn_custom_data', JSON.stringify(customData));
