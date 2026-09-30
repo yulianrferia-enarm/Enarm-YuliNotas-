@@ -1535,7 +1535,7 @@
             }
         }
 
-        // Lógica de validación con retroalimentación limpia y separada
+        // Lógica de validación con retroalimentación limpia y separada corregida
         function checkAnswerNotebook(selectedBtn, selectedText) {
             const container = selectedBtn.closest('.question-card');
             
@@ -1554,14 +1554,14 @@
             const discardTextEl = document.getElementById('feedback-discard-text');
             const bottomSection = document.getElementById('bottom-feedback-section');
 
-            // 1. En la parte de Opción Correcta: Únicamente se muestra la explicación correcta limpia, sin mezclar incorrectas
+            // 1. En la parte de Opción Correcta: Únicamente la respuesta correcta y su explicación principal limpia
             correctTextEl.innerHTML = `<b>${activeQ.correctValue}:</b> ${activeQ.explanation}`;
 
-            // 2. En la parte de Descarte: Únicamente se muestran las opciones descartadas/incorrectas
+            // 2. En la parte de Descarte: Únicamente se muestran los descartes de las demás
             if (activeQ.discardExplanation && activeQ.discardExplanation.length > 0) {
                 discardTextEl.innerHTML = activeQ.discardExplanation.map(item => `<div style="margin-bottom: 4px;">• ${item}</div>`).join('');
             } else {
-                discardTextEl.innerHTML = `Las demás opciones no corresponden a la primera línea de manejo o diagnóstico para este caso clínico.`;
+                discardTextEl.innerHTML = `Las demás opciones no corresponden al diagnóstico o manejo de primera línea para este caso clínico.`;
             }
 
             bottomSection.style.display = 'block';
@@ -1666,17 +1666,19 @@
 
                     lines.forEach(line => {
                         let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
-                        if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
+                        let lowerLine = cleanLine.toLowerCase();
+
+                        if (lowerLine.startsWith('caso clínico / pregunta:') || lowerLine.startsWith('caso clínico:')) {
                             qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
-                        } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
+                        } else if (lowerLine.startsWith('opción correcta:')) {
                             correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '').trim();
-                        } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
+                        } else if (lowerLine.startsWith('opción incorrecta')) {
                             let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
                             if (optVal) incorrectOpts.push(optVal);
-                        } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
-                            retroCorrect = cleanLine.replace(/^correcto:\s*/i, '');
-                        } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
-                            discardList.push(cleanLine.replace(/^incorrecto:\s*/i, ''));
+                        } else if (lowerLine.startsWith('correcto:')) {
+                            retroCorrect = cleanLine.replace(/^correcto:\s*/i, '').trim();
+                        } else if (lowerLine.startsWith('incorrecto:')) {
+                            discardList.push(cleanLine.replace(/^incorrecto:\s*/i, '').trim());
                         } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
                             qText += " " + cleanLine;
                         }
