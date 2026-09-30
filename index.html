@@ -88,6 +88,8 @@
         .btn-sync { background: #2E7D32; }
         .btn-theme { background: #333333; color: #FFD700; }
         .btn-font { background: #4A148C; color: white; }
+        .btn-review-mode { background: #D81B60; }
+        .btn-review-mode.active-review { background: #2E7D32; outline: 2px solid #FFF; }
 
         .container {
             max-width: 800px;
@@ -507,7 +509,6 @@
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
-        /* Preguntas y Estilo de Retroalimentación Inferior */
         .question-card {
             display: flex;
             flex-direction: column;
@@ -555,7 +556,6 @@
             font-weight: 700;
         }
 
-        /* Contenedor de retroalimentación global hasta abajo */
         .bottom-feedback-section {
             display: none;
             margin-top: 16px;
@@ -800,7 +800,6 @@
             cursor: pointer;
         }
 
-        /* Fila independiente forzada con fondo neutral, texto visible y tachita cuadrada chica a la derecha */
         .delete-item-row {
             display: flex !important;
             justify-content: space-between !important;
@@ -849,6 +848,7 @@
         <div class="app-header-top">
             <h1>YuliNotas</h1>
             <div class="header-actions">
+                <button id="btn-review-toggle" class="btn-action btn-review-mode" onclick="toggleReviewMode()">🔄 Repasar Pendientes</button>
                 <button class="btn-action btn-font" onclick="changeFontSize(-0.1)">A-</button>
                 <button class="btn-action btn-font" onclick="changeFontSize(0.1)">A+</button>
                 <button class="btn-action btn-theme" onclick="toggleDarkMode()">🌙 Mode</button>
@@ -993,6 +993,7 @@
         let questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
         let cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
         let previewIndices = {};
+        let isReviewModeActive = false;
 
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
@@ -1082,6 +1083,21 @@
             isDarkMode = !isDarkMode;
             document.body.classList.toggle('dark-mode', isDarkMode);
             localStorage.setItem('yn_dark_mode', isDarkMode.toString());
+        }
+
+        function toggleReviewMode() {
+            isReviewModeActive = !isReviewModeActive;
+            const btn = document.getElementById('btn-review-toggle');
+            if (isReviewModeActive) {
+                btn.classList.add('active-review');
+                btn.textContent = '🔄 Repaso Activo';
+            } else {
+                btn.classList.remove('active-review');
+                btn.textContent = '🔄 Repasar Pendientes';
+            }
+            if (!questionIndices[currentSubject]) questionIndices[currentSubject] = 0;
+            questionIndices[currentSubject] = 0;
+            renderContent();
         }
 
         function shuffleArray(array) {
@@ -1403,10 +1419,27 @@
             const subjectData = data[currentSubject];
 
             if (currentTab === 'preguntas') {
-                const questionsList = subjectData.preguntas || [];
+                let questionsList = subjectData.preguntas || [];
                 if (questionsList.length === 0) {
                     area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay preguntas registradas en esta materia.</p>`;
                     return;
+                }
+
+                if (isReviewModeActive) {
+                    questionsList = questionsList.filter(q => {
+                        let sched = questionSchedule[q.id];
+                        if (!sched) return false;
+                        return sched.failed || (Date.now() - (sched.lastReviewed || 0) > 86400000 * 3);
+                    });
+                    if (questionsList.length === 0) {
+                        area.innerHTML = `
+                            <div style="text-align:center; padding: 30px;">
+                                <p style="font-size:calc(13px * var(--font-scale)); font-weight:700; color:var(--primary-color); margin-bottom: 8px;">¡Estás al día con tus pendientes! 🎉</p>
+                                <p style="font-size:calc(11px * var(--font-scale)); color:var(--text-muted);">No hay preguntas falladas recientemente o pendientes de repaso profundo. Desactiva el modo repasar pendientes para ver todo el banco.</p>
+                            </div>
+                        `;
+                        return;
+                    }
                 }
 
                 const sortedQuestions = [...questionsList].sort((a, b) => {
@@ -1428,6 +1461,7 @@
                 cleanExplanation = cleanExplanation.replace(prefixRegex, '').trim();
 
                 window.currentActiveQuestion = {
+                    id: q.id,
                     correctValue: correctValue,
                     explanation: cleanExplanation,
                     discardExplanation: q.discardExplanation || []
@@ -1555,7 +1589,24 @@
 
         function checkAnswerNotebook(selectedBtn, selectedText) {
             const container = selectedBtn.closest('.question-card');
-            
+            const activeQ = window.currentActiveQuestion;
+            const isCorrectAnswer = selectedBtn.getAttribute('data-correct') === 'true';
+
+            if (!questionSchedule[activeQ.id]) {
+                questionSchedule[activeQ.id] = { weight: 0, lastReviewed: Date.now(), failed: false };
+            }
+
+            if (isCorrectAnswer) {
+                questionSchedule[activeQ.id].weight = Math.max(0, (questionSchedule[activeQ.id].weight || 0) - 2);
+                questionSchedule[activeQ.id].failed = false;
+                questionSchedule[activeQ.id].lastReviewed = Date.now();
+            } else {
+                questionSchedule[activeQ.id].weight = (questionSchedule[activeQ.id].weight || 0) + 3;
+                questionSchedule[activeQ.id].failed = true;
+                questionSchedule[activeQ.id].lastReviewed = Date.now();
+            }
+            localStorage.setItem('yn_question_schedule', JSON.stringify(questionSchedule));
+
             container.querySelectorAll('.option-btn').forEach(btn => {
                 btn.disabled = true;
                 const isBtnCorrect = btn.getAttribute('data-correct') === 'true';
@@ -1566,7 +1617,6 @@
                 }
             });
 
-            const activeQ = window.currentActiveQuestion;
             const correctTextEl = document.getElementById('feedback-correct-text');
             const discardTextEl = document.getElementById('feedback-discard-text');
             const bottomSection = document.getElementById('bottom-feedback-section');
