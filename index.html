@@ -1403,13 +1403,13 @@
                 const text = document.getElementById('adm-paste-text').value.trim();
                 if (!text) return alert('Pega algún texto.');
 
-                // MEJORA: Separador avanzado y dinámico multicriterio para múltiples casos clínicos
+                // MEJORA: Separador avanzado y robusto multicriterio para múltiples preguntas/casos clínicos
                 let rawBlocks = text.split(/(?=\n\s*(?:Caso\s*\d+|Pregunta\s*\d+|\d+[\.\)]\s*(?:Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente|Acude|[A-Z])))/gi);
                 if (rawBlocks.length <= 1) {
                     rawBlocks = text.split(/(?=\bCaso\s*\d+|\bPregunta\s*\d+)/gi);
                 }
                 if (rawBlocks.length <= 1) {
-                    rawBlocks = text.split(/(?=\n\s*\d+[\.\)])/);
+                    rawBlocks = text.split(/(?=\n\s*\d+[\.\)]\s+[A-Z\¿])/);
                 }
                 if (rawBlocks.length <= 1) {
                     rawBlocks = [text];
@@ -1439,26 +1439,34 @@
                     if (!qText) qText = "Caso clínico ENARM";
 
                     let explanation = "Respuesta correcta basada en GPC.";
-                    let expMatch = cleanBlock.match(/(?:Explicación de la respuesta correcta|Explicación|Retroalimentación|Justificación)[:\s]*([\s\S]*?)(?=(?:Por qué las otras son incorrectas|Por qué se descartan|Opciones incorrectas|$))/i);
+                    let expMatch = cleanBlock.match(/(?:Retroalimentación de la respuesta correcta|Explicación de la respuesta correcta|Explicación|Retroalimentación|Justificación)[:\s]*([\s\S]*?)(?=(?:Retroalimentación de las respuestas incorrectas|Por qué las otras son incorrectas|Por qué se descartan|Opciones incorrectas|$))/i);
                     if (expMatch && expMatch[1].trim()) {
                         explanation = expMatch[1].trim().replace(/\*\*/g, '');
                     }
 
                     let correctText = rawOptions[0];
-                    let corrMatch = cleanBlock.match(/(?:Respuesta correcta|Respuesta|Correcta|Rpta)[:\s]*([A-Da-d]|.+)/i);
+                    let corrMatch = cleanBlock.match(/(?:Respuesta correcta|Respuesta|Correcta|Rpta)[:\s]*([A-Da-d])[\)\.]?\s*([^\n]*)/i);
                     if (corrMatch) {
-                        let cVal = corrMatch[1].trim();
-                        if (/^[A-Da-d]$/i.test(cVal)) {
-                            let idx = cVal.toUpperCase() === 'A' ? 0 : cVal.toUpperCase() === 'B' ? 1 : cVal.toUpperCase() === 'C' ? 2 : 3;
-                            if (rawOptions[idx]) correctText = rawOptions[idx];
-                        } else {
+                        let letter = corrMatch[1].toUpperCase();
+                        let idx = letter === 'A' ? 0 : letter === 'B' ? 1 : letter === 'C' ? 2 : 3;
+                        if (rawOptions[idx]) {
+                            correctText = rawOptions[idx];
+                        } else if (corrMatch[2] && corrMatch[2].trim()) {
+                            let textVal = corrMatch[2].trim();
+                            let foundOpt = rawOptions.find(o => o.toLowerCase().includes(textVal.toLowerCase()) || textVal.toLowerCase().includes(o.toLowerCase()));
+                            if (foundOpt) correctText = foundOpt;
+                        }
+                    } else {
+                        let altCorrMatch = cleanBlock.match(/(?:Respuesta correcta|Respuesta|Correcta|Rpta)[:\s]*([^\n]+)/i);
+                        if (altCorrMatch && altCorrMatch[1].trim()) {
+                            let cVal = altCorrMatch[1].trim();
                             let foundOpt = rawOptions.find(o => o.toLowerCase().includes(cVal.toLowerCase()) || cVal.toLowerCase().includes(o.toLowerCase()));
                             if (foundOpt) correctText = foundOpt;
                         }
                     }
 
                     let discardExplanation = "No corresponden al manejo o diagnóstico de primera elección para este escenario clínico.";
-                    let discMatch = cleanBlock.match(/(?:Por qué las otras son incorrectas|Por qué se descartan las demás opciones|Opciones incorrectas|Descartes)[:\s]*([\s\S]*)/i);
+                    let discMatch = cleanBlock.match(/(?:Retroalimentación de las respuestas incorrectas|Por qué las otras son incorrectas|Por qué se descartan las demás opciones|Opciones incorrectas|Descartes)[:\s]*([\s\S]*)/i);
                     if (discMatch && discMatch[1].trim()) {
                         discardExplanation = discMatch[1].trim().replace(/\*\*/g, '');
                     }
