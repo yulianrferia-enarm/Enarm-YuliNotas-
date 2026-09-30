@@ -541,43 +541,45 @@
             margin-bottom: 4px;
         }
 
+        /* DISEÑO MEJORADO DE OPCIONES (Separadas individualmente tipo tarjeta) */
         .option-container {
             display: flex;
             flex-direction: column;
-            gap: 0;
-            background: var(--info-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            gap: 10px;
             margin-bottom: 6px;
         }
 
         .option-btn {
-            padding: 12px 14px;
-            border: none;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-dark);
             text-align: left;
             font-size: calc(13px * var(--font-scale));
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
             width: 100%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
         .option-btn:hover:not(:disabled) {
             background: rgba(142, 36, 170, 0.04);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
         }
 
         .option-btn.correct {
             background-color: #D4EDDA !important;
             color: #155724 !important;
+            border-color: #C3E6CB !important;
             font-weight: 700;
         }
 
         .option-btn.incorrect {
             background-color: #F8D7DA !important;
             color: #721C24 !important;
+            border-color: #F5C6CB !important;
             font-weight: 700;
         }
 
@@ -1320,7 +1322,7 @@
                 `;
             } else if (type === 'preguntas_paste') {
                 container.innerHTML = `
-                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega exactamente tu texto. Se guardará de manera literal con sus preguntas, opciones y explicaciones originales.</p>
+                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega exactamente tu texto. Se separarán de manera inteligente tus preguntas, opciones y retroalimentaciones.</p>
                     <textarea id="adm-paste-text" placeholder="Pega aquí el texto completo con múltiples preguntas..." rows="10"></textarea>
                 `;
             } else if (type === 'flashcard_1x1') {
@@ -1402,9 +1404,10 @@
                 const text = document.getElementById('adm-paste-text').value.trim();
                 if (!text) return alert('Pega algún texto.');
 
-                let rawBlocks = text.split(/(?=\n\s*(?:\d+[\.\)]|Caso\s*\d*[:\.]|Pregunta\s*\d*[:\.]|Paciente|Femenina|Masculino|Mujer|Hombre|Gestante|Adolescente))/gi);
+                // MEJORA: Separación limpia y robusta basada en numeraciones y patrones de casos
+                let rawBlocks = text.split(/(?=\n\s*(?:Caso\s*\d+|Pregunta\s*\d+|\d+[\.\)]\s+(?:Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente|Acude|[A-Z])))/gi);
                 if (rawBlocks.length <= 1) {
-                    rawBlocks = text.split(/\n\s*\n+(?=[A-Da-d][\.\)]|\d+[\.\)])/);
+                    rawBlocks = text.split(/(?=\n\s*\d+[\.\)])/);
                 }
                 if (rawBlocks.length <= 1) {
                     rawBlocks = [text];
@@ -1430,17 +1433,18 @@
                             qText = cleanBlock.substring(0, firstOptIndex).trim();
                         }
                     }
-                    qText = qText.replace(/^[0-9]+[\.\)]\s*/, '').trim();
+                    qText = qText.replace(/^[0-9]+[\.\)]\s*/, '').replace(/^(?:Caso\s*\d*[:\.]|Pregunta\s*\d*[:\.]|Caso clínico[:\s]*)/i, '').trim();
                     if (!qText) qText = "Caso clínico ENARM";
 
+                    // MEJORA: Extracción sin repeticiones cruzadas para explicación y descartes
                     let explanation = "Respuesta correcta basada en GPC.";
-                    let expMatch = cleanBlock.match(/(?:Explicación|Retroalimentación|Comentario|Justificación)[:\s]*([\s\S]*?)(?=(?:Por qué se descartan|Opciones incorrectas|$))/i);
+                    let expMatch = cleanBlock.match(/(?:Explicación de la respuesta correcta|Explicación|Retroalimentación|Justificación)[:\s]*([\s\S]*?)(?=(?:Por qué las otras son incorrectas|Por qué se descartan|Opciones incorrectas|$))/i);
                     if (expMatch && expMatch[1].trim()) {
                         explanation = expMatch[1].trim().replace(/\*\*/g, '');
                     }
 
                     let correctText = rawOptions[0];
-                    let corrMatch = cleanBlock.match(/(?:Respuesta|Correcta|Rpta)[:\s]*([A-Da-d]|.+)/i);
+                    let corrMatch = cleanBlock.match(/(?:Respuesta correcta|Respuesta|Correcta|Rpta)[:\s]*([A-Da-d]|.+)/i);
                     if (corrMatch) {
                         let cVal = corrMatch[1].trim();
                         if (/^[A-Da-d]$/i.test(cVal)) {
@@ -1453,7 +1457,7 @@
                     }
 
                     let discardExplanation = "No corresponden al manejo o diagnóstico de primera elección para este escenario clínico.";
-                    let discMatch = cleanBlock.match(/(?:Por qué se descartan las demás opciones|Opciones incorrectas|Descartes)[:\s]*([\s\S]*)/i);
+                    let discMatch = cleanBlock.match(/(?:Por qué las otras son incorrectas|Por qué se descartan las demás opciones|Opciones incorrectas|Descartes)[:\s]*([\s\S]*)/i);
                     if (discMatch && discMatch[1].trim()) {
                         discardExplanation = discMatch[1].trim().replace(/\*\*/g, '');
                     }
