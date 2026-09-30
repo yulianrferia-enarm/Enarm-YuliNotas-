@@ -931,7 +931,6 @@
                     correctText: "Laparoscopia diagnóstica", 
                     explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
                     discardExplanation: [
-                        "<b>Laparoscopia diagnóstica:</b> CORRECTA. Permite visión directa e histopatología.",
                         "<b>Ecografía pélvica:</b> INCORRECTA. Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
                         "<b>Resonancia Magnética:</b> INCORRECTA. Reservada para endometriosis profunda con compromiso visceral.",
                         "<b>CA-125 sérico:</b> INCORRECTA. Marcador inespecífico; no se recomienda de rutina."
@@ -954,7 +953,6 @@
                     correctText: "Placenta Previa", 
                     explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
                     discardExplanation: [
-                        "<b>Placenta Previa:</b> CORRECTA. Sangrado indoloro, rojo brillante y de inicio insidioso.",
                         "<b>DPPNI:</b> INCORRECTA. Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
                         "<b>Ruptura Uterina:</b> INCORRECTA. Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
                         "<b>Vasa Previa:</b> INCORRECTA. Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
@@ -1414,7 +1412,6 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                // Guardar las opciones y la pregunta actual para evaluar al hacer clic
                 window.currentActiveQuestion = {
                     correctValue: correctValue,
                     explanation: q.explanation || "Respuesta correcta validada.",
@@ -1433,7 +1430,7 @@
                             `;
                         }).join('')}
                         
-                        <!-- Apartado inferior de retroalimentación dividido -->
+                        <!-- Apartado inferior limpio: Correcto arriba, descarte abajo -->
                         <div id="bottom-feedback-section" class="bottom-feedback-section">
                             <div class="feedback-block-title">Opción Correcta:</div>
                             <div id="feedback-correct-text" class="feedback-block-content"></div>
@@ -1538,11 +1535,10 @@
             }
         }
 
-        // Lógica de validación con apartados separados hasta abajo
+        // Lógica de validación con retroalimentación limpia y separada
         function checkAnswerNotebook(selectedBtn, selectedText) {
             const container = selectedBtn.closest('.question-card');
             
-            // Deshabilitar todos los botones de opciones
             container.querySelectorAll('.option-btn').forEach(btn => {
                 btn.disabled = true;
                 const isBtnCorrect = btn.getAttribute('data-correct') === 'true';
@@ -1553,16 +1549,16 @@
                 }
             });
 
-            // Rellenar la sección inferior de retroalimentación
             const activeQ = window.currentActiveQuestion;
             const correctTextEl = document.getElementById('feedback-correct-text');
             const discardTextEl = document.getElementById('feedback-discard-text');
             const bottomSection = document.getElementById('bottom-feedback-section');
 
+            // 1. En la parte de Opción Correcta: Únicamente se muestra la explicación correcta limpia, sin mezclar incorrectas
             correctTextEl.innerHTML = `<b>${activeQ.correctValue}:</b> ${activeQ.explanation}`;
 
+            // 2. En la parte de Descarte: Únicamente se muestran las opciones descartadas/incorrectas
             if (activeQ.discardExplanation && activeQ.discardExplanation.length > 0) {
-                // Filtrar o mostrar las explicaciones de descarte de las demás opciones
                 discardTextEl.innerHTML = activeQ.discardExplanation.map(item => `<div style="margin-bottom: 4px;">• ${item}</div>`).join('');
             } else {
                 discardTextEl.innerHTML = `Las demás opciones no corresponden a la primera línea de manejo o diagnóstico para este caso clínico.`;
@@ -1570,7 +1566,6 @@
 
             bottomSection.style.display = 'block';
 
-            // Mostrar el botón de siguiente pregunta
             const nextBtn = document.getElementById('next-q-btn');
             if (nextBtn) nextBtn.style.display = 'block';
         }
@@ -1611,7 +1606,7 @@
                     <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
                     <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
                     <textarea id="af-exp" rows="2" placeholder="Justificación de la Opción Correcta"></textarea>
-                    <textarea id="af-disc" rows="2" placeholder="Descarte de las demás opciones"></textarea>
+                    <textarea id="af-disc" rows="2" placeholder="Descarte de las opciones incorrectas"></textarea>
                 `;
             } else if (type === 'preguntas_paste') {
                 saveBtn.style.display = 'none';
@@ -1667,7 +1662,7 @@
                     let correctOpt = "";
                     let incorrectOpts = [];
                     let retroCorrect = "";
-                    let retroIncorrect = "";
+                    let discardList = [];
 
                     lines.forEach(line => {
                         let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
@@ -1679,9 +1674,9 @@
                             let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
                             if (optVal) incorrectOpts.push(optVal);
                         } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
-                            retroCorrect = cleanLine;
+                            retroCorrect = cleanLine.replace(/^correcto:\s*/i, '');
                         } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
-                            retroIncorrect = cleanLine;
+                            discardList.push(cleanLine.replace(/^incorrecto:\s*/i, ''));
                         } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
                             qText += " " + cleanLine;
                         }
@@ -1689,16 +1684,12 @@
 
                     if (qText && correctOpt) {
                         let allOptions = [correctOpt, ...incorrectOpts];
-                        let explanation = retroCorrect ? retroCorrect.replace(/^correcto:\s*/i, '') : "Caso clínico procesado correctamente.";
-                        let discardList = [];
-                        if (retroIncorrect) discardList.push(retroIncorrect.replace(/^incorrecto:\s*/i, ''));
-
                         customData[sub].preguntas.push({
                             id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
                             q: qText.trim(),
                             rawOptions: allOptions,
                             correctText: correctOpt,
-                            explanation: explanation,
+                            explanation: retroCorrect || "Caso clínico procesado correctamente.",
                             discardExplanation: discardList.length ? discardList : [`Las demás opciones no corresponden al diagnóstico de primera línea.`]
                         });
                         addedQ++;
