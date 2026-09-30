@@ -1412,9 +1412,14 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
+                // Limpiamos la explicación por si viene con el prefijo duplicado dentro del texto
+                let cleanExplanation = q.explanation || "Respuesta correcta validada.";
+                let prefixRegex = new RegExp(`^(${escapeRegExp(correctValue)})[:\\s\\-]+`, 'i');
+                cleanExplanation = cleanExplanation.replace(prefixRegex, '').trim();
+
                 window.currentActiveQuestion = {
                     correctValue: correctValue,
-                    explanation: q.explanation || "Respuesta correcta validada.",
+                    explanation: cleanExplanation,
                     discardExplanation: q.discardExplanation || []
                 };
 
@@ -1533,6 +1538,10 @@
                     `;
                 }).join('');
             }
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
         function checkAnswerNotebook(selectedBtn, selectedText) {
