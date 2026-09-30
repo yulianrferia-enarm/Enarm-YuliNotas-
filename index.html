@@ -736,6 +736,17 @@
             color: var(--text-dark);
         }
 
+        .subspecialty-section-title {
+            font-size: calc(14px * var(--font-scale));
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 16px 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 4px;
+        }
+
         .topic-checklist {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -1019,258 +1030,328 @@
             cirugia: { 
                 flashcards: [], 
                 preguntas: [], 
-                temario: [
-                    "Apendicitis aguda",
-                    "Abdomen agudo",
-                    "Patología biliar",
-                    "Colecistitis no complicada",
-                    "Colecistitis crónica litiásica",
-                    "Coledocolitiasis",
-                    "Colangitis",
-                    "Enfermedad diverticular",
-                    "Trastornos motores del esófago",
-                    "Acalasia",
-                    "Espasmo esofágico difuso",
-                    "Enfermedad por reflujo gastroesofágico (ERGE)",
-                    "Esófago de Barret",
-                    "Dispepsia funcional",
-                    "Cáncer de esófago",
-                    "Cáncer gástrico",
-                    "Gastritis",
-                    "Úlcera péptica",
-                    "Enfermedad ulcerosa péptica",
-                    "Úlcera péptica perforada",
-                    "Síndrome de Zollinger-Ellison",
-                    "Obesidad y cirugía bariátrica",
-                    "Obesidad en adultos",
-                    "Patología perianal",
-                    "Enfermedad hemorroidal",
-                    "Absceso perianal",
-                    "Fístula anal",
-                    "Fisura anal",
-                    "Hernias",
-                    "Hernias inguinales y femorales",
-                    "Hernia umbilical",
-                    "Hernia ventral",
-                    "Esplenectomía",
-                    "Enfermedad arterial periférica",
-                    "Oclusión arterial aguda",
-                    "Insuficiencia venosa crónica",
-                    "Oclusión intestinal",
-                    "Vólvulo de colon",
-                    "Isquemia intestinal",
-                    "Cáncer de colon (colorrectal)",
-                    "Hepatoblastoma",
-                    "Hepatocarcinoma",
-                    "Trasplante de hígado",
-                    "Cáncer de páncreas",
-                    "Pancreatitis aguda",
-                    "Pancreatitis crónica",
-                    "Mordedura de serpiente",
-                    "Mordedura por arañas",
-                    "Intoxicación por picadura de alacrán",
-                    "Picadura por himenópteros",
-                    "Quemaduras",
-                    "Quemaduras por frío",
-                    "ATLS (Advance Trauma Life Support)",
-                    "Trauma de tórax",
-                    "Trauma de abdomen",
-                    "Traumatismo craneoencefálico (TCE)",
-                    "Hematoma epidural",
-                    "Hematoma subdural",
-                    "Contusiones y hematomas intracerebrales",
-                    "Herniación uncal",
-                    "Úlceras por presión",
-                    "Derrame pleural",
-                    "Infección de sitio quirúrgico (ISQ)",
-                    "Dehiscencia de herida quirúrgica",
-                    "Otorrinolaringología",
-                    "Vértigo",
-                    "Vértigo postural paroxístico benigno (VPPB)",
-                    "Enfermedad de Ménière",
-                    "Neuronitis vestibular",
-                    "Neurinoma del acústico (Schwannoma vestibular)",
-                    "Hipoacusia",
-                    "Hipoacusia del recién nacido",
-                    "Fracturas del peñasco",
-                    "Fracturas faciales",
-                    "Parálisis facial (Bell)",
-                    "Epistaxis",
-                    "Rinitis alérgica",
-                    "Rinitis no alérgica",
-                    "Rinosinusitis aguda",
-                    "Pólipos nasales",
-                    "Patología maligna de senos paranasales",
-                    "Faringoamigdalitis aguda",
-                    "Absceso profundo de cuello",
-                    "Angiofibroma juvenil",
-                    "Patología tumoral maligna de la rinofaringe",
-                    "Patología tumoral maligna de la orofaringe",
-                    "Carcinoma epidermoide de laringe",
-                    "Patología congénita",
-                    "Patología infecciosa pediátrica",
-                    "Patología benigna de cuerdas vocales",
-                    "Papilomatosis laríngea juvenil (PLJR)",
-                    "Otitis externa aguda (OEA)",
-                    "Otoesclerosis",
-                    "Otitis media aguda",
-                    "Síndrome de apnea obstructiva del sueño",
-                    "Oftalmología",
-                    "Defectos refractivos",
-                    "Blefaritis",
-                    "Párpados",
-                    "Epitelioma basocelular (Carcinoma basocelular palpebral)",
-                    "Dacrioadenitis",
-                    "Dacriocistitis",
-                    "Estenosis congénita de la vía lagrimal",
-                    "Vítreo Desprendimiento de vítreo posterior (DVP)",
-                    "Desprendimiento de retina",
-                    "Retinopatía diabética",
-                    "Retinopatía hipertensiva",
-                    "Oclusión arterial retiniana",
-                    "Oclusión venosa retiniana",
-                    "Ambliopía",
-                    "Estrabismo",
-                    "Parálisis oculomotora",
-                    "Glaucoma",
-                    "Glaucoma primario de ángulo abierto (GPAA)",
-                    "Glaucoma de ángulo estrecho",
-                    "Glaucoma congénito",
-                    "Uveítis",
-                    "Catarata",
-                    "Catarata congénita",
-                    "Conjuntivitis",
-                    "Ojo seco",
-                    "Queratitis infecciosa",
-                    "Queratitis herpética",
-                    "Queratocono",
-                    "Escleritis",
-                    "Epiescleritis",
-                    "Trauma ocular",
-                    "Neuritis óptica",
-                    "Retinopatía del prematuro (ROP)",
-                    "Urología",
-                    "Hiperplasia prostática benigna",
-                    "Cáncer de próstata",
-                    "Litiasis renal",
-                    "Cólico renoureteral",
-                    "Bacteriuria asintomática e infección del tracto urinario (ITU) en el embarazo",
-                    "Infección de vías urinarias",
-                    "Pielonefritis aguda no complicada en el adulto",
-                    "Prostatitis",
-                    "Cáncer renal",
-                    "Cáncer de vejiga (vesical)",
-                    "Cáncer de testículo",
-                    "Trasplante renal",
-                    "Neurocirugía",
-                    "Neuralgia del trigémino",
-                    "Síndrome de hipertensión intracraneal",
-                    "Síndrome de herniación cerebral",
-                    "Hidrocefalia",
-                    "Hidrocefalia crónica del adulto",
-                    "Absceso cerebral",
-                    "Tumores cerebrales",
-                    "Traumatología y Ortopedia",
-                    "Principios generales de las fracturas",
-                    "Fracturas abiertas (expuestas)",
-                    "Síndrome compartimental",
-                    "Luxaciones y lesiones ligamentarias"
-                ] 
+                structuredTemario: [
+                    {
+                        category: "Cirugía General / Abdominal",
+                        topics: [
+                            "Apendicitis aguda",
+                            "Abdomen agudo",
+                            "Patología biliar",
+                            "Colecistitis no complicada",
+                            "Colecistitis crónica litiásica",
+                            "Coledocolitiasis",
+                            "Colangitis",
+                            "Enfermedad diverticular",
+                            "Trastornos motores del esófago",
+                            "Acalasia",
+                            "Espasmo esofágico difuso",
+                            "Enfermedad por reflujo gastroesofágico (ERGE)",
+                            "Esófago de Barret",
+                            "Dispepsia funcional",
+                            "Cáncer de esófago",
+                            "Cáncer gástrico",
+                            "Gastritis",
+                            "Úlcera péptica",
+                            "Enfermedad ulcerosa péptica",
+                            "Úlcera péptica perforada",
+                            "Síndrome de Zollinger-Ellison",
+                            "Obesidad y cirugía bariátrica",
+                            "Obesidad en adultos",
+                            "Patología perianal",
+                            "Enfermedad hemorroidal",
+                            "Absceso perianal",
+                            "Fístula anal",
+                            "Fisura anal",
+                            "Hernias",
+                            "Hernias inguinales y femorales",
+                            "Hernia umbilical",
+                            "Hernia ventral",
+                            "Esplenectomía",
+                            "Enfermedad arterial periférica",
+                            "Oclusión arterial aguda",
+                            "Insuficiencia venosa crónica",
+                            "Oclusión intestinal",
+                            "Vólvulo de colon",
+                            "Isquemia intestinal",
+                            "Cáncer de colon (colorrectal)",
+                            "Hepatoblastoma",
+                            "Hepatocarcinoma",
+                            "Trasplante de hígado",
+                            "Cáncer de páncreas",
+                            "Pancreatitis aguda",
+                            "Pancreatitis crónica",
+                            "Mordedura de serpiente",
+                            "Mordedura por arañas",
+                            "Intoxicación por picadura de alacrán",
+                            "Picadura por himenópteros",
+                            "Quemaduras",
+                            "Quemaduras por frío",
+                            "ATLS (Advance Trauma Life Support)",
+                            "Trauma de tórax",
+                            "Trauma de abdomen",
+                            "Traumatismo craneoencefálico (TCE)",
+                            "Hematoma epidural",
+                            "Hematoma subdural",
+                            "Contusiones y hematomas intracerebrales",
+                            "Herniación uncal",
+                            "Úlceras por presión",
+                            "Derrame pleural",
+                            "Infección de sitio quirúrgico (ISQ)",
+                            "Dehiscencia de herida quirúrgica"
+                        ]
+                    },
+                    {
+                        category: "Otorrinolaringología",
+                        topics: [
+                            "Otorrinolaringología",
+                            "Vértigo",
+                            "Vértigo postural paroxístico benigno (VPPB)",
+                            "Enfermedad de Ménière",
+                            "Neuronitis vestibular",
+                            "Neurinoma del acústico (Schwannoma vestibular)",
+                            "Hipoacusia",
+                            "Hipoacusia del recién nacido",
+                            "Fracturas del peñasco",
+                            "Fracturas faciales",
+                            "Parálisis facial (Bell)",
+                            "Epistaxis",
+                            "Rinitis alérgica",
+                            "Rinitis no alérgica",
+                            "Rinosinusitis aguda",
+                            "Pólipos nasales",
+                            "Patología maligna de senos paranasales",
+                            "Faringoamigdalitis aguda",
+                            "Absceso profundo de cuello",
+                            "Angiofibroma juvenil",
+                            "Patología tumoral maligna de la rinofaringe",
+                            "Patología tumoral maligna de la orofaringe",
+                            "Carcinoma epidermoide de laringe",
+                            "Patología congénita",
+                            "Patología infecciosa pediátrica",
+                            "Patología benigna de cuerdas vocales",
+                            "Papilomatosis laríngea juvenil (PLJR)",
+                            "Otitis externa aguda (OEA)",
+                            "Otoesclerosis",
+                            "Otitis media aguda",
+                            "Síndrome de apnea obstructiva del sueño"
+                        ]
+                    },
+                    {
+                        category: "Oftalmología",
+                        topics: [
+                            "Oftalmología",
+                            "Defectos refractivos",
+                            "Blefaritis",
+                            "Párpados",
+                            "Epitelioma basocelular (Carcinoma basocelular palpebral)",
+                            "Dacrioadenitis",
+                            "Dacriocistitis",
+                            "Estenosis congénita de la vía lagrimal",
+                            "Vítreo Desprendimiento de vítreo posterior (DVP)",
+                            "Desprendimiento de retina",
+                            "Retinopatía diabética",
+                            "Retinopatía hipertensiva",
+                            "Oclusión arterial retiniana",
+                            "Oclusión venosa retiniana",
+                            "Ambliopía",
+                            "Estrabismo",
+                            "Parálisis oculomotora",
+                            "Glaucoma",
+                            "Glaucoma primario de ángulo abierto (GPAA)",
+                            "Glaucoma de ángulo estrecho",
+                            "Glaucoma congénito",
+                            "Uveítis",
+                            "Catarata",
+                            "Catarata congénita",
+                            "Conjuntivitis",
+                            "Ojo seco",
+                            "Queratitis infecciosa",
+                            "Queratitis herpética",
+                            "Queratocono",
+                            "Escleritis",
+                            "Epiescleritis",
+                            "Trauma ocular",
+                            "Neuritis óptica",
+                            "Retinopatía del prematuro (ROP)"
+                        ]
+                    },
+                    {
+                        category: "Urología",
+                        topics: [
+                            "Urología",
+                            "Hiperplasia prostática benigna",
+                            "Cáncer de próstata",
+                            "Litiasis renal",
+                            "Cólico renoureteral",
+                            "Bacteriuria asintomática e infección del tracto urinario (ITU) en el embarazo",
+                            "Infección de vías urinarias",
+                            "Pielonefritis aguda no complicada en el adulto",
+                            "Prostatitis",
+                            "Cáncer renal",
+                            "Cáncer de vejiga (vesical)",
+                            "Cáncer de testículo",
+                            "Trasplante renal"
+                        ]
+                    },
+                    {
+                        category: "Neurocirugía",
+                        topics: [
+                            "Neurocirugía",
+                            "Neuralgia del trigémino",
+                            "Síndrome de hipertensión intracraneal",
+                            "Síndrome de herniación cerebral",
+                            "Hidrocefalia",
+                            "Hidrocefalia crónica del adulto",
+                            "Absceso cerebral",
+                            "Tumores cerebrales"
+                        ]
+                    },
+                    {
+                        category: "Traumatología y Ortopedia",
+                        topics: [
+                            "Traumatología y Ortopedia",
+                            "Principios generales de las fracturas",
+                            "Fracturas abiertas (expuestas)",
+                            "Síndrome compartimental",
+                            "Luxaciones y lesiones ligamentarias"
+                        ]
+                    }
+                ]
             },
             interna: { 
                 flashcards: [], 
                 preguntas: [], 
-                temario: [
-                    "Cardiología",
-                    "Insuficiencia cardíaca",
-                    "Arritmias",
-                    "Bradiarritmias",
-                    "Taquiarritmias",
-                    "Fibrilación auricular",
-                    "Síndrome coronario agudo",
-                    "Valvulopatías",
-                    "Cardiomiopatías",
-                    "Pericarditis aguda",
-                    "Hipertensión arterial sistémica",
-                    "Basic Life Support",
-                    "Advanced Cardiovascular Life Support",
-                    "Dermatología",
-                    "Enfermedades micóticas",
-                    "Toxicodermias",
-                    "Eritema multiforme mayor o síndrome de Stevens-Johnson",
-                    "Acné",
-                    "Alopecia",
-                    "Alopecia androgénica",
-                    "Alopecia areata",
-                    "Psoriasis",
-                    "Tumores cutáneos benignos",
-                    "Carcinoma basocelular",
-                    "Melanoma maligno",
-                    "Gastroenterología",
-                    "Enfermedad diarreica aguda en adultos",
-                    "Síndrome de colon irritable",
-                    "Enfermedad inflamatoria intestinal",
-                    "Alteraciones de metabolismo bilirrubina",
-                    "Abscesos hepáticos",
-                    "Absceso amebiano",
-                    "Hepatitis",
-                    "Hepatitis aguda",
-                    "Hemorragia digestiva alta por varices esofágicas",
-                    "Endocrinología",
-                    "Enfermedades tiroideas",
-                    "Hipertiroidismo o tirotoxicosis",
-                    "Nódulo tiroideo",
-                    "Tiroiditis",
-                    "Enfermedades de glándula suprarrenal",
-                    "Síndrome de Cushing",
-                    "Insuficiencia suprarrenal",
-                    "Hiperaldosteronismo",
-                    "Feocromocitoma",
-                    "Diabetes mellitus",
-                    "Cetoacidosis diabética",
-                    "Síndrome hiperglucémico hiperosmolar",
-                    "Pie diabético",
-                    "Hematología",
-                    "Anemia",
-                    "Leucemias",
-                    "Leucemia mieloide crónica",
-                    "Leucemia linfática crónica (LLC)",
-                    "Leucemias agudas",
-                    "Linfomas",
-                    "Linfoma no Hodgkin",
-                    "Linfoma Hodgkin",
-                    "Síndromes mieloproliferativos",
-                    "Policitemia vera",
-                    "Trombocitemia",
-                    "Mieloma múltiple",
-                    "Alteraciones de la coagulación",
-                    "Trombocitopenia",
-                    "Nefrología",
-                    "Insuficiencia renal aguda",
-                    "Insuficiencia renal prerrenal",
-                    "IRA parenquimatosa",
-                    "IRA postrenal",
-                    "Enfermedad renal crónica",
-                    "Síndrome nefrítico",
-                    "Síndrome nefrótico",
-                    "Glomerulonefritis",
-                    "Riñón y enfermedades sistémicas",
-                    "Nefropatía diabética",
-                    "Lupus eritematoso sistémico",
-                    "Vasculitis",
-                    "Enfermedad de Goodpasture",
-                    "Trastornos tubulares",
-                    "Microangiopatías trombóticas",
-                    "Neumología",
-                    "Enfermedad pulmonar obstructiva crónica",
-                    "Exacerbaciones",
-                    "Enfermedad tromboembólica venosa",
-                    "Cáncer de pulmón",
-                    "Asma en adulto",
-                    "Reumatología",
-                    "Enfermedades intersticiales",
-                    "Sarcoidosis"
-                ] 
+                structuredTemario: [
+                    {
+                        category: "Cardiología",
+                        topics: [
+                            "Cardiología",
+                            "Insuficiencia cardíaca",
+                            "Arritmias",
+                            "Bradiarritmias",
+                            "Taquiarritmias",
+                            "Fibrilación auricular",
+                            "Síndrome coronario agudo",
+                            "Valvulopatías",
+                            "Cardiomiopatías",
+                            "Pericarditis aguda",
+                            "Hipertensión arterial sistémica",
+                            "Basic Life Support",
+                            "Advanced Cardiovascular Life Support"
+                        ]
+                    },
+                    {
+                        category: "Dermatología",
+                        topics: [
+                            "Dermatología",
+                            "Enfermedades micóticas",
+                            "Toxicodermias",
+                            "Eritema multiforme mayor o síndrome de Stevens-Johnson",
+                            "Acné",
+                            "Alopecia",
+                            "Alopecia androgénica",
+                            "Alopecia areata",
+                            "Psoriasis",
+                            "Tumores cutáneos benignos",
+                            "Carcinoma basocelular",
+                            "Melanoma maligno"
+                        ]
+                    },
+                    {
+                        category: "Gastroenterología",
+                        topics: [
+                            "Gastroenterología",
+                            "Enfermedad diarreica aguda en adultos",
+                            "Síndrome de colon irritable",
+                            "Enfermedad inflamatoria intestinal",
+                            "Alteraciones de metabolismo bilirrubina",
+                            "Abscesos hepáticos",
+                            "Absceso amebiano",
+                            "Hepatitis",
+                            "Hepatitis aguda",
+                            "Hemorragia digestiva alta por varices esofágicas"
+                        ]
+                    },
+                    {
+                        category: "Endocrinología",
+                        topics: [
+                            "Endocrinología",
+                            "Enfermedades tiroideas",
+                            "Hipertiroidismo o tirotoxicosis",
+                            "Nódulo tiroideo",
+                            "Tiroiditis",
+                            "Enfermedades de glándula suprarrenal",
+                            "Síndrome de Cushing",
+                            "Insuficiencia suprarrenal",
+                            "Hiperaldosteronismo",
+                            "Feocromocitoma",
+                            "Diabetes mellitus",
+                            "Cetoacidosis diabética",
+                            "Síndrome hiperglucémico hiperosmolar",
+                            "Pie diabético"
+                        ]
+                    },
+                    {
+                        category: "Hematología",
+                        topics: [
+                            "Hematología",
+                            "Anemia",
+                            "Leucemias",
+                            "Leucemia mieloide crónica",
+                            "Leucemia linfática crónica (LLC)",
+                            "Leucemias agudas",
+                            "Linfomas",
+                            "Linfoma no Hodgkin",
+                            "Linfoma Hodgkin",
+                            "Síndromes mieloproliferativos",
+                            "Policitemia vera",
+                            "Trombocitemia",
+                            "Mieloma múltiple",
+                            "Alteraciones de la coagulación",
+                            "Trombocitopenia"
+                        ]
+                    },
+                    {
+                        category: "Nefrología",
+                        topics: [
+                            "Nefrología",
+                            "Insuficiencia renal aguda",
+                            "Insuficiencia renal prerrenal",
+                            "IRA parenquimatosa",
+                            "IRA postrenal",
+                            "Enfermedad renal crónica",
+                            "Síndrome nefrítico",
+                            "Síndrome nefrótico",
+                            "Glomerulonefritis",
+                            "Riñón y enfermedades sistémicas",
+                            "Nefropatía diabética",
+                            "Lupus eritematoso sistémico",
+                            "Vasculitis",
+                            "Enfermedad de Goodpasture",
+                            "Trastornos tubulares",
+                            "Microangiopatías trombóticas"
+                        ]
+                    },
+                    {
+                        category: "Neumología",
+                        topics: [
+                            "Neumología",
+                            "Enfermedad pulmonar obstructiva crónica",
+                            "Exacerbaciones",
+                            "Enfermedad tromboembólica venosa",
+                            "Cáncer de pulmón",
+                            "Asma en adulto"
+                        ]
+                    },
+                    {
+                        category: "Reumatología",
+                        topics: [
+                            "Reumatología",
+                            "Enfermedades intersticiales",
+                            "Sarcoidosis"
+                        ]
+                    }
+                ]
             },
             pedia: { 
                 flashcards: [], 
@@ -1505,7 +1586,13 @@
 
         function getActiveTopicsForCurrentTab() {
             const data = getData();
-            const rawTopics = (data[currentSubject] || {}).temario || ["General"];
+            const subData = data[currentSubject] || {};
+            let rawTopics = [];
+            if (subData.structuredTemario) {
+                subData.structuredTemario.forEach(cat => rawTopics.push(...cat.topics));
+            } else {
+                rawTopics = subData.temario || ["General"];
+            }
             const deletedList = (deletedTopics[currentSubject] && deletedTopics[currentSubject][currentTab]) 
                 ? deletedTopics[currentSubject][currentTab] 
                 : [];
@@ -1525,7 +1612,7 @@
         function updateCornerBadge() {
             const badge = document.getElementById('corner-badge');
             const data = getData();
-            const subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [] };
+            const subjectData = data[currentSubject] || { flashcards: [], preguntas: [], temario: [], structuredTemario: [] };
 
             if (currentTab === 'preguntas') {
                 const total = (subjectData.preguntas || []).length;
@@ -1546,9 +1633,15 @@
             } else if (currentTab === 'diapos') {
                 badge.textContent = `${countTopicItems(diaposLinks, currentSubject)} Links`;
             } else if (currentTab === 'temario') {
-                let totalPossibleSubjectChecks = subjectData.temario.length * 7;
+                let allTopicsList = [];
+                if (subjectData.structuredTemario) {
+                    subjectData.structuredTemario.forEach(cat => allTopicsList.push(...cat.topics));
+                } else {
+                    allTopicsList = subjectData.temario || [];
+                }
+                let totalPossibleSubjectChecks = allTopicsList.length * 7;
                 let completedSubjectChecks = 0;
-                subjectData.temario.forEach((_, idx) => {
+                allTopicsList.forEach((_, idx) => {
                     const topicKey = `${currentSubject}_${idx}`;
                     ['gpc', 'cto', 'drre', 'madera', 'diapos', 'clase', 'yuli'].forEach(res => {
                         if (topicChecklist[`${topicKey}_${res}`]) completedSubjectChecks++;
@@ -1933,36 +2026,74 @@
                 const resourcesRow2 = ['diapos', 'clase', 'yuli'];
                 const labelsRow2 = ['Diapos', 'Clase', 'YuliNotas'];
 
-                area.innerHTML = subjectData.temario.map((t, idx) => {
-                    const topicKey = `${currentSubject}_${idx}`;
-                    return `
-                        <div class="topic-card">
-                            <div class="topic-header">${t}</div>
-                            <div class="topic-checklist" style="grid-template-columns: repeat(4, 1fr);">
-                                ${resourcesRow1.map((res, rIdx) => {
-                                    const checkKey = `${topicKey}_${res}`;
-                                    return `
-                                        <div class="check-item">
-                                            <span>${labelsRow1[rIdx]}</span>
-                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
-                                        </div>
-                                    `;
-                                }).join('')}
+                if (subjectData.structuredTemario) {
+                    let globalTopicIndex = 0;
+                    area.innerHTML = subjectData.structuredTemario.map(cat => {
+                        let catHtml = `<div class="subspecialty-section-title">📂 ${cat.category}</div>`;
+                        catHtml += cat.topics.map(t => {
+                            const topicKey = `${currentSubject}_${globalTopicIndex++}`;
+                            return `
+                                <div class="topic-card">
+                                    <div class="topic-header">${t}</div>
+                                    <div class="topic-checklist" style="grid-template-columns: repeat(4, 1fr);">
+                                        ${resourcesRow1.map((res, rIdx) => {
+                                            const checkKey = `${topicKey}_${res}`;
+                                            return `
+                                                <div class="check-item">
+                                                    <span>${labelsRow1[rIdx]}</span>
+                                                    <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                    <div class="topic-checklist" style="margin-top: 4px; grid-template-columns: repeat(3, 1fr);">
+                                        ${resourcesRow2.map((res, rIdx) => {
+                                            const checkKey = `${topicKey}_${res}`;
+                                            return `
+                                                <div class="check-item">
+                                                    <span>${labelsRow2[rIdx]}</span>
+                                                    <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                        return catHtml;
+                    }).join('');
+                } else {
+                    area.innerHTML = subjectData.temario.map((t, idx) => {
+                        const topicKey = `${currentSubject}_${idx}`;
+                        return `
+                            <div class="topic-card">
+                                <div class="topic-header">${t}</div>
+                                <div class="topic-checklist" style="grid-template-columns: repeat(4, 1fr);">
+                                    ${resourcesRow1.map((res, rIdx) => {
+                                        const checkKey = `${topicKey}_${res}`;
+                                        return `
+                                            <div class="check-item">
+                                                <span>${labelsRow1[rIdx]}</span>
+                                                <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                                <div class="topic-checklist" style="margin-top: 4px; grid-template-columns: repeat(3, 1fr);">
+                                    ${resourcesRow2.map((res, rIdx) => {
+                                        const checkKey = `${topicKey}_${res}`;
+                                        return `
+                                            <div class="check-item">
+                                                <span>${labelsRow2[rIdx]}</span>
+                                                <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
                             </div>
-                            <div class="topic-checklist" style="margin-top: 4px; grid-template-columns: repeat(3, 1fr);">
-                                ${resourcesRow2.map((res, rIdx) => {
-                                    const checkKey = `${topicKey}_${res}`;
-                                    return `
-                                        <div class="check-item">
-                                            <span>${labelsRow2[rIdx]}</span>
-                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                        `;
+                    }).join('');
+                }
             }
         }
 
