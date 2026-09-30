@@ -541,7 +541,6 @@
             margin-bottom: 4px;
         }
 
-        /* DISEÑO MEJORADO DE OPCIONES (Separadas individualmente tipo tarjeta) */
         .option-container {
             display: flex;
             flex-direction: column;
@@ -1322,7 +1321,7 @@
                 `;
             } else if (type === 'preguntas_paste') {
                 container.innerHTML = `
-                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega exactamente tu texto. Se separarán de manera inteligente tus preguntas, opciones y retroalimentaciones.</p>
+                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega tu texto completo. El sistema separará automáticamente cada caso clínico.</p>
                     <textarea id="adm-paste-text" placeholder="Pega aquí el texto completo con múltiples preguntas..." rows="10"></textarea>
                 `;
             } else if (type === 'flashcard_1x1') {
@@ -1404,8 +1403,11 @@
                 const text = document.getElementById('adm-paste-text').value.trim();
                 if (!text) return alert('Pega algún texto.');
 
-                // MEJORA: Separación limpia y robusta basada en numeraciones y patrones de casos
-                let rawBlocks = text.split(/(?=\n\s*(?:Caso\s*\d+|Pregunta\s*\d+|\d+[\.\)]\s+(?:Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente|Acude|[A-Z])))/gi);
+                // MEJORA: Separador avanzado y dinámico multicriterio para múltiples casos clínicos
+                let rawBlocks = text.split(/(?=\n\s*(?:Caso\s*\d+|Pregunta\s*\d+|\d+[\.\)]\s*(?:Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente|Acude|[A-Z])))/gi);
+                if (rawBlocks.length <= 1) {
+                    rawBlocks = text.split(/(?=\bCaso\s*\d+|\bPregunta\s*\d+)/gi);
+                }
                 if (rawBlocks.length <= 1) {
                     rawBlocks = text.split(/(?=\n\s*\d+[\.\)])/);
                 }
@@ -1436,7 +1438,6 @@
                     qText = qText.replace(/^[0-9]+[\.\)]\s*/, '').replace(/^(?:Caso\s*\d*[:\.]|Pregunta\s*\d*[:\.]|Caso clínico[:\s]*)/i, '').trim();
                     if (!qText) qText = "Caso clínico ENARM";
 
-                    // MEJORA: Extracción sin repeticiones cruzadas para explicación y descartes
                     let explanation = "Respuesta correcta basada en GPC.";
                     let expMatch = cleanBlock.match(/(?:Explicación de la respuesta correcta|Explicación|Retroalimentación|Justificación)[:\s]*([\s\S]*?)(?=(?:Por qué las otras son incorrectas|Por qué se descartan|Opciones incorrectas|$))/i);
                     if (expMatch && expMatch[1].trim()) {
