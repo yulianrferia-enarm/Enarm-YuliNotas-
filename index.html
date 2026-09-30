@@ -431,7 +431,7 @@
 
         .flashcard {
             perspective: 1000px;
-            min-height: 220px;
+            min-height: 180px;
             margin-bottom: 12px;
             cursor: pointer;
         }
@@ -440,9 +440,8 @@
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 220px;
             text-align: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transition: transform 0.5s;
             transform-style: preserve-3d;
         }
 
@@ -452,57 +451,39 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            min-height: 220px;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 28px;
+            padding: 20px;
             font-size: calc(15px * var(--font-scale));
-            font-weight: 500;
-            line-height: 1.5;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            font-weight: 600;
+            line-height: 1.4;
+            border: 1px solid var(--border-color);
         }
 
         .flashcard-front {
-            background-color: var(--card-bg);
+            background-color: var(--info-bg);
             color: var(--text-dark);
         }
 
-        body.dark-mode .flashcard-front {
-            background-color: #1A1A1C;
-            border: 1px solid #323236;
-        }
-
         .flashcard-back {
-            background: linear-gradient(135deg, var(--primary-color), #512DA8);
+            background-color: var(--primary-color);
             color: #FFFFFF;
             transform: rotateY(180deg);
-            font-weight: 600;
-            box-shadow: 0 10px 35px rgba(142, 36, 170, 0.25);
         }
 
         .card-tag-badge {
             position: absolute;
-            top: 14px;
-            right: 16px;
-            font-size: calc(9.5px * var(--font-scale));
-            padding: 4px 10px;
-            border-radius: 20px;
+            top: 10px;
+            right: 10px;
+            font-size: calc(10px * var(--font-scale));
+            padding: 3px 8px;
+            border-radius: 6px;
             font-weight: 700;
-            background: var(--info-bg);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            letter-spacing: 0.5px;
-        }
-
-        .flashcard-back .card-tag-badge {
-            background: rgba(255, 255, 255, 0.15);
-            color: #FFFFFF;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0,0,0,0.1);
         }
 
         .anki-controls {
@@ -513,111 +494,91 @@
 
         .anki-btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: calc(11px * var(--font-scale));
             font-weight: 700;
             color: white;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         .anki-hard { background-color: #E53935; }
         .anki-good { background-color: #FB8C00; }
         .anki-easy { background-color: #43A047; }
 
+        /* Preguntas y Estilo NotebookLM por Opción */
         .question-card {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             padding-top: 4px;
         }
 
         .question-text {
-            font-size: calc(14.5px * var(--font-scale));
-            font-weight: 700;
-            line-height: 1.45;
-            margin-bottom: 4px;
+            font-size: calc(14px * var(--font-scale));
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 6px;
         }
 
         .option-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 6px;
+            gap: 4px;
         }
 
         .option-btn {
-            padding: 14px 16px;
+            padding: 12px;
             border: 1px solid var(--border-color);
+            border-radius: 10px;
             background: var(--card-bg);
             color: var(--text-dark);
             text-align: left;
             font-size: calc(13px * var(--font-scale));
-            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
             width: 100%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-        }
-
-        .option-btn:hover:not(:disabled) {
-            background: rgba(142, 36, 170, 0.04);
-            border-color: var(--primary-color);
-            transform: translateY(-1px);
         }
 
         .option-btn.correct {
             background-color: #D4EDDA !important;
+            border-color: #28A745 !important;
             color: #155724 !important;
-            border-color: #C3E6CB !important;
             font-weight: 700;
         }
 
         .option-btn.incorrect {
             background-color: #F8D7DA !important;
+            border-color: #DC3545 !important;
             color: #721C24 !important;
-            border-color: #F5C6CB !important;
             font-weight: 700;
         }
 
-        .global-feedback-box {
+        .option-feedback {
             display: none;
-            margin-top: 12px;
-            padding: 16px;
             background: var(--info-bg);
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--primary-color);
-            border-radius: 12px;
-            font-size: calc(12.5px * var(--font-scale));
-            line-height: 1.5;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .global-feedback-box.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            border-left: 3px solid var(--primary-color);
+            padding: 8px 12px;
+            border-radius: 0 0 8px 8px;
+            font-size: calc(11.5px * var(--font-scale));
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            line-height: 1.4;
         }
 
         .next-q-btn {
             display: none;
             margin-top: 12px;
-            padding: 12px;
+            padding: 10px;
             background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: calc(12.5px * var(--font-scale));
+            font-size: calc(12px * var(--font-scale));
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 12px rgba(142,36,170,0.25);
         }
 
         .image-modal-overlay {
@@ -850,108 +811,6 @@
             font-weight: 700;
             cursor: pointer;
         }
-
-        .sim-setup-card {
-            text-align: center;
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            align-items: center;
-        }
-
-        .sim-setup-card h3 {
-            font-size: calc(16px * var(--font-scale));
-            color: var(--primary-color);
-        }
-
-        .sim-setup-card p {
-            font-size: calc(12px * var(--font-scale));
-            color: var(--text-muted);
-            max-width: 450px;
-            line-height: 1.4;
-        }
-
-        .sim-btn-group {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            max-width: 400px;
-            justify-content: center;
-        }
-
-        .sim-option-btn {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid var(--border-color);
-            background: var(--info-bg);
-            color: var(--text-dark);
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: calc(12px * var(--font-scale));
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .sim-option-btn.selected {
-            border-color: var(--primary-color);
-            background: var(--card-bg);
-            color: var(--primary-color);
-        }
-
-        .sim-start-btn {
-            width: 100%;
-            max-width: 400px;
-            padding: 14px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: calc(14px * var(--font-scale));
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .sim-header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--info-bg);
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 12px;
-            font-size: calc(12px * var(--font-scale));
-            font-weight: 700;
-        }
-
-        .sim-timer {
-            color: #E53935;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .sim-results-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .sim-score-box {
-            background: var(--info-bg);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 14px;
-        }
-
-        .sim-score-num {
-            font-size: calc(32px * var(--font-scale));
-            font-weight: 800;
-            color: var(--primary-color);
-            margin: 6px 0;
-        }
     </style>
 </head>
 <body>
@@ -977,7 +836,7 @@
             <h3>⚡ Agregar / Administrar Contenido</h3>
             <select id="admin-type" onchange="changeAdminFields()">
                 <option value="pregunta_1x1">Pregunta (1x1)</option>
-                <option value="preguntas_paste">Preguntas (Pegar y Ordenar Múltiples)</option>
+                <option value="preguntas_paste">Preguntas (Pegar y Ordenar)</option>
                 <option value="flashcard_1x1">Flashcard (1x1)</option>
                 <option value="flashcards_paste">Flashcards (Pegar y Ordenar)</option>
                 <option value="delete_content">🗑️ Eliminar Contenido (Movido por error)</option>
@@ -1014,7 +873,6 @@
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
             <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
             <button class="tab-btn btn-tab-diapos" onclick="selectTab('diapos')">Diapos</button>
-            <button class="tab-btn btn-tab-simulacro" onclick="selectTab('simulacro')">Simulacro ENARM</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
         </div>
 
@@ -1048,16 +906,19 @@
         let baseData = {
             gineco: {
                 flashcards: [{ id: "g1", q: "¿Causa más frecuente de sangrado uterino anormal en edad fértil?", a: "Hemorragia Uterina Disfuncional (Anovulación).", tag: "normal" }],
-                preguntas: [
-                    { 
-                        id: "qp_g1",
-                        q: "Femenina de 32 años con dismenorrea secundaria progresiva, dispareunia e infertilidad. ¿Estándar de oro diagnóstico?", 
-                        rawOptions: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
-                        correctText: "Laparoscopia diagnóstica", 
-                        explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
-                        discardExplanation: "Los estudios de imagen y marcadores séricos no descartan los implantes peritoneales ni reemplazan la visualización directa por laparoscopia."
-                    }
-                ],
+                preguntas: [{ 
+                    id: "qp_g1",
+                    q: "Femenina de 32 años con dismenorrea secundaria progresiva, dispareunia e infertilidad. ¿Estándar de oro diagnóstico?", 
+                    rawOptions: ["Laparoscopia diagnóstica", "Ecografía pélvica", "Resonancia Magnética", "CA-125 sérico"], 
+                    correctText: "Laparoscopia diagnóstica", 
+                    explanation: "La laparoscopia con toma de biopsia e histopatología es el estándar de oro para confirmar endometriosis.",
+                    discardExplanation: [
+                        "<b>Laparoscopia diagnóstica:</b> CORRECTA. Permite visión directa e histopatología.",
+                        "<b>Ecografía pélvica:</b> INCORRECTA. Útil como estudio inicial para endometriomas, pero no descarta implantes peritoneales.",
+                        "<b>Resonancia Magnética:</b> INCORRECTA. Reservada para endometriosis profunda con compromiso visceral.",
+                        "<b>CA-125 sérico:</b> INCORRECTA. Marcador inespecífico; no se recomienda de rutina."
+                    ] 
+                }],
                 temario: [
                     "Síndrome de ovario poliquístico", "Menopausia y climaterio", "Osteoporosis", "Amenorrea primaria", 
                     "Amenorrea secundaria", "Metrorragias", "Insuficiencia ovárica primaria", "Cervicovaginitis", 
@@ -1068,16 +929,19 @@
             },
             obste: {
                 flashcards: [{ id: "o1", q: "¿Tratamiento de primera línea en Preeclampsia severa?", a: "Sulfato de Magnesio.", tag: "normal" }],
-                preguntas: [
-                    { 
-                        id: "qp_o1",
-                        q: "Gestante de 34 semanas con sangrado transvaginal rojo rutilante, indoloro y sin actividad uterina. ¿Diagnóstico probable?", 
-                        rawOptions: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
-                        correctText: "Placenta Previa", 
-                        explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
-                        discardExplanation: "El DPPNI y la ruptura uterina cursan con dolor abdominal y contracciones o alteraciones dinámicas, a diferencia de la placenta previa que es indolora."
-                    }
-                ],
+                preguntas: [{ 
+                    id: "qp_o1",
+                    q: "Gestante de 34 semanas con sangrado transvaginal rojo rutilante, indoloro y sin actividad uterina. ¿Diagnóstico probable?", 
+                    rawOptions: ["Placenta Previa", "Desprendimiento Prematuro de Placenta (DPPNI)", "Ruptura Uterina", "Vasa Previa"], 
+                    correctText: "Placenta Previa", 
+                    explanation: "La placenta previa cursa típicamente con sangrado rojo rutilante indoloro en el tercer trimestre.",
+                    discardExplanation: [
+                        "<b>Placenta Previa:</b> CORRECTA. Sangrado indoloro, rojo brillante y de inicio insidioso.",
+                        "<b>DPPNI:</b> INCORRECTA. Cursa con dolor abdominal agudo, hipertonía uterina y sangrado oscuro.",
+                        "<b>Ruptura Uterina:</b> INCORRECTA. Cursa con dolor lacerante súbito, cese de contracciones y pérdida del plano de presentación.",
+                        "<b>Vasa Previa:</b> INCORRECTA. Sangrado asociado a la ruptura de membranas con sufrimiento fetal agudo inmediato."
+                    ] 
+                }],
                 temario: [
                     "Control prenatal", "Amenaza de aborto", "Aborto", "Embarazo ectópico", "Enfermedad trofoblástica gestacional", 
                     "Placenta previa", "Acretismo", "Abrupto placentario/DPPNI", "Rotura uterina", "Hemorragia post parto (HPP)", 
@@ -1086,52 +950,9 @@
                     "Enfermedad hipertensiva del embarazo", "Diabetes gestacional"
                 ]
             },
-            cirugia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Abdomen agudo", "Apendicitis aguda", "Colecistitis aguda", "Colelitiasis", "Coledocolitiasis", 
-                    "Colangitis", "Pancreatitis aguda", "Obstrucción intestinal", "Hernias de la pared abdominal", 
-                    "Enfermedad ulcerosa péptica perforada", "Diverticulitis aguda", "Hemorragia de tubo digestivo alto", 
-                    "Hemorragia de tubo digestivo bajo", "Isquemia mesentérica", "Trauma abdominal cerrado y penetrante", 
-                    "Enfermedad hemorroidal", "Fisura anal", "Absceso anorrectal y fístula", "Tumores de colon y recto",
-                    "Esofagitis por reflujo y hernia hiatal", "Cáncer de esófago", "Cáncer gástrico", "Urgencias vasculares periféricas",
-                    "Pie diabético", "Infecciones de tejidos blandos y fascitis necrosante", "Quemaduras", "Trasplantes abdominales"
-                ] 
-            },
-            interna: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Hipertensión arterial sistémica", "Insuficiencia cardíaca", "Infarto agudo de miocardio", "Arritmias cardíacas", 
-                    "Fiebre reumática", "Endocarditis infecciosa", "Enfermedad pulmonar obstructiva crónica (EPOC)", "Asma bronquial", 
-                    "Neumonía adquirida en la comunidad", "Tuberculosis pulmonar", "Tromboembolia pulmonar", "Diabetes mellitus tipo 1", 
-                    "Diabetes mellitus type 2", "Cetoacidosis diabética", "Estado hiperosmolar hiperglucémico", "Hipotiroidismo", 
-                    "Hipertiroidismo", "Enfermedad renal crónica", "Insuficiencia renal aguda", "Glomerulonefritis", 
-                    "Artritis reumateide", "Lupus eritematoso sistémico", "Gota", "Cirrosis hepática", "Hepatitis viral aguda", 
-                    "Enfermedad por reflujo gastroesofágico", "Úlcera péptica", "Enfermedad inflamatoria intestinal", "Accidente cerebrovascular", 
-                    "Crisis convulsivas y epilepsia", "Cefalea y migraña", "Meningitis bacteriana", "Anemia ferropénica", 
-                    "Anemias megaloblásticas", "Anemias hemolíticas", "Leucemias agudas", "Linfomas", "Insuficiencia suprarrenal",
-                    "Síndrome de Cushing", "Trastornos del equilibrio ácido-base", "Trastornos hidroelectrolíticos", "Infección de vías urinarias",
-                    "VIH / SIDA y enfermedades oportunistas", "Enfermedad tromboembolica venosa", "Shock séptico y circulatorio"
-                ] 
-            },
-            pedia: { 
-                flashcards: [], 
-                preguntas: [], 
-                temario: [
-                    "Reanimación neonatal", "Ictericia neonatal", "Sepsis neonatal", "Síndrome de dificultad respiratoria del recién nacido", 
-                    "Enterocolitis necrosante", "Infección de vías urinarias en pediatría", "Diarrea aguda y deshidratación", 
-                    "Infecciones respiratorias agudas altas (faringoamigdalitis, otitis)", "Bronquiolitis", "Neumonía en pediatría", 
-                    "Asma infantil", "Desnutrición infantil", "Obesidad infantil", "Esquema nacional de vacunación", 
-                    "Crecimiento y desarrollo (Milestones)", "Trastornos del desarrollo psicomotor", "Convulsiones febriles", 
-                    "Epilepsia en la infancia", "Varicela", "Sarampión", "Rubeola", "Escarlatina", "Enfermedad de Kawasaki", 
-                    "Purpura de Henoch-Schönlein", "Fiebre reumática en pediatría", "Cardiopatías congénitas acianógenas", 
-                    "Cardiopatías congénitas cianógenas", "Leucemia linfoblástica aguda en pediatría", "Deshidratación y trastornos hidroelectrolíticos en pediatría",
-                    "Lactancia materna y alimentación complementaria", "Talla baja y trastornos del crecimiento", "Pubertad precoz y retraso puberal",
-                    "Diabetes mellitus en la infancia", "Maltrato infantil y síndrome del niño sacudido", "Infecciones del sistema nervioso central en pediatría"
-                ] 
-            }
+            cirugia: { flashcards: [], preguntas: [], temario: ["Abdomen agudo", "Apendicitis aguda", "Patología biliar"] },
+            interna: { flashcards: [], preguntas: [], temario: ["Insuficiencia cardíaca", "Hipertensión arterial sistémica"] },
+            pedia: { flashcards: [], preguntas: [], temario: ["Reanimación neonatal", "Ictericia neonatal"] }
         };
 
         let customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
@@ -1157,9 +978,6 @@
         let currentTab = localStorage.getItem('yn_current_tab') || 'preguntas';
         let activeCardFilter = 'all';
 
-        let simState = JSON.parse(localStorage.getItem('yn_sim_state') || 'null');
-        let simTimerInterval = null;
-
         let currentModalList = [];
         let currentModalIndex = 0;
         let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, initialDistance = 0, isPanning = false;
@@ -1175,6 +993,56 @@
                 if (e.key === 'ArrowLeft') prevModalItem();
             }
         });
+
+        const modalOverlay = document.getElementById('image-modal');
+        modalOverlay.addEventListener('touchstart', (e) => {
+            const img = document.getElementById('modal-active-img');
+            if (!img) return;
+            if (e.touches.length === 2) {
+                isPanning = false;
+                initialDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+            } else if (e.touches.length === 1 && scale > 1) {
+                isPanning = true;
+                startX = e.touches[0].clientX - pointX;
+                startY = e.touches[0].clientY - pointY;
+            }
+        }, { passive: false });
+
+        modalOverlay.addEventListener('touchmove', (e) => {
+            const img = document.getElementById('modal-active-img');
+            if (!img) return;
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+                if (initialDistance > 0) {
+                    let factor = currentDistance / initialDistance;
+                    scale = Math.min(Math.max(1, scale * factor), 5);
+                    initialDistance = currentDistance;
+                    updateImageTransform(img);
+                }
+            } else if (e.touches.length === 1 && isPanning && scale > 1) {
+                e.preventDefault();
+                pointX = e.touches[0].clientX - startX;
+                pointY = e.touches[0].clientY - startY;
+                updateImageTransform(img);
+            }
+        }, { passive: false });
+
+        modalOverlay.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) initialDistance = 0;
+            if (e.touches.length === 0) isPanning = false;
+        });
+
+        function updateImageTransform(img) {
+            img.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        }
+
+        function resetZoom(e) {
+            if (e) e.stopPropagation();
+            scale = 1; pointX = 0; pointY = 0;
+            const img = document.getElementById('modal-active-img');
+            if (img) updateImageTransform(img);
+        }
 
         function changeFontSize(delta) {
             currentFontScale = Math.min(Math.max(currentFontScale + delta, 0.8), 1.6);
@@ -1239,12 +1107,8 @@
             } else if (currentTab === 'madera') {
                 badge.textContent = `${countTopicItems(maderaFiles, currentSubject)} Madera`;
             } else if (currentTab === 'flashcards') {
-                let cards = subjectData.flashcards || [];
-                if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-                const total = cards.length;
-                if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
-                if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
-                let cIdx = cardIndices[currentSubject][activeCardFilter];
+                const total = (subjectData.flashcards || []).length;
+                let cIdx = cardIndices[currentSubject] || 0;
                 badge.textContent = total > 0 ? `${(cIdx % total) + 1}/${total}` : '0/0';
             } else if (currentTab === 'resumenes') {
                 badge.textContent = `${countTopicItems(infographicImages, currentSubject)} Infografías`;
@@ -1254,8 +1118,6 @@
                 badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
             } else if (currentTab === 'diapos') {
                 badge.textContent = `${countTopicItems(diaposLinks, currentSubject)} Links`;
-            } else if (currentTab === 'simulacro') {
-                badge.textContent = simState && simState.active ? `Simulacro` : `Examen`;
             } else if (currentTab === 'temario') {
                 let totalPossibleSubjectChecks = subjectData.temario.length * 8;
                 let completedSubjectChecks = 0;
@@ -1296,305 +1158,12 @@
             renderContent();
         }
 
-        function toggleAdminPanel() {
-            const panel = document.getElementById('admin-panel');
-            panel.classList.toggle('active');
-            if (panel.classList.contains('active')) {
-                changeAdminFields();
-            }
-        }
-
-        function changeAdminFields() {
-            const type = document.getElementById('admin-type').value;
-            const container = document.getElementById('admin-fields');
-            
-            if (type === 'pregunta_1x1') {
-                container.innerHTML = `
-                    <textarea id="adm-q" placeholder="Caso clínico / Pregunta..." rows="3"></textarea>
-                    <input type="text" id="adm-opt0" placeholder="Opción A (Correcta preferentemente)">
-                    <input type="text" id="adm-opt1" placeholder="Opción B">
-                    <input type="text" id="adm-opt2" placeholder="Opción C">
-                    <input type="text" id="adm-opt3" placeholder="Opción D">
-                    <input type="text" id="adm-correct" placeholder="Texto exacto de la opción correcta">
-                    <textarea id="adm-exp" placeholder="Explicación de la respuesta correcta..." rows="2"></textarea>
-                    <textarea id="adm-disc" placeholder="Resumen corto de por qué son incorrectas las demás..." rows="2"></textarea>
-                `;
-            } else if (type === 'preguntas_paste') {
-                container.innerHTML = `
-                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Pega tu texto completo. El sistema separará automáticamente cada caso clínico.</p>
-                    <textarea id="adm-paste-text" placeholder="Pega aquí el texto completo con múltiples preguntas..." rows="10"></textarea>
-                `;
-            } else if (type === 'flashcard_1x1') {
-                container.innerHTML = `
-                    <textarea id="adm-fc-q" placeholder="Pregunta / Concepto (Frente)..." rows="2"></textarea>
-                    <textarea id="adm-fc-a" placeholder="Respuesta (Reverso)..." rows="2"></textarea>
-                    <input type="text" id="adm-fc-tag" placeholder="Etiqueta (ej. normal, high)">
-                `;
-            } else if (type === 'flashcards_paste') {
-                container.innerHTML = `
-                    <textarea id="adm-fc-paste" placeholder="Pregunta | Respuesta (una por renglón)..." rows="6"></textarea>
-                `;
-            } else if (type === 'delete_content') {
-                let customSub = customData[currentSubject] || { preguntas: [], flashcards: [] };
-                let html = `<p style="font-size:12px; font-weight:700; margin-bottom:8px;">Preguntas agregadas personalizadas:</p>`;
-                if (customSub.preguntas && customSub.preguntas.length > 0) {
-                    customSub.preguntas.forEach((p, idx) => {
-                        html += `
-                            <div class="delete-item-row">
-                                <span>[Pregunta] ${p.q.substring(0, 40)}...</span>
-                                <button class="btn-mini-delete" onclick="deleteCustomItem('preguntas', ${idx})">Eliminar</button>
-                            </div>
-                        `;
-                    });
-                } else {
-                    html += `<p style="font-size:11px; color:var(--text-muted);">No hay preguntas personalizadas en esta materia.</p>`;
-                }
-
-                html += `<p style="font-size:12px; font-weight:700; margin:12px 0 8px 0;">Flashcards agregadas personalizadas:</p>`;
-                if (customSub.flashcards && customSub.flashcards.length > 0) {
-                    customSub.flashcards.forEach((f, idx) => {
-                        html += `
-                            <div class="delete-item-row">
-                                <span>[Flashcard] ${f.q.substring(0, 40)}...</span>
-                                <button class="btn-mini-delete" onclick="deleteCustomItem('flashcards', ${idx})">Eliminar</button>
-                            </div>
-                        `;
-                    });
-                } else {
-                    html += `<p style="font-size:11px; color:var(--text-muted);">No hay flashcards personalizadas en esta materia.</p>`;
-                }
-                container.innerHTML = html;
-            }
-        }
-
-        function saveAdminContent() {
-            const type = document.getElementById('admin-type').value;
-            const sub = document.getElementById('admin-subject').value;
-
-            if (!customData[sub]) customData[sub] = { preguntas: [], flashcards: [] };
-
-            if (type === 'pregunta_1x1') {
-                const q = document.getElementById('adm-q').value.trim();
-                const o0 = document.getElementById('adm-opt0').value.trim();
-                const o1 = document.getElementById('adm-opt1').value.trim();
-                const o2 = document.getElementById('adm-opt2').value.trim();
-                const o3 = document.getElementById('adm-opt3').value.trim();
-                const correctText = document.getElementById('adm-correct').value.trim();
-                const exp = document.getElementById('adm-exp').value.trim();
-                const discText = document.getElementById('adm-disc').value.trim();
-
-                if (!q || !o0 || !correctText) {
-                    alert('Por favor completa al menos la pregunta, las opciones y la respuesta correcta.');
-                    return;
-                }
-
-                const rawOptions = [o0, o1, o2, o3].filter(o => o !== '');
-
-                customData[sub].preguntas.push({
-                    id: 'custom_qp_' + Date.now() + '_' + Math.floor(Math.random()*1000),
-                    q,
-                    rawOptions,
-                    correctText,
-                    explanation: exp || "Respuesta correcta basada en guías clínicas.",
-                    discardExplanation: discText || "No corresponden al manejo o diagnóstico de primera elección para este caso."
-                });
-                alert('¡Pregunta guardada con éxito!');
-            } else if (type === 'preguntas_paste') {
-                const text = document.getElementById('adm-paste-text').value.trim();
-                if (!text) return alert('Pega algún texto.');
-
-                // MEJORA: Separador avanzado y robusto multicriterio para múltiples preguntas/casos clínicos
-                let rawBlocks = text.split(/(?=\n\s*(?:Caso\s*\d+|Pregunta\s*\d+|\d+[\.\)]\s*(?:Femenina|Masculino|Paciente|Mujer|Hombre|Gestante|Adolescente|Acude|[A-Z])))/gi);
-                if (rawBlocks.length <= 1) {
-                    rawBlocks = text.split(/(?=\bCaso\s*\d+|\bPregunta\s*\d+)/gi);
-                }
-                if (rawBlocks.length <= 1) {
-                    rawBlocks = text.split(/(?=\n\s*\d+[\.\)]\s+[A-Z\¿])/);
-                }
-                if (rawBlocks.length <= 1) {
-                    rawBlocks = [text];
-                }
-
-                let addedCount = 0;
-                rawBlocks.forEach((block, bIdx) => {
-                    let cleanBlock = block.trim();
-                    if (cleanBlock.length < 10) return;
-
-                    let optMatches = cleanBlock.match(/[A-Da-d][\.\)]\s*([^\n]+)/g);
-                    let rawOptions = [];
-                    if (optMatches && optMatches.length >= 2) {
-                        rawOptions = optMatches.map(o => o.replace(/^[A-Da-d][\.\)]\s*/, '').trim());
-                    } else {
-                        rawOptions = ["Opción A", "Opción B", "Opción C", "Opción D"];
-                    }
-
-                    let qText = cleanBlock;
-                    if (optMatches && optMatches.length > 0) {
-                        let firstOptIndex = cleanBlock.indexOf(optMatches[0]);
-                        if (firstOptIndex !== -1) {
-                            qText = cleanBlock.substring(0, firstOptIndex).trim();
-                        }
-                    }
-                    qText = qText.replace(/^[0-9]+[\.\)]\s*/, '').replace(/^(?:Caso\s*\d*[:\.]|Pregunta\s*\d*[:\.]|Caso clínico[:\s]*)/i, '').trim();
-                    if (!qText) qText = "Caso clínico ENARM";
-
-                    let explanation = "Respuesta correcta basada en GPC.";
-                    let expMatch = cleanBlock.match(/(?:Retroalimentación de la respuesta correcta|Explicación de la respuesta correcta|Explicación|Retroalimentación|Justificación)[:\s]*([\s\S]*?)(?=(?:Retroalimentación de las respuestas incorrectas|Por qué las otras son incorrectas|Por qué se descartan|Opciones incorrectas|$))/i);
-                    if (expMatch && expMatch[1].trim()) {
-                        explanation = expMatch[1].trim().replace(/\*\*/g, '');
-                    }
-
-                    let correctText = rawOptions[0];
-                    let corrMatch = cleanBlock.match(/(?:Respuesta correcta|Respuesta|Correcta|Rpta)[:\s]*([A-Da-d])[\)\.]?\s*([^\n]*)/i);
-                    if (corrMatch) {
-                        let letter = corrMatch[1].toUpperCase();
-                        let idx = letter === 'A' ? 0 : letter === 'B' ? 1 : letter === 'C' ? 2 : 3;
-                        if (rawOptions[idx]) {
-                            correctText = rawOptions[idx];
-                        } else if (corrMatch[2] && corrMatch[2].trim()) {
-                            let textVal = corrMatch[2].trim();
-                            let foundOpt = rawOptions.find(o => o.toLowerCase().includes(textVal.toLowerCase()) || textVal.toLowerCase().includes(o.toLowerCase()));
-                            if (foundOpt) correctText = foundOpt;
-                        }
-                    } else {
-                        let altCorrMatch = cleanBlock.match(/(?:Respuesta correcta|Respuesta|Correcta|Rpta)[:\s]*([^\n]+)/i);
-                        if (altCorrMatch && altCorrMatch[1].trim()) {
-                            let cVal = altCorrMatch[1].trim();
-                            let foundOpt = rawOptions.find(o => o.toLowerCase().includes(cVal.toLowerCase()) || cVal.toLowerCase().includes(o.toLowerCase()));
-                            if (foundOpt) correctText = foundOpt;
-                        }
-                    }
-
-                    let discardExplanation = "No corresponden al manejo o diagnóstico de primera elección para este escenario clínico.";
-                    let discMatch = cleanBlock.match(/(?:Retroalimentación de las respuestas incorrectas|Por qué las otras son incorrectas|Por qué se descartan las demás opciones|Opciones incorrectas|Descartes)[:\s]*([\s\S]*)/i);
-                    if (discMatch && discMatch[1].trim()) {
-                        discardExplanation = discMatch[1].trim().replace(/\*\*/g, '');
-                    }
-
-                    customData[sub].preguntas.push({
-                        id: 'paste_qp_' + Date.now() + '_' + bIdx + '_' + Math.floor(Math.random()*1000),
-                        q: qText,
-                        rawOptions,
-                        correctText,
-                        explanation,
-                        discardExplanation
-                    });
-                    addedCount++;
-                });
-
-                if (addedCount > 0) {
-                    alert(`¡Se han guardado ${addedCount} preguntas con éxito! 🎉`);
-                } else {
-                    alert('No se pudieron procesar las preguntas.');
-                    return;
-                }
-            } else if (type === 'flashcard_1x1') {
-                const q = document.getElementById('adm-fc-q').value.trim();
-                const a = document.getElementById('adm-fc-a').value.trim();
-                const tag = document.getElementById('adm-fc-tag').value.trim() || 'normal';
-
-                if (!q || !a) return alert('Completa pregunta y respuesta.');
-
-                customData[sub].flashcards.push({
-                    id: 'custom_fc_' + Date.now(),
-                    q, a, tag
-                });
-                alert('¡Flashcard guardada!');
-            } else if (type === 'flashcards_paste') {
-                const text = document.getElementById('adm-fc-paste').value.trim();
-                if (!text) return alert('Pega texto.');
-
-                const lines = text.split('\n');
-                let count = 0;
-                lines.forEach((line, idx) => {
-                    const parts = line.split('|');
-                    if (parts.length >= 2) {
-                        customData[sub].flashcards.push({
-                            id: 'paste_fc_' + Date.now() + '_' + idx,
-                            q: parts[0].trim(),
-                            a: parts[1].trim(),
-                            tag: 'normal'
-                        });
-                        count++;
-                    }
-                });
-                alert(`¡Se importaron ${count} flashcards!`);
-            }
-
-            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+        function setCardFilter(filter) {
+            activeCardFilter = filter;
+            if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
+            cardIndices[currentSubject][filter] = 0;
+            localStorage.setItem('yn_card_indices', JSON.stringify(cardIndices));
             renderContent();
-            toggleAdminPanel();
-        }
-
-        function deleteCustomItem(type, index) {
-            if (customData[currentSubject] && customData[currentSubject][type]) {
-                customData[currentSubject][type].splice(index, 1);
-                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                changeAdminFields();
-                renderContent();
-            }
-        }
-
-        function exportBackup() {
-            const backup = {
-                customData, topicChecklist, deletedTopics, ankiReviews, cardDifficulty, questionSchedule,
-                gpcImages, infographicImages, pdfNotes, maderaFiles, diaposLinks
-            };
-            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `YuliNotas_Backup_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function importBackup(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const backup = JSON.parse(evt.target.result);
-                    if (backup.customData) {
-                        customData = backup.customData;
-                        localStorage.setItem('yn_custom_data', JSON.stringify(customData));
-                    }
-                    if (backup.topicChecklist) {
-                        topicChecklist = backup.topicChecklist;
-                        localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
-                    }
-                    if (backup.deletedTopics) {
-                        deletedTopics = backup.deletedTopics;
-                        localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(deletedTopics));
-                    }
-                    if (backup.gpcImages) {
-                        gpcImages = backup.gpcImages;
-                        localStorage.setItem('yn_gpc_images_v3', JSON.stringify(gpcImages));
-                    }
-                    if (backup.infographicImages) {
-                        infographicImages = backup.infographicImages;
-                        localStorage.setItem('yn_info_images_v3', JSON.stringify(infographicImages));
-                    }
-                    if (backup.pdfNotes) {
-                        pdfNotes = backup.pdfNotes;
-                        localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(pdfNotes));
-                    }
-                    if (backup.maderaFiles) {
-                        maderaFiles = backup.maderaFiles;
-                        localStorage.setItem('yn_madera_files_v1', JSON.stringify(maderaFiles));
-                    }
-                    if (backup.diaposLinks) {
-                        diaposLinks = backup.diaposLinks;
-                        localStorage.setItem('yn_diapos_links_v1', JSON.stringify(diaposLinks));
-                    }
-                    alert('¡Respaldo cargado con éxito!');
-                    renderContent();
-                } catch (err) {
-                    alert('Archivo de respaldo inválido.');
-                }
-            };
-            reader.readAsText(file);
         }
 
         function uploadTopicFile(e, type, topicName) {
@@ -1827,115 +1396,159 @@
                 let correctValue = q.correctText || rawList[q.correct || 0];
                 let shuffledOptions = shuffleArray(rawList);
                 
-                let discardText = q.discardExplanation;
-                if (Array.isArray(discardText)) {
-                    discardText = discardText.join(' ');
-                }
-                if (!discardText) {
-                    discardText = "No corresponden al manejo o diagnóstico de primera elección para este escenario clínico.";
-                }
+                // Mapear cada opción revuelta con su respectiva explicación de descarte o general
+                let optionsWithFeedback = shuffledOptions.map(opt => {
+                    let isCorrect = (opt === correctValue);
+                    let specificFeedback = "";
+                    
+                    if (q.discardExplanation && Array.isArray(q.discardExplanation)) {
+                        let found = q.discardExplanation.find(item => item.toLowerCase().includes(opt.toLowerCase().substring(0, 15)));
+                        if (found) specificFeedback = found;
+                    }
+                    
+                    if (!specificFeedback) {
+                        specificFeedback = isCorrect 
+                            ? `<b>Correcto:</b> ${q.explanation || correctValue}` 
+                            : `<b>Incorrecto:</b> No corresponde a la opción de primera línea para este caso clínico.`;
+                    }
 
-                let globalFeedbackHTML = `
-                    <div class="global-feedback-box" id="feedback-box">
-                        <div style="color: #2E7D32; font-weight: 800; font-size: calc(13px * var(--font-scale)); margin-bottom: 4px;">
-                            ✓ Explicación de la respuesta correcta:
-                        </div>
-                        <div style="margin-bottom: 10px; line-height: 1.45;">
-                            ${q.explanation || "Respuesta correcta basada en GPC."}
-                        </div>
-                        <div style="border-top: 1px solid var(--border-color); padding-top: 8px;">
-                            <div style="font-weight: 700; margin-bottom: 3px; color: var(--text-muted); font-size: calc(11.5px * var(--font-scale));">Por qué las otras son incorrectas:</div>
-                            <p style="font-size: calc(12px * var(--font-scale)); color: var(--text-muted); line-height: 1.4;">
-                                ${discardText}
-                            </p>
-                        </div>
-                    </div>
-                    <button class="next-q-btn" id="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
-                `;
-
-                let optionsHTML = shuffledOptions.map((opt) => {
-                    return `<button class="option-btn" onclick="checkAnswer(this, '${opt.replace(/'/g, "\\'")}', '${correctValue.replace(/'/g, "\\'")}')">${opt}</button>`;
-                }).join('');
+                    return { text: opt, isCorrect, feedback: specificFeedback };
+                });
 
                 area.innerHTML = `
                     <div class="question-card">
                         <div class="question-text">${q.q}</div>
-                        <div class="option-container">
-                            ${optionsHTML}
-                        </div>
-                        ${globalFeedbackHTML}
+                        ${optionsWithFeedback.map((item, idx) => `
+                            <div class="option-container">
+                                <button class="option-btn" onclick="checkAnswerNotebook(this, ${item.isCorrect})">${String.fromCharCode(65 + idx)})${item.text}</button>
+                                <div class="option-feedback">${item.feedback}</div>
+                            </div>
+                        `).join('')}
+                        <button id="next-q-btn" class="next-q-btn" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
                     </div>
                 `;
+            } else if (currentTab === 'madera') {
+                area.innerHTML = renderTopicGridView('madera');
             } else if (currentTab === 'flashcards') {
                 let cards = subjectData.flashcards || [];
                 if (activeCardFilter === 'hard') cards = cards.filter(c => cardDifficulty[c.id] === 'hard');
-                
+
                 if (cards.length === 0) {
-                    area.innerHTML = `<p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards en este filtro.</p>`;
+                    area.innerHTML = `
+                        <div class="flashcard-filter-bar">
+                            <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
+                        </div>
+                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
+                    `;
                     return;
                 }
 
                 if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
                 if (cardIndices[currentSubject][activeCardFilter] === undefined) cardIndices[currentSubject][activeCardFilter] = 0;
                 let cIdx = cardIndices[currentSubject][activeCardFilter];
+
                 const card = cards[cIdx % cards.length];
-                let currentDiff = cardDifficulty[card.id] || 'normal';
+                const cardAnki = ankiReviews[card.id] || { nextDate: 'Hoy' };
+                const currentDiff = cardDifficulty[card.id] || 'normal';
 
                 area.innerHTML = `
                     <div class="flashcard-filter-bar">
-                        <button class="filter-chip ${activeCardFilter === 'all' ? 'active' : ''}" onclick="setCardFilter('all')">Todas</button>
-                        <button class="filter-chip ${activeCardFilter === 'hard' ? 'active' : ''}" onclick="setCardFilter('hard')">🔴 Difíciles</button>
+                        <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
                     </div>
                     <div class="flashcard" onclick="this.classList.toggle('flipped')">
                         <div class="flashcard-inner">
                             <div class="flashcard-front">
-                                <span class="card-tag-badge">${card.tag || 'ENARM'}</span>
-                                <div>${card.q}</div>
+                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
+                                ${card.q}
                             </div>
-                            <div class="flashcard-back">
-                                <span class="card-tag-badge">Respuesta</span>
-                                <div>${card.a}</div>
-                            </div>
+                            <div class="flashcard-back">${card.a}</div>
                         </div>
                     </div>
+                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
                     <div class="anki-controls">
-                        <button class="anki-btn anki-hard" onclick="rateCard('${card.id}', 'hard')">Difícil</button>
-                        <button class="anki-btn anki-good" onclick="rateCard('${card.id}', 'good')">Bien</button>
-                        <button class="anki-btn anki-easy" onclick="rateCard('${card.id}', 'easy')">Fácil</button>
+                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
+                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
+                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
                 area.innerHTML = renderTopicGridView('info');
-            } else if (currentTab === 'madera') {
-                area.innerHTML = renderTopicGridView('madera');
             } else if (currentTab === 'esquemas') {
                 area.innerHTML = renderTopicGridView('gpc');
             } else if (currentTab === 'yulinotas') {
                 area.innerHTML = renderTopicGridView('pdf');
             } else if (currentTab === 'diapos') {
                 area.innerHTML = renderTopicGridView('diapos');
-            } else if (currentTab === 'simulacro') {
-                renderSimulacroView(area);
             } else if (currentTab === 'temario') {
-                renderTemarioView(area);
+                const resourcesRow1 = ['gpc', 'cto', 'drre', 'yuli'];
+                const labelsRow1 = ['GPC', 'CTO', 'Dr. Re', 'YuliNotas'];
+                const resourcesRow2 = ['clase', 'madera', 'punto', 'diapos'];
+                const labelsRow2 = ['Clase', 'Madera', 'Punto ENARM', 'Diapos'];
+
+                area.innerHTML = subjectData.temario.map((t, idx) => {
+                    const topicKey = `${currentSubject}_${idx}`;
+                    return `
+                        <div class="topic-card">
+                            <div class="topic-header">${t}</div>
+                            <div class="topic-checklist">
+                                ${resourcesRow1.map((res, rIdx) => {
+                                    const checkKey = `${topicKey}_${res}`;
+                                    return `
+                                        <div class="check-item">
+                                            <span>${labelsRow1[rIdx]}</span>
+                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            <div class="topic-checklist" style="margin-top: 4px;">
+                                ${resourcesRow2.map((res, rIdx) => {
+                                    const checkKey = `${topicKey}_${res}`;
+                                    return `
+                                        <div class="check-item">
+                                            <span>${labelsRow2[rIdx]}</span>
+                                            <input type="checkbox" ${topicChecklist[checkKey] ? 'checked' : ''} onchange="toggleCheck('${checkKey}')">
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
         }
 
-        function checkAnswer(buttonElem, selectedOpt, correctOpt) {
-            const container = buttonElem.parentElement;
-            const buttons = container.querySelectorAll('.option-btn');
+        // Nueva función estilo NotebookLM para mostrar retroalimentación directa por opción
+        function checkAnswerNotebook(selectedBtn, isCorrect) {
+            const container = selectedBtn.closest('.question-card');
             
-            buttons.forEach(btn => {
-                btn.disabled = true;
-                if (btn.textContent.trim() === correctOpt.trim()) {
-                    btn.classList.add('correct');
-                } else if (btn.textContent.trim() === selectedOpt.trim()) {
-                    btn.classList.add('incorrect');
-                }
-            });
+            // Deshabilitar todos los botones de opciones para evitar múltiples clics
+            container.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
 
-            document.getElementById('feedback-box').classList.add('active');
-            document.getElementById('next-q-btn').style.display = 'block';
+            // Mostrar el estilo correcto/incorrecto en el botón seleccionado y desplegar su feedback asociado
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
+            } else {
+                selectedBtn.classList.add('incorrect');
+                // Revelar también cuál era la correcta o marcar la correcta visualmente
+                container.querySelectorAll('.option-btn').forEach(btn => {
+                    // Si el feedback interno contiene la palabra CORRECTA, la resaltamos sutilmente
+                    let fb = btn.nextElementSibling.innerHTML;
+                    if (fb.includes('CORRECTA') || fb.includes('<b>Correcto:</b>')) {
+                        btn.style.borderColor = '#28A745';
+                    }
+                });
+            }
+
+            // Mostrar la caja de retroalimentación específica de esta opción
+            const feedbackBox = selectedBtn.nextElementSibling;
+            if (feedbackBox) feedbackBox.style.display = 'block';
+
+            // Mostrar el botón para pasar a la siguiente pregunta
+            const nextBtn = document.getElementById('next-q-btn');
+            if (nextBtn) nextBtn.style.display = 'block';
         }
 
         function nextQuestion() {
@@ -1945,8 +1558,241 @@
             renderContent();
         }
 
-        function rateCard(cardId, rating) {
-            cardDifficulty[cardId] = rating === 'hard' ? 'hard' : 'normal';
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('active');
+            changeAdminFields();
+        }
+
+        function changeAdminFields() {
+            const type = document.getElementById('admin-type').value;
+            const container = document.getElementById('admin-fields');
+            const saveBtn = document.getElementById('admin-save-btn');
+            const sub = document.getElementById('admin-subject').value;
+
+            if (type === 'flashcard_1x1') {
+                saveBtn.style.display = 'block';
+                saveBtn.textContent = 'Guardar Flashcard';
+                container.innerHTML = `
+                    <input type="text" id="af-q" placeholder="Frente (¿...?)">
+                    <textarea id="af-a" rows="3" placeholder="Reverso (Respuesta)"></textarea>
+                `;
+            } else if (type === 'pregunta_1x1') {
+                saveBtn.style.display = 'block';
+                saveBtn.textContent = 'Guardar Pregunta';
+                container.innerHTML = `
+                    <textarea id="af-q" rows="3" placeholder="Caso clínico / Pregunta"></textarea>
+                    <input type="text" id="af-o0" placeholder="Opción Correcta">
+                    <input type="text" id="af-o1" placeholder="Opción Incorrecta 1">
+                    <input type="text" id="af-o2" placeholder="Opción Incorrecta 2">
+                    <input type="text" id="af-o3" placeholder="Opción Incorrecta 3">
+                    <textarea id="af-exp" rows="2" placeholder="Retroalimentación (Correcto / Explicación general)"></textarea>
+                    <textarea id="af-disc" rows="2" placeholder="Retroalimentación (Incorrecto / Descarte)"></textarea>
+                `;
+            } else if (type === 'preguntas_paste') {
+                saveBtn.style.display = 'none';
+                container.innerHTML = `
+                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tus casos clínicos estructurados:</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="Caso Clínico: ..."></textarea>
+                    <button type="button" onclick="processPastedPreguntas()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Preguntas</button>
+                `;
+            } else if (type === 'flashcards_paste') {
+                saveBtn.style.display = 'none';
+                container.innerHTML = `
+                    <p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Pega tu lista de flashcards:</p>
+                    <textarea id="paste-raw-text" rows="8" placeholder="* Frente: ¿...?"></textarea>
+                    <button type="button" onclick="processPastedFlashcards()" style="background: #2E7D32; margin-top: 6px;">✨ Procesar y Ordenar Flashcards</button>
+                `;
+            } else if (type === 'delete_content') {
+                saveBtn.style.display = 'none';
+                let subCustom = customData[sub] || { flashcards: [], preguntas: [] };
+                let fcList = subCustom.flashcards || [];
+                let qList = subCustom.preguntas || [];
+
+                let html = `<p style="font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Contenido personalizado:</p>`;
+                if (fcList.length === 0 && qList.length === 0) {
+                    html += `<p style="font-size: calc(11px * var(--font-scale)); font-style:italic;">No hay contenido personalizado.</p>`;
+                } else {
+                    fcList.forEach((fc, idx) => {
+                        html += `<div class="delete-item-row"><span>[FC] ${fc.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'flashcards', ${idx})">Eliminar</button></div>`;
+                    });
+                    qList.forEach((q, idx) => {
+                        html += `<div class="delete-item-row"><span>[Pregunta] ${q.q}</span><button class="btn-mini-delete" onclick="deleteCustomItem('${sub}', 'preguntas', ${idx})">Eliminar</button></div>`;
+                    });
+                }
+                container.innerHTML = html;
+            }
+        }
+
+        function processPastedPreguntas() {
+            const text = document.getElementById('paste-raw-text').value;
+            if (!text.trim()) return alert('Por favor pega algún texto.');
+            const sub = document.getElementById('admin-subject').value;
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
+
+            let addedQ = 0;
+            const caseBlocks = text.split(/(?=Caso Clínico|\*?\s*Caso clínico \/ Pregunta:)/i);
+            
+            caseBlocks.forEach(block => {
+                const trimmed = block.trim();
+                if (!trimmed) return;
+
+                if (trimmed.toLowerCase().includes('caso clínico / pregunta:') || trimmed.toLowerCase().includes('opción correcta:') || trimmed.toLowerCase().includes('caso clínico:')) {
+                    let lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+                    let qText = "";
+                    let correctOpt = "";
+                    let incorrectOpts = [];
+                    let retroCorrect = "";
+                    let retroIncorrect = "";
+
+                    lines.forEach(line => {
+                        let cleanLine = line.replace(/^[\*\-\•]\s*/, '');
+                        if (cleanLine.toLowerCase().startsWith('caso clínico / pregunta:') || cleanLine.toLowerCase().startsWith('caso clínico:')) {
+                            qText = cleanLine.replace(/^(caso clínico \/ pregunta:|caso clínico:)\s*/i, '');
+                        } else if (cleanLine.toLowerCase().startsWith('opción correcta:')) {
+                            correctOpt = cleanLine.replace(/^opción correcta:\s*/i, '').trim();
+                        } else if (cleanLine.toLowerCase().startsWith('opción incorrecta')) {
+                            let optVal = cleanLine.replace(/^opción incorrecta\s*\d*:\s*/i, '').trim();
+                            if (optVal) incorrectOpts.push(optVal);
+                        } else if (cleanLine.toLowerCase().startsWith('correcto:')) {
+                            retroCorrect = cleanLine;
+                        } else if (cleanLine.toLowerCase().startsWith('incorrecto:')) {
+                            retroIncorrect = cleanLine;
+                        } else if (!qText && !cleanLine.startsWith('Caso Clínico')) {
+                            qText += " " + cleanLine;
+                        }
+                    });
+
+                    if (qText && correctOpt) {
+                        let allOptions = [correctOpt, ...incorrectOpts];
+                        let explanation = (retroCorrect || retroIncorrect) ? `${retroCorrect}<br>${retroIncorrect}` : "Caso clínico procesado correctamente.";
+                        let discardList = [];
+                        if (retroCorrect) discardList.push(`<b>Correcto:</b> ${retroCorrect.replace(/^correcto:\s*/i, '')}`);
+                        if (retroIncorrect) discardList.push(`<b>Incorrecto:</b> ${retroIncorrect.replace(/^incorrecto:\s*/i, '')}`);
+
+                        customData[sub].preguntas.push({
+                            id: 'qp_parsed_' + Math.random().toString(36).substring(2, 9),
+                            q: qText.trim(),
+                            rawOptions: allOptions,
+                            correctText: correctOpt,
+                            explanation: explanation,
+                            discardExplanation: discardList.length ? discardList : [`<b>Respuesta correcta:</b> ${correctOpt}`]
+                        });
+                        addedQ++;
+                    }
+                }
+            });
+
+            if (addedQ > 0) {
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                alert(`¡Se agregaron ${addedQ} preguntas a ${subjectsConfig[sub].title}!`);
+                toggleAdminPanel();
+                renderContent();
+            } else {
+                alert('No se pudieron interpretar las preguntas. Revisa el formato.');
+            }
+        }
+
+        function processPastedFlashcards() {
+            const text = document.getElementById('paste-raw-text').value;
+            if (!text.trim()) return alert('Por favor pega algún texto.');
+            const sub = document.getElementById('admin-subject').value;
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
+
+            let addedFC = 0;
+            let lines = text.replace(/\r\n/g, '\n').split('\n').map(l => l.trim()).filter(Boolean);
+            let currentFront = null;
+
+            lines.forEach(line => {
+                let cleanLine = line.replace(/^[\*\-\•]\s*/, '').trim();
+                let lower = cleanLine.toLowerCase();
+
+                if (lower.startsWith('frente:')) {
+                    currentFront = cleanLine.replace(/^frente\s*[:\-]\s*/i, '').trim();
+                } else if (lower.startsWith('reverso:') && currentFront) {
+                    let backText = cleanLine.replace(/^reverso\s*[:\-]\s*/i, '').trim();
+                    customData[sub].flashcards.push({
+                        id: 'fc_parsed_' + Math.random().toString(36).substring(2, 9),
+                        q: currentFront,
+                        a: backText,
+                        tag: 'texto'
+                    });
+                    addedFC++;
+                    currentFront = null;
+                }
+            });
+
+            if (addedFC > 0) {
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                alert(`¡Se agregaron ${addedFC} flashcards!`);
+                toggleAdminPanel();
+                renderContent();
+            } else {
+                alert('No se detectaron flashcards.');
+            }
+        }
+
+        function saveAdminContent() {
+            const type = document.getElementById('admin-type').value;
+            const sub = document.getElementById('admin-subject').value;
+            if (!customData[sub]) customData[sub] = { flashcards: [], preguntas: [] };
+
+            if (type === 'flashcard_1x1') {
+                const q = document.getElementById('af-q').value;
+                const a = document.getElementById('af-a').value;
+                if (!q || !a) return alert('Completa los campos.');
+                customData[sub].flashcards.push({ id: 'custom_fc_' + Date.now(), q, a });
+            } else if (type === 'pregunta_1x1') {
+                const q = document.getElementById('af-q').value;
+                const o0 = document.getElementById('af-o0').value;
+                const o1 = document.getElementById('af-o1').value;
+                const o2 = document.getElementById('af-o2').value;
+                const o3 = document.getElementById('af-o3').value;
+                const exp = document.getElementById('af-exp').value;
+                const discText = document.getElementById('af-disc').value;
+
+                if (!q || !o0 || !o1) return alert('Completa la pregunta.');
+                
+                customData[sub].preguntas.push({
+                    id: 'qcustom_' + Date.now(),
+                    q,
+                    rawOptions: [o0, o1, o2, o3].filter(Boolean),
+                    correctText: o0,
+                    explanation: exp || "Respuesta guardada.",
+                    discardExplanation: discText ? [discText] : [`<b>Opción correcta:</b> ${o0}`]
+                });
+            }
+
+            localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+            alert('¡Guardado exitosamente!');
+            toggleAdminPanel();
+            renderContent();
+        }
+
+        function deleteCustomItem(sub, category, idx) {
+            if (!confirm('¿Eliminar elemento?')) return;
+            if (customData[sub] && customData[sub][category]) {
+                customData[sub][category].splice(idx, 1);
+                localStorage.setItem('yn_custom_data', JSON.stringify(customData));
+                changeAdminFields();
+                renderContent();
+            }
+        }
+
+        function toggleCheck(key) {
+            topicChecklist[key] = !topicChecklist[key];
+            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
+            renderContent();
+        }
+
+        function processAnki(cardId, days, diffTag) {
+            if (days > 0) {
+                const nextDate = new Date();
+                nextDate.setDate(nextDate.getDate() + days);
+                ankiReviews[cardId] = { nextDate: nextDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) };
+                localStorage.setItem('yn_anki', JSON.stringify(ankiReviews));
+            }
+            cardDifficulty[cardId] = diffTag;
             localStorage.setItem('yn_card_diff', JSON.stringify(cardDifficulty));
 
             if (!cardIndices[currentSubject]) cardIndices[currentSubject] = {};
@@ -1956,190 +1802,83 @@
             renderContent();
         }
 
-        function renderTemarioView(area) {
-            const data = getData();
-            const topics = (data[currentSubject] || {}).temario || [];
-            
-            area.innerHTML = `
-                <div style="display:flex; flex-direction:column; gap:8px;">
-                    ${topics.map((topic, tIdx) => {
-                        const topicKey = `${currentSubject}_${tIdx}`;
-                        const resources = [
-                            { key: 'gpc', label: 'GPC' },
-                            { key: 'cto', label: 'CTO' },
-                            { key: 'drre', label: 'Dr. Ré' },
-                            { key: 'yuli', label: 'Yuli' },
-                            { key: 'clase', label: 'Clase' },
-                            { key: 'madera', label: 'Madera' },
-                            { key: 'punto', label: 'Punto' },
-                            { key: 'diapos', label: 'Diapos' }
-                        ];
-
-                        return `
-                            <div class="topic-card">
-                                <div class="topic-header">${topic}</div>
-                                <div class="topic-checklist">
-                                    ${resources.map(res => {
-                                        const checkId = `${topicKey}_${res.key}`;
-                                        const isChecked = topicChecklist[checkId] ? 'checked' : '';
-                                        return `
-                                            <label class="check-item">
-                                                <input type="checkbox" ${isChecked} onchange="toggleTopicCheck('${checkId}')">
-                                                <span>${res.label}</span>
-                                            </label>
-                                        `;
-                                    }).join('')}
-                                </div>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        function toggleTopicCheck(checkId) {
-            topicChecklist[checkId] = !topicChecklist[checkId];
-            localStorage.setItem('yn_topic_checklist', JSON.stringify(topicChecklist));
-            updateCornerBadge();
-        }
-
-        function renderSimulacroView(area) {
-            if (!simState || !simState.active) {
-                area.innerHTML = `
-                    <div class="sim-setup-card">
-                        <h3>Simulacro ENARM YuliNotas</h3>
-                        <p>Evalúa tus conocimientos con un simulacro cronometrado de alta dificultad con casos clínicos reales.</p>
-                        <div class="sim-btn-group">
-                            <button class="sim-option-btn selected" id="sim-count-10" onclick="setSimCount(10)">10 Preguntas</button>
-                            <button class="sim-option-btn" id="sim-count-20" onclick="setSimCount(20)">20 Preguntas</button>
-                        </div>
-                        <button class="sim-start-btn" onclick="startSimulacro()">Iniciar Simulacro</button>
-                    </div>
-                `;
-            } else {
-                if (simState.finished) {
-                    area.innerHTML = `
-                        <div class="sim-results-container">
-                            <h3>Resultados del Simulacro</h3>
-                            <div class="sim-score-box">
-                                <p>Puntaje Final</p>
-                                <div class="sim-score-num">${simState.score} / ${simState.questions.length}</div>
-                                <p>${Math.round((simState.score / simState.questions.length) * 100)}% de aciertos</p>
-                            </div>
-                            <button class="sim-start-btn" onclick="resetSimulacro()">Nuevo Simulacro</button>
-                        </div>
-                    `;
-                } else {
-                    const currentQ = simState.questions[simState.currentIndex];
-                    let rawList = currentQ.rawOptions || currentQ.options || [];
-                    let correctValue = currentQ.correctText || rawList[currentQ.correct || 0];
-                    let shuffledOptions = shuffleArray(rawList);
-
-                    let optionsHTML = shuffledOptions.map((opt) => {
-                        return `<button class="option-btn" onclick="answerSim(this, '${opt.replace(/'/g, "\\'")}', '${correctValue.replace(/'/g, "\\'")}')">${opt}</button>`;
-                    }).join('');
-
-                    area.innerHTML = `
-                        <div class="sim-header-bar">
-                            <span>Pregunta ${simState.currentIndex + 1} de ${simState.questions.length}</span>
-                            <span class="sim-timer" id="sim-timer-disp">--:--</span>
-                        </div>
-                        <div class="question-card">
-                            <div class="question-text">${currentQ.q}</div>
-                            <div class="option-container">
-                                ${optionsHTML}
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-        }
-
-        let tempSimCount = 10;
-        function setSimCount(count) {
-            tempSimCount = count;
-            document.getElementById('sim-count-10').classList.toggle('selected', count === 10);
-            document.getElementById('sim-count-20').classList.toggle('selected', count === 20);
-        }
-
-        function startSimulacro() {
-            const data = getData();
-            let allQ = [];
-            Object.values(data).forEach(sub => {
-                if (sub.preguntas) allQ.push(...sub.preguntas);
-            });
-
-            allQ = shuffleArray(allQ).slice(0, tempSimCount);
-            if (allQ.length === 0) return alert('No hay preguntas disponibles para el simulacro.');
-
-            simState = {
-                active: true,
-                finished: false,
-                questions: allQ,
-                currentIndex: 0,
-                score: 0,
-                timeLeft: tempSimCount * 90
+        function exportBackup() {
+            const backupData = {
+                yn_custom_data: customData,
+                yn_topic_checklist: topicChecklist,
+                yn_deleted_topics_v1: deletedTopics,
+                yn_anki: ankiReviews,
+                yn_card_diff: cardDifficulty,
+                yn_question_schedule: questionSchedule,
+                yn_question_indices: questionIndices,
+                yn_card_indices: cardIndices,
+                yn_gpc_images_v3: gpcImages,
+                yn_info_images_v3: infographicImages,
+                yn_pdf_notes_v3: pdfNotes,
+                yn_madera_files_v1: maderaFiles,
+                yn_diapos_links_v1: diaposLinks,
+                yn_font_scale: currentFontScale
             };
-            localStorage.setItem('yn_sim_state', JSON.stringify(simState));
-            renderContent();
-            startSimTimer();
+            const jsonString = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const fileName = `yulinotas_backup_${new Date().toISOString().slice(0,10)}.json`;
+            const url = URL.createObjectURL(blob);
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = url;
+            downloadAnchor.download = fileName;
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+            URL.revokeObjectURL(url);
         }
 
-        function startSimTimer() {
-            if (simTimerInterval) clearInterval(simTimerInterval);
-            simTimerInterval = setInterval(() => {
-                if (!simState || !simState.active || simState.finished) {
-                    clearInterval(simTimerInterval);
-                    return;
-                }
-                simState.timeLeft--;
-                const min = Math.floor(simState.timeLeft / 60);
-                const sec = simState.timeLeft % 60;
-                const timerElem = document.getElementById('sim-timer-disp');
-                if (timerElem) {
-                    timerElem.textContent = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-                }
-                if (simState.timeLeft <= 0) {
-                    clearInterval(simTimerInterval);
-                    simState.finished = true;
-                    localStorage.setItem('yn_sim_state', JSON.stringify(simState));
+        function importBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    if (imported.yn_custom_data) localStorage.setItem('yn_custom_data', JSON.stringify(imported.yn_custom_data));
+                    if (imported.yn_topic_checklist) localStorage.setItem('yn_topic_checklist', JSON.stringify(imported.yn_topic_checklist));
+                    if (imported.yn_deleted_topics_v1) localStorage.setItem('yn_deleted_topics_v1', JSON.stringify(imported.yn_deleted_topics_v1));
+                    if (imported.yn_anki) localStorage.setItem('yn_anki', JSON.stringify(imported.yn_anki));
+                    if (imported.yn_card_diff) localStorage.setItem('yn_card_diff', JSON.stringify(imported.yn_card_diff));
+                    if (imported.yn_question_schedule) localStorage.setItem('yn_question_schedule', JSON.stringify(imported.yn_question_schedule));
+                    if (imported.yn_question_indices) localStorage.setItem('yn_question_indices', JSON.stringify(imported.yn_question_indices));
+                    if (imported.yn_card_indices) localStorage.setItem('yn_card_indices', JSON.stringify(imported.yn_card_indices));
+                    if (imported.yn_gpc_images_v3) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.yn_gpc_images_v3));
+                    if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
+                    if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
+                    if (imported.yn_madera_files_v1) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.yn_madera_files_v1));
+                    if (imported.yn_diapos_links_v1) localStorage.setItem('yn_diapos_links_v1', JSON.stringify(imported.yn_diapos_links_v1));
+                    if (imported.yn_font_scale) {
+                        currentFontScale = imported.yn_font_scale;
+                        localStorage.setItem('yn_font_scale', currentFontScale.toString());
+                        document.documentElement.style.setProperty('--font-scale', currentFontScale);
+                    }
+
+                    customData = JSON.parse(localStorage.getItem('yn_custom_data') || '{}');
+                    topicChecklist = JSON.parse(localStorage.getItem('yn_topic_checklist') || '{}');
+                    deletedTopics = JSON.parse(localStorage.getItem('yn_deleted_topics_v1') || '{}');
+                    ankiReviews = JSON.parse(localStorage.getItem('yn_anki') || '{}');
+                    cardDifficulty = JSON.parse(localStorage.getItem('yn_card_diff') || '{}');
+                    questionSchedule = JSON.parse(localStorage.getItem('yn_question_schedule') || '{}');
+                    questionIndices = JSON.parse(localStorage.getItem('yn_question_indices') || '{}');
+                    cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
+                    gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
+                    infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
+                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
+                    maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
+                    diaposLinks = JSON.parse(localStorage.getItem('yn_diapos_links_v1') || '{}');
+
+                    alert('¡Progreso importado con éxito!');
                     renderContent();
+                } catch (err) {
+                    alert('Error al leer el archivo.');
                 }
-            }, 1000);
-        }
-
-        function answerSim(buttonElem, selectedOpt, correctOpt) {
-            const container = buttonElem.parentElement;
-            const buttons = container.querySelectorAll('.option-btn');
-            
-            buttons.forEach(btn => btn.disabled = true);
-            
-            if (selectedOpt.trim() === correctOpt.trim()) {
-                buttonElem.classList.add('correct');
-                simState.score++;
-            } else {
-                buttonElem.classList.add('incorrect');
-                buttons.forEach(btn => {
-                    if (btn.textContent.trim() === correctOpt.trim()) btn.classList.add('correct');
-                });
-            }
-
-            setTimeout(() => {
-                simState.currentIndex++;
-                if (simState.currentIndex >= simState.questions.length) {
-                    simState.finished = true;
-                    if (simTimerInterval) clearInterval(simTimerInterval);
-                }
-                localStorage.setItem('yn_sim_state', JSON.stringify(simState));
-                renderContent();
-            }, 1200);
-        }
-
-        function resetSimulacro() {
-            simState = null;
-            localStorage.removeItem('yn_sim_state');
-            if (simTimerInterval) clearInterval(simTimerInterval);
-            renderContent();
+            };
+            reader.readAsText(file);
         }
 
         selectSubject(currentSubject);
