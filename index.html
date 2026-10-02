@@ -919,7 +919,6 @@
             <button class="tab-btn btn-tab-resumenes" onclick="selectTab('resumenes')">Infografías</button>
             <button class="tab-btn btn-tab-madera" onclick="selectTab('madera')">Madera</button>
             <button class="tab-btn btn-tab-esquemas" onclick="selectTab('esquemas')">Esquema GPC</button>
-            <button class="tab-btn btn-tab-yulinotas" onclick="selectTab('yulinotas')">YuliNotas</button>
             <button class="tab-btn btn-tab-diapos" onclick="selectTab('diapos')">Diapos</button>
             <button class="tab-btn btn-tab-temario" onclick="selectTab('temario')">Temario</button>
         </div>
@@ -1461,7 +1460,6 @@
 
         let gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
         let infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
-        let pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
         let maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
         let diaposLinks = JSON.parse(localStorage.getItem('yn_diapos_links_v1') || '{}');
         let isDarkMode = localStorage.getItem('yn_dark_mode') === 'true';
@@ -1628,8 +1626,6 @@
                 badge.textContent = `${countTopicItems(infographicImages, currentSubject)} Infografías`;
             } else if (currentTab === 'esquemas') {
                 badge.textContent = `${countTopicItems(gpcImages, currentSubject)} Esquemas`;
-            } else if (currentTab === 'yulinotas') {
-                badge.textContent = `${countTopicItems(pdfNotes, currentSubject)} PDF`;
             } else if (currentTab === 'diapos') {
                 badge.textContent = `${countTopicItems(diaposLinks, currentSubject)} Links`;
             } else if (currentTab === 'temario') {
@@ -1639,11 +1635,11 @@
                 } else {
                     allTopicsList = subjectData.temario || [];
                 }
-                let totalPossibleSubjectChecks = allTopicsList.length * 7;
+                let totalPossibleSubjectChecks = allTopicsList.length * 6;
                 let completedSubjectChecks = 0;
                 allTopicsList.forEach((_, idx) => {
                     const topicKey = `${currentSubject}_${idx}`;
-                    ['gpc', 'cto', 'drre', 'madera', 'diapos', 'clase', 'yuli'].forEach(res => {
+                    ['gpc', 'cto', 'drre', 'madera', 'diapos', 'clase'].forEach(res => {
                         if (topicChecklist[`${topicKey}_${res}`]) completedSubjectChecks++;
                     });
                 });
@@ -1690,8 +1686,8 @@
             const files = e.target.files;
             if (!files || files.length === 0) return;
 
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : maderaFiles);
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : 'yn_madera_files_v1');
 
             if (!targetStorage[currentSubject]) targetStorage[currentSubject] = {};
             if (!targetStorage[currentSubject][topicName]) targetStorage[currentSubject][topicName] = [];
@@ -1729,8 +1725,8 @@
 
         function deleteTopicItem(e, sub, topicName, idx, type) {
             e.stopPropagation();
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : (type === 'madera' ? 'yn_madera_files_v1' : 'yn_pdf_notes_v3'));
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : maderaFiles);
+            let storageKey = type === 'info' ? 'yn_info_images_v3' : (type === 'gpc' ? 'yn_gpc_images_v3' : 'yn_madera_files_v1');
 
             if (targetStorage[sub] && targetStorage[sub][topicName]) {
                 targetStorage[sub][topicName].splice(idx, 1);
@@ -1844,9 +1840,9 @@
                 `;
             }
 
-            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : (type === 'madera' ? maderaFiles : pdfNotes));
-            let inputAccept = type === 'pdf' ? 'application/pdf' : (type === 'madera' ? 'application/pdf,image/*' : 'image/*');
-            let labelText = type === 'info' ? '+ Subir Infografía' : (type === 'gpc' ? '+ Subir Esquema' : (type === 'madera' ? '+ Subir Madera' : '+ Subir Nota PDF'));
+            let targetStorage = type === 'info' ? infographicImages : (type === 'gpc' ? gpcImages : maderaFiles);
+            let inputAccept = type === 'madera' ? 'application/pdf,image/*' : 'image/*';
+            let labelText = type === 'info' ? '+ Subir Infografía' : (type === 'gpc' ? '+ Subir Esquema' : '+ Subir Madera');
 
             return `
                 <div class="direct-topics-grid">
@@ -2016,15 +2012,13 @@
                 area.innerHTML = renderTopicGridView('info');
             } else if (currentTab === 'esquemas') {
                 area.innerHTML = renderTopicGridView('gpc');
-            } else if (currentTab === 'yulinotas') {
-                area.innerHTML = renderTopicGridView('pdf');
             } else if (currentTab === 'diapos') {
                 area.innerHTML = renderTopicGridView('diapos');
             } else if (currentTab === 'temario') {
                 const resourcesRow1 = ['gpc', 'cto', 'drre', 'madera'];
                 const labelsRow1 = ['GPC', 'CTO', 'Dr. Re', 'Madera'];
-                const resourcesRow2 = ['diapos', 'clase', 'yuli'];
-                const labelsRow2 = ['Diapos', 'Clase', 'YuliNotas'];
+                const resourcesRow2 = ['diapos', 'clase'];
+                const labelsRow2 = ['Diapos', 'Clase'];
 
                 if (subjectData.structuredTemario) {
                     let globalTopicIndex = 0;
@@ -2046,7 +2040,7 @@
                                             `;
                                         }).join('')}
                                     </div>
-                                    <div class="topic-checklist" style="margin-top: 4px; grid-template-columns: repeat(3, 1fr);">
+                                    <div class="topic-checklist" style="margin-top: 4px; grid-template-columns: repeat(2, 1fr);">
                                         ${resourcesRow2.map((res, rIdx) => {
                                             const checkKey = `${topicKey}_${res}`;
                                             return `
@@ -2079,7 +2073,7 @@
                                         `;
                                     }).join('')}
                                 </div>
-                                <div class="topic-checklist" style="margin-top: 4px; grid-template-columns: repeat(3, 1fr);">
+                                <div class="topic-checklist" style="margin-top: 4px; grid-template-columns: repeat(2, 1fr);">
                                     ${resourcesRow2.map((res, rIdx) => {
                                         const checkKey = `${topicKey}_${res}`;
                                         return `
@@ -2408,7 +2402,6 @@
                 yn_card_indices: cardIndices,
                 yn_gpc_images_v3: gpcImages,
                 yn_info_images_v3: infographicImages,
-                yn_pdf_notes_v3: pdfNotes,
                 yn_madera_files_v1: maderaFiles,
                 yn_diapos_links_v1: diaposLinks,
                 yn_font_scale: currentFontScale
@@ -2443,7 +2436,6 @@
                     if (imported.yn_card_indices) localStorage.setItem('yn_card_indices', JSON.stringify(imported.yn_card_indices));
                     if (imported.yn_gpc_images_v3) localStorage.setItem('yn_gpc_images_v3', JSON.stringify(imported.yn_gpc_images_v3));
                     if (imported.yn_info_images_v3) localStorage.setItem('yn_info_images_v3', JSON.stringify(imported.yn_info_images_v3));
-                    if (imported.yn_pdf_notes_v3) localStorage.setItem('yn_pdf_notes_v3', JSON.stringify(imported.yn_pdf_notes_v3));
                     if (imported.yn_madera_files_v1) localStorage.setItem('yn_madera_files_v1', JSON.stringify(imported.yn_madera_files_v1));
                     if (imported.yn_diapos_links_v1) localStorage.setItem('yn_diapos_links_v1', JSON.stringify(imported.yn_diapos_links_v1));
                     if (imported.yn_font_scale) {
@@ -2462,7 +2454,6 @@
                     cardIndices = JSON.parse(localStorage.getItem('yn_card_indices') || '{}');
                     gpcImages = JSON.parse(localStorage.getItem('yn_gpc_images_v3') || '{}');
                     infographicImages = JSON.parse(localStorage.getItem('yn_info_images_v3') || '{}');
-                    pdfNotes = JSON.parse(localStorage.getItem('yn_pdf_notes_v3') || '{}');
                     maderaFiles = JSON.parse(localStorage.getItem('yn_madera_files_v1') || '{}');
                     diaposLinks = JSON.parse(localStorage.getItem('yn_diapos_links_v1') || '{}');
 
