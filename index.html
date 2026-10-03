@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -413,7 +413,7 @@
         .flashcard-filter-bar {
             display: flex;
             gap: 6px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             justify-content: flex-start;
         }
 
@@ -433,13 +433,15 @@
             color: white;
         }
 
-        /* Contenedor envolvente blanco para las flashcards */
+        /* Contenedor envolvente blanco para las flashcards (tamaño reducido) */
         .flashcard-wrapper {
             background-color: #FFFFFF;
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 16px;
+            padding: 12px;
             width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
         body.dark-mode .flashcard-wrapper {
@@ -448,8 +450,8 @@
 
         .flashcard {
             perspective: 1000px;
-            min-height: 200px;
-            margin-bottom: 12px;
+            min-height: 150px;
+            margin-bottom: 10px;
             cursor: pointer;
             width: 100%;
         }
@@ -475,8 +477,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
-            font-size: calc(15px * var(--font-scale));
+            padding: 16px;
+            font-size: calc(14px * var(--font-scale));
             font-weight: 600;
             line-height: 1.4;
             border: 1px solid var(--border-color);
@@ -515,7 +517,7 @@
         .anki-controls {
             display: flex;
             gap: 6px;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         .anki-btn {
@@ -2029,7 +2031,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
+                        <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 6px;">Próximo repaso: ${cardAnki.nextDate}</p>
                         <div class="anki-controls">
                             <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
                             <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
