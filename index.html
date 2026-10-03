@@ -434,7 +434,7 @@
 
         .flashcard {
             perspective: 1000px;
-            min-height: 180px;
+            min-height: 200px;
             margin-bottom: 12px;
             cursor: pointer;
             width: 100%;
@@ -461,7 +461,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 24px;
             font-size: calc(15px * var(--font-scale));
             font-weight: 600;
             line-height: 1.4;
@@ -469,13 +469,13 @@
         }
 
         .flashcard-front {
-            background-color: var(--info-bg);
-            color: var(--text-dark);
+            background-color: #000000;
+            color: #FFFFFF;
         }
 
         .flashcard-back {
-            background-color: var(--primary-color);
-            color: #FFFFFF;
+            background-color: #FFFFFF;
+            color: #000000;
             transform: rotateY(180deg);
         }
 
@@ -487,7 +487,13 @@
             padding: 3px 8px;
             border-radius: 6px;
             font-weight: 700;
+            background: rgba(255,255,255,0.15);
+            color: #FFFFFF;
+        }
+
+        .flashcard-back .card-tag-badge {
             background: rgba(0,0,0,0.1);
+            color: #000000;
         }
 
         .anki-controls {
@@ -1998,7 +2004,10 @@
                                 <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
                                 ${card.q}
                             </div>
-                            <div class="flashcard-back">${card.a}</div>
+                            <div class="flashcard-back">
+                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
+                                ${card.a}
+                            </div>
                         </div>
                     </div>
                     <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
