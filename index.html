@@ -433,6 +433,19 @@
             color: white;
         }
 
+        /* Contenedor envolvente blanco para las flashcards */
+        .flashcard-wrapper {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+        }
+        
+        body.dark-mode .flashcard-wrapper {
+            background-color: var(--card-bg);
+        }
+
         .flashcard {
             perspective: 1000px;
             min-height: 200px;
@@ -1979,11 +1992,13 @@
 
                 if (cards.length === 0) {
                     area.innerHTML = `
-                        <div class="flashcard-filter-bar">
-                            <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
+                        <div class="flashcard-wrapper">
+                            <div class="flashcard-filter-bar">
+                                <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                                <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
+                            </div>
+                            <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
                         </div>
-                        <p style="text-align:center; padding:20px; font-size:calc(12px * var(--font-scale)); color:var(--text-muted);">No hay flashcards registradas bajo este filtro.</p>
                     `;
                     return;
                 }
@@ -1997,27 +2012,29 @@
                 const currentDiff = cardDifficulty[card.id] || 'normal';
 
                 area.innerHTML = `
-                    <div class="flashcard-filter-bar">
-                        <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
-                        <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
-                    </div>
-                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
-                        <div class="flashcard-inner">
-                            <div class="flashcard-front">
-                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
-                                ${card.q}
-                            </div>
-                            <div class="flashcard-back">
-                                <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
-                                ${card.a}
+                    <div class="flashcard-wrapper">
+                        <div class="flashcard-filter-bar">
+                            <button class="filter-chip ${activeCardFilter==='all'?'active':''}" onclick="setCardFilter('all')">Todas</button>
+                            <button class="filter-chip ${activeCardFilter==='hard'?'active':''}" onclick="setCardFilter('hard')">Solo Difíciles</button>
+                        </div>
+                        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner">
+                                <div class="flashcard-front">
+                                    <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
+                                    ${card.q}
+                                </div>
+                                <div class="flashcard-back">
+                                    <span class="card-tag-badge">${currentDiff.toUpperCase()}</span>
+                                    ${card.a}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
-                    <div class="anki-controls">
-                        <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
-                        <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
-                        <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
+                        <p style="text-align: center; font-size: calc(11px * var(--font-scale)); color: var(--text-muted); margin-bottom: 8px;">Próximo repaso: ${cardAnki.nextDate}</p>
+                        <div class="anki-controls">
+                            <button class="anki-btn anki-hard" onclick="processAnki('${card.id}', 1, 'hard')">Difícil (1d)</button>
+                            <button class="anki-btn anki-good" onclick="processAnki('${card.id}', 3, 'good')">Bien (3d)</button>
+                            <button class="anki-btn anki-easy" onclick="processAnki('${card.id}', 7, 'easy')">Fácil (7d)</button>
+                        </div>
                     </div>
                 `;
             } else if (currentTab === 'resumenes') {
