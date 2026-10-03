@@ -176,6 +176,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: var(--content-padding);
+            padding-bottom: 40px; /* Espacio extra abajo para que el contador no encime contenido */
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             min-height: 380px;
             border: 1px solid var(--border-color);
@@ -183,9 +184,10 @@
             width: 100%;
         }
 
+        /* Contador reubicado en la parte inferior derecha del panel */
         .corner-badge {
             position: absolute;
-            top: 12px;
+            bottom: 12px;
             right: 14px;
             background: var(--info-bg);
             border: 1px solid var(--border-color);
@@ -468,11 +470,13 @@
             border: 1px solid var(--border-color);
         }
 
+        /* Recuadro completo en negro para la pregunta (frente) */
         .flashcard-front {
             background-color: #000000;
             color: #FFFFFF;
         }
 
+        /* Recuadro completo en blanco para la respuesta (reverso) */
         .flashcard-back {
             background-color: #FFFFFF;
             color: #000000;
@@ -930,8 +934,9 @@
         </div>
 
         <div class="content-panel">
-            <div id="corner-badge" class="corner-badge">0/0</div>
             <div id="content-area"></div>
+            <!-- Contador movido abajo para que no estorbe -->
+            <div id="corner-badge" class="corner-badge">0/0</div>
         </div>
     </div>
 
