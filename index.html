@@ -176,7 +176,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: var(--content-padding);
-            padding-bottom: 40px; /* Espacio extra abajo para que el contador no encime contenido */
+            padding-bottom: 40px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             min-height: 380px;
             border: 1px solid var(--border-color);
@@ -184,7 +184,6 @@
             width: 100%;
         }
 
-        /* Contador reubicado en la parte inferior derecha del panel */
         .corner-badge {
             position: absolute;
             bottom: 12px;
@@ -470,16 +469,16 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Recuadro completo en negro para la pregunta (frente) */
+        /* Recuadro completo en blanco para la pregunta (frente) */
         .flashcard-front {
-            background-color: #000000;
-            color: #FFFFFF;
-        }
-
-        /* Recuadro completo en blanco para la respuesta (reverso) */
-        .flashcard-back {
             background-color: #FFFFFF;
             color: #000000;
+        }
+
+        /* Recuadro completo en negro para la respuesta (reverso) */
+        .flashcard-back {
+            background-color: #000000;
+            color: #FFFFFF;
             transform: rotateY(180deg);
         }
 
@@ -491,13 +490,13 @@
             padding: 3px 8px;
             border-radius: 6px;
             font-weight: 700;
-            background: rgba(255,255,255,0.15);
-            color: #FFFFFF;
+            background: rgba(0,0,0,0.1);
+            color: #000000;
         }
 
         .flashcard-back .card-tag-badge {
-            background: rgba(0,0,0,0.1);
-            color: #000000;
+            background: rgba(255,255,255,0.15);
+            color: #FFFFFF;
         }
 
         .anki-controls {
@@ -935,7 +934,6 @@
 
         <div class="content-panel">
             <div id="content-area"></div>
-            <!-- Contador movido abajo para que no estorbe -->
             <div id="corner-badge" class="corner-badge">0/0</div>
         </div>
     </div>
