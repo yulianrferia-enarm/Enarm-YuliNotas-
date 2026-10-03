@@ -440,20 +440,23 @@
             border-radius: 14px;
             padding: 12px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         body.dark-mode .flashcard-wrapper {
             background-color: var(--card-bg);
         }
 
-        /* Ajuste a tamaño MEDIANO (ni muy chico ni muy grande) */
+        /* Ajuste a 5 cm de ancho (~189px) y centrado */
         .flashcard {
             perspective: 1000px;
+            width: 189px;
             min-height: 220px;
             max-height: 280px;
-            margin-bottom: 10px;
+            margin: 0 auto 10px auto;
             cursor: pointer;
-            width: 100%;
         }
 
         .flashcard-inner {
@@ -485,13 +488,13 @@
             overflow-y: auto;
         }
 
-        /* Recuadro completo en blanco para la pregunta (frente) */
+        /* Fondo blanco y letras negras para la pregunta (frente) */
         .flashcard-front {
             background-color: #FFFFFF;
             color: #000000;
         }
 
-        /* Recuadro completo en negro para la respuesta (reverso) */
+        /* Fondo negro y letras blancas para la respuesta (reverso) */
         .flashcard-back {
             background-color: #000000;
             color: #FFFFFF;
@@ -519,6 +522,8 @@
             display: flex;
             gap: 6px;
             margin-top: 8px;
+            width: 100%;
+            max-width: 300px;
         }
 
         .anki-btn {
